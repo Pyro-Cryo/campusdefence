@@ -11,13 +11,6 @@ class Controller {
         this.objects = new LinkedList();
         // The id of the next registered object
         this.idCounter = 0;
-
-        for (let i = 0; i < 30; i++)
-            this.registerObject(new SpinningJonas(
-                Math.random() * this.gameArea.width,
-                Math.random() * this.gameArea.height,
-                Math.random() * 40 - 20
-            ));
     }
     // Clear the canvas and let all objects redraw themselves
     update() {
@@ -42,6 +35,16 @@ class Controller {
     // Make the object stop receiving update calls.
     unregisterObject(object) {
         object.id = null;
+    }
+    stop() {
+        if (this.mainInterval !== null) {
+            clearInterval(this.mainInterval);
+            this.mainInterval = null;
+        }
+    }
+    resume() {
+        if (this.mainInterval === null)
+            this.mainInterval = setInterval(() => this.update(), this.updateInterval);
     }
 }
 
@@ -85,7 +88,3 @@ class LinkedList {
         node.prev = undefined;
     }
 }
-
-setTimeout(() => {
-    let mainController = new Controller();
-}, 1);

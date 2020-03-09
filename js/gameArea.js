@@ -35,17 +35,3 @@ class GameObject {
         gameArea.draw(this.image, this.x, this.y, this.angle, this.scale);
     }
 }
-
-let jonasimg = new Image();
-jonasimg.src = "img/jonas.png";
-
-class SpinningJonas extends GameObject {
-    constructor(x, y, speed, scale) {
-        super(jonasimg, x, y, Math.random() * 360, scale || (0.1 + Math.random() * 0.2));
-        this.speed = (speed || 0.2) * 0.020 * Math.PI / 180;
-    }
-    update(gameArea) {
-        this.angle = (this.angle + this.speed) % 360;
-        super.update(gameArea);
-    }
-}
