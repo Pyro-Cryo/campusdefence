@@ -9,13 +9,14 @@ class GameArea {
     clear() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
+    //Draws an image centered around (x, y) with the specified angle (in radians) and scale
     draw(image, x, y, angle, scale) {
         if (!angle)
             this.context.drawImage(
                 image,
                 0, 0,
                 image.width, image.height,
-                x, y,
+                x - image.width * scale / 2, y - image.height * scale / 2,
                 image.width * scale, image.height * scale
             );
         else {
@@ -32,13 +33,14 @@ class GameArea {
             this.context.translate(-x, -y);
         }
     }
+    //Draws a subimage from an image, centered around (x, y) with the specified angle (in radians) and scale
     drawSubimage(image, subimageIndex, subimageWidth, x, y, angle, scale) {
         if (!angle) {
             this.context.drawImage(
                 image,
                 subimageIndex * subimageWidth, 0,
                 subimageWidth, image.height,
-                x, y,
+                x - subimageWidth * scale / 2, y - image.height * scale / 2,
                 image.width * scale, image.height * scale
             );
         } else {
@@ -71,6 +73,7 @@ class GameObject {
     }
 }
 
+//Subimages should be arranged left to right
 class SubimagedGameObject extends GameObject {
     constructor(image, subimageIndex, subimageWidth, x, y, angle, scale) {
         super(image, x, y, angle, scale);

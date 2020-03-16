@@ -1,8 +1,6 @@
-class Map{
+class TDMap {
 
-    constructor(width, height, path, canvasWidth, canvasHeight) {
-        this.width = width;
-        this.height = height;
+    constructor(path, canvasWidth, canvasHeight) {
         this.canvasWidth = canvasWidth;
         this.canvasHeight = canvasHeight;
 
@@ -20,6 +18,7 @@ class Map{
         for (let i = 0; i < path.length; i++) {
             let x = path[i][0];
             let y = path[i][1];
+
             this.path.push(new PathTile(x, y, []));
             if (i !== 0) {
                 this.path[i - 1].next = this.path[i];
@@ -42,15 +41,28 @@ class Map{
     getPosition(t) {
         if (t < 0 || t > this.path.length - 1)
             throw new Error("t out of bounds [0, " + (this.path.length - 1) + "] with value " + t);
-        let prev = this.path[t === this.path.length - 1 ? t - 1 : Math.floor(t)];
-        let next = this.path[Math.floor(t) === t ? t + 1 : Math.ceil(t)];
-        let interpol = t - Math.floor(t);
 
-        // Add 0.5 to get center points of grid rectangles as path vertices
-        return [
-            (prev.x * interpol + next.x * (1 - interpol) + 0.5) * this.canvasWidth,
-            (prev.y * interpol + next.y * (1 - interpol) + 0.5) * this.canvasHeight
-        ];
+        if (Math.floor(t) === t)
+            return [
+                this.path[Math.floor(t)].x,
+                this.path[Math.floor(t)].y
+            ];
+        else {
+            let prev = this.path[Math.floor(t)];
+            let next = this.path[Math.ceil(t)];
+            let interpol = t - Math.floor(t);
+
+            return [
+                prev.x * (1 - interpol) + next.x * interpol,
+                prev.y * (1 - interpol) + next.y * interpol
+            ];
+        }
+    }
+    static gridToCanvas(gridWidth, gridHeight, path, canvasWidth, canvasHeight) {
+        return path.map(pos => [
+            (pos[0] + 0.5) * canvasWidth / gridWidth,
+            (pos[1] + 0.5) * canvasHeight / gridHeight
+        ]);
     }
 
 	/**
@@ -75,7 +87,7 @@ class Map{
 
 }
 
-class PathTile{
+class PathTile {
 	constructor(x, y, data){
 		this.x = x;
 		this.y = y;

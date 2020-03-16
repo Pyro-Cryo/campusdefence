@@ -20,7 +20,10 @@ class Controller {
                 let c = current.prev;
                 this.objects.remove(current);
                 current = c || this.objects.first;
-                continue;
+                if (current === null)
+                    break;
+                else
+                    continue;
             }
             if (current.obj.update !== undefined)
                 current.obj.update(this.gameArea);

@@ -1,0 +1,34 @@
+class BaseCreep extends GameObject {
+    constructor(image, scale, map, speed) {
+        let pos = map.getPosition(0);
+        super(image, pos[0], pos[1], 0, scale);
+        this.speed = speed;
+        this.pathlength = map.path.length - 1;
+        this.distance = 0;
+        this.map = map;
+        this.lastx = this.x;
+        this.lasty = this.y;
+    }
+    onDeath() {
+        this.id = null;
+    }
+    onGoal() {
+        this.id = null;
+    }
+    update(gameArea) {
+        if (this.id !== null) {
+            this.lastx = this.x;
+            this.lasty = this.y;
+
+            this.distance = Math.max(0, Math.min(this.pathlength, this.distance + this.speed));
+            let pos = this.map.getPosition(this.distance);
+            this.x = pos[0];
+            this.y = pos[1];
+
+            if (this.distance === this.pathlength)
+                this.onGoal();
+
+            super.update(gameArea);
+        }
+    }
+}
