@@ -1,0 +1,3 @@
+class BaseTower extends GameObject {
+
+}

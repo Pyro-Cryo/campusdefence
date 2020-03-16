@@ -11,11 +11,46 @@ class GameArea {
     }
     draw(image, x, y, angle, scale) {
         if (!angle)
-            this.context.drawImage(image, 0, 0, image.width, image.height, x, y, image.width * scale, image.height * scale);
+            this.context.drawImage(
+                image,
+                0, 0,
+                image.width, image.height,
+                x, y,
+                image.width * scale, image.height * scale
+            );
         else {
             this.context.translate(x, y);
             this.context.rotate(angle);
-            this.context.drawImage(image, 0, 0, image.width, image.height, -image.width * scale / 2, -image.height * scale / 2, image.width * scale, image.height * scale);
+            this.context.drawImage(
+                image,
+                0, 0,
+                image.width, image.height,
+                -image.width * scale / 2, -image.height * scale / 2,
+                image.width * scale, image.height * scale
+            );
+            this.context.rotate(-angle);
+            this.context.translate(-x, -y);
+        }
+    }
+    drawSubimage(image, subimageIndex, subimageWidth, x, y, angle, scale) {
+        if (!angle) {
+            this.context.drawImage(
+                image,
+                subimageIndex * subimageWidth, 0,
+                subimageWidth, image.height,
+                x, y,
+                image.width * scale, image.height * scale
+            );
+        } else {
+            this.context.translate(x, y);
+            this.context.rotate(angle);
+            this.context.drawImage(
+                image,
+                subimageIndex * subimageWidth, 0,
+                subimageWidth, image.height,
+                -subimageWidth * scale / 2, -image.height * scale / 2,
+                subimageWidth * scale, image.height * scale
+            );
             this.context.rotate(-angle);
             this.context.translate(-x, -y);
         }
@@ -33,5 +68,16 @@ class GameObject {
     }
     update(gameArea) {
         gameArea.draw(this.image, this.x, this.y, this.angle, this.scale);
+    }
+}
+
+class SubimagedGameObject extends GameObject {
+    constructor(image, subimageIndex, subimageWidth, x, y, angle, scale) {
+        super(image, x, y, angle, scale);
+        this.subimageIndex = subimageIndex;
+        this.subimageWidth = subimageWidth;
+    }
+    update(gameArea) {
+        gameArea.drawSubimage(this.image, this.subimageIndex, this.subimageWidth, this.x, this.y, this.angle, this.scale);
     }
 }
