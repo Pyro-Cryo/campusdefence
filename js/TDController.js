@@ -1,6 +1,6 @@
 class TDController extends Controller {
     constructor() {
-        super();
+        super(9,9);
         controller = this;
         let path = [
             [-1, 0],
@@ -33,8 +33,7 @@ class TDController extends Controller {
             [0, 8],
             [-1, 8]
         ];
-        path = TDMap.gridToCanvas(9, 9, path, this.gameArea.canvas.width, this.gameArea.canvas.height);
-        this.map = new TDMap(path, this.gameArea.canvas.width, this.gameArea.canvas.height);
+        this.map = new TDMap(path, this.gameArea);
 
         this.jonasInterval = 30;
         this.jonasTimer = 0;
@@ -54,14 +53,19 @@ class TDController extends Controller {
 
 let jonasimg = new Image();
 jonasimg.src = "img/jonas.png";
+let helmerimg = new Image();
+helmerimg.src = "img/helmer1.png";
+
+
 // Sorry för formuleringen men "creep" är tydligen termen som används
 class Jonas extends BaseCreep {
     constructor(map) {
         super(jonasimg, 0.05, map, 0.03);
     }
     onGoal() {
-        super.onGoal();
         console.log("Jonas got you!");
+        super.onGoal();
+        
     }
     update(gameArea) {
         if (!(this.x === this.lastx && this.y === this.lasty))
@@ -70,7 +74,21 @@ class Jonas extends BaseCreep {
     }
 }
 
+
+class Helmer extends TargetableTower {
+    constructor(map, x, y){
+        super(map, helmerimg, x, y, 0.03, 2.5);
+    }
+
+
+}
+
 let controller;
 setTimeout(() => {
-    new TDController();
+    tdc = new TDController();
+    h1 = new Helmer(tdc.map, 6,4);
+    tdc.registerObject(h1);
+    h2 = new Helmer(tdc.map, 3,7);
+    tdc.registerObject(h2);
+
 }, 1);

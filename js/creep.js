@@ -8,6 +8,9 @@ class BaseCreep extends GameObject {
         this.map = map;
         this.lastx = this.x;
         this.lasty = this.y;
+
+        this.pathtile = map.path[0];
+        this.pathtile.add(this);
     }
     onDeath() {
         this.id = null;
@@ -16,19 +19,33 @@ class BaseCreep extends GameObject {
         this.id = null;
     }
     update(gameArea) {
-        if (this.id !== null) {
-            this.lastx = this.x;
-            this.lasty = this.y;
+        if (this.id === null)
+            return;
+        
+        this.lastx = this.x;
+        this.lasty = this.y;
 
-            this.distance = Math.max(0, Math.min(this.pathlength, this.distance + this.speed));
-            let pos = this.map.getPosition(this.distance);
-            this.x = pos[0];
-            this.y = pos[1];
+        this.distance = Math.max(0, Math.min(this.pathlength, this.distance + this.speed));
+        let pos = this.map.getPosition(this.distance);
+        this.x = pos[0];
+        this.y = pos[1];
 
-            if (this.distance === this.pathlength)
-                this.onGoal();
-
-            super.update(gameArea);
+        if (this.distance >= this.pathlength){
+            this.onGoal();
         }
+        else{
+            
+            if(parseInt(this.x) > -2){ // This is a temporary hack. TODO sometimes later
+                let pt = this.map.getGridAt(parseInt(this.x), parseInt(this.y));
+
+                if(pt !== this.pathtile){
+                    this.pathtile.remove(this);
+                    this.pathtile = pt;
+                    this.pathtile.add(this);
+                }
+            }
+        }
+
+        super.update(gameArea);
     }
 }

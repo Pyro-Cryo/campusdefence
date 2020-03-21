@@ -1,7 +1,7 @@
 class Controller {
-    constructor() {
+    constructor(gridWidth, gridHeight) {
         // Store the game area, which can be drawn to
-        this.gameArea = new GameArea(document.getElementsByTagName("canvas")[0]);
+        this.gameArea = new GameArea(document.getElementsByTagName("canvas")[0], gridWidth, gridHeight);
 
         // Essentially the frame rate inverse
         this.updateInterval = 20; //milliseconds
@@ -87,6 +87,13 @@ class LinkedList {
             else
                 this.last.next = null;
         }
+
+        if(node.prev !== null)
+            node.prev.next = node.next;
+        
+        if(node.next !== null)
+            node.next.prev = node.prev;
+
         node.next = undefined;
         node.prev = undefined;
     }

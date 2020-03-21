@@ -1,14 +1,19 @@
 class TDMap {
 
-    constructor(path, canvasWidth, canvasHeight) {
-        this.canvasWidth = canvasWidth;
-        this.canvasHeight = canvasHeight;
+    constructor(path, gameArea) {
+        this.canvasWidth = gameArea.width;
+        this.canvasHeight = gameArea.height;
 
-        /*this.grid = Array(this.height).fill(0).map(
-            x => Array(this.width).fill(0).map(
+        this.gridWidth = gameArea.gridWidth;
+        this.gridHeight = gameArea.gridHeight;
+
+        
+        this.grid = Array(gameArea.gridWidth+2).fill(0).map(
+            x => Array(gameArea.gridWidth+2).fill(0).map(
                 y => []
             )
-        );*/
+        );
+        
         this.towers = [];
 
         this.path = [];
@@ -19,7 +24,11 @@ class TDMap {
             let x = path[i][0];
             let y = path[i][1];
 
-            this.path.push(new PathTile(x, y, []));
+            let p = new PathTile(x, y);
+
+            this.path.push(p);
+            this.setGridAt(parseInt(x),parseInt(y),p);
+
             if (i !== 0) {
                 this.path[i - 1].next = this.path[i];
                 this.path[i].prev = this.path[i - 1];
@@ -37,6 +46,24 @@ class TDMap {
         else
             this.towers = this.towers.filter(t => t.id !== tower.id);
     }
+
+    setGridAt(x,y,obj){
+        this.grid[x+1][y+1] = obj;
+    }
+
+    getGridAt(x,y){
+        if(x+1 < 0 || this.grid.length <= x+1){
+            console.log("x", x);
+            return;
+        }
+        if(y+1 < 0 || this.grid[x+1].length <= y+1){
+            console.log("y", y);
+            return;
+        }
+        return this.grid[x+1][y+1];
+    }
+
+
     // Get the canvas (x, y) from a progress value 0 <= t <= this.path.length - 1.
     getPosition(t) {
         if (t < 0 || t > this.path.length - 1)
@@ -58,41 +85,41 @@ class TDMap {
             ];
         }
     }
-    static gridToCanvas(gridWidth, gridHeight, path, canvasWidth, canvasHeight) {
-        return path.map(pos => [
-            (pos[0] + 0.5) * canvasWidth / gridWidth,
-            (pos[1] + 0.5) * canvasHeight / gridHeight
-        ]);
+
+    clear(){
+        for (var i = 0; i < this.path.length; i++) {
+            this.path[i].clear();
+        }
     }
-
-	/**
-	 * Add the path to the map
-	 */
-	/*setPath(start) {
-	
-		current = start;
-		do {
-			this.path.push(current);
-			this.grid[current.x, current.y] = current;
-			current = current.next;
-		} while(current !== null);
-	}*/
-
-	/**
-	 * Get object at position (x, y)
-	 */
-	/*getAt(x, y){
-		return this.grid[y][x];
-	}*/
 
 }
 
 class PathTile {
-	constructor(x, y, data){
+	constructor(x, y){
 		this.x = x;
 		this.y = y;
 		this.prev = null;
         this.next = null;
-        this.data = data;
+        this.data = new LinkedList();
 	}
+
+    add(obj){
+        this.data.push(obj);
+    }
+
+    remove(obj){
+        let node = this.data.first;
+        while (node !== null && node !== undefined){
+            if (node.obj == obj){
+                this.data.remove(node);
+                return;
+            }
+            node = node.next;
+        }
+    }
+
+    hasCreep(){
+        return (this.data.first !== null);
+    }
+
 }
