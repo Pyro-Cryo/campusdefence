@@ -75,7 +75,7 @@ class Jonas extends BaseCreep {
 }
 
 
-class Helmer extends TargetableTower {
+class Helmer extends TargetingTower {
     constructor(map, x, y){
         super(map, helmerimg, x, y, 0.03, 2.5);
     }

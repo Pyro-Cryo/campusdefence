@@ -21,7 +21,7 @@ class BaseCreep extends GameObject {
     update(gameArea) {
         if (this.id === null)
             return;
-        
+
         this.lastx = this.x;
         this.lasty = this.y;
 
@@ -30,15 +30,15 @@ class BaseCreep extends GameObject {
         this.x = pos[0];
         this.y = pos[1];
 
-        if (this.distance >= this.pathlength){
+        if (this.distance >= this.pathlength) {
             this.onGoal();
         }
-        else{
-            
-            if(parseInt(this.x) > -2){ // This is a temporary hack. TODO sometimes later
-                let pt = this.map.getGridAt(parseInt(this.x), parseInt(this.y));
+        else {
 
-                if(pt !== this.pathtile){
+            if (this.map.validPosition(this.x, this.y)) {
+                let pt = this.map.getGridAt(Math.floor(this.x), Math.floor(this.y));
+
+                if (pt !== this.pathtile) {
                     this.pathtile.remove(this);
                     this.pathtile = pt;
                     this.pathtile.add(this);

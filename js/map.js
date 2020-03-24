@@ -56,13 +56,19 @@ class TDMap {
     }
 
     getGridAt(x, y) {
-        if (x + this.margin < 0 || this.gridWidth < x + this.margin)
+        if (x + this.margin < 0 || this.gridWidth - 1 < x + this.margin)
             throw new Error("x = " + x + " out of range [-" + this.margin + ", " + (this.gridInnerWidth + this.margin) + "]");
-        if (y + this.margin < 0 || this.gridHeight < y + this.margin)
+        if (y + this.margin < 0 || this.gridHeight - 1 < y + this.margin)
             throw new Error("y = " + y + " out of range [-" + this.margin + ", " + (this.gridInnerHeight + this.margin) + "]");
         return this.grid[y + this.margin][x + this.margin];
     }
 
+    validPosition(x, y) {
+        return (x + this.margin >= 0
+            && this.gridWidth - 1 >= x + this.margin
+            && y + this.margin >= 0
+            && this.gridHeight - 1 >= y + this.margin);
+    }
 
     // Get the canvas (x, y) from a progress value 0 <= t <= this.path.length - 1.
     getPosition(t) {
@@ -109,6 +115,10 @@ class PathTile {
 
     remove(obj) {
         this.data.delete(obj);
+    }
+
+    clear() {
+        this.data.clear();
     }
 
     hasCreep() {
