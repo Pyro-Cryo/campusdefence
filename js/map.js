@@ -1,19 +1,23 @@
 class TDMap {
 
-    constructor(path, gameArea) {
+    constructor(path, gameArea, margin) {
         this.canvasWidth = gameArea.width;
         this.canvasHeight = gameArea.height;
 
-        this.gridWidth = gameArea.gridWidth;
-        this.gridHeight = gameArea.gridHeight;
+        this.gridInnerWidth = gameArea.gridWidth;
+        this.gridInnerHeight = gameArea.gridHeight;
+        this.margin = Number.isInteger(margin) ? margin : 1;
+        this.gridWidth = this.gridInnerWidth + 2 * this.margin;
+        this.gridHeight = this.gridInnerHeight + 2 * this.margin;
 
-        
-        this.grid = Array(gameArea.gridWidth+2).fill(0).map(
-            x => Array(gameArea.gridWidth+2).fill(0).map(
-                y => []
+        //Tror det är bättre att lagra y i första indexet och x i andra,
+        //så blir det naturligare om man ex. printar till konsolen
+        this.grid = Array(this.gridHeight).fill(0).map(
+            y => Array(this.gridWidth).fill(0).map(
+                x => []
             )
         );
-        
+
         this.towers = [];
 
         this.path = [];
@@ -27,7 +31,7 @@ class TDMap {
             let p = new PathTile(x, y);
 
             this.path.push(p);
-            this.setGridAt(parseInt(x),parseInt(y),p);
+            this.setGridAt(parseInt(x), parseInt(y), p);
 
             if (i !== 0) {
                 this.path[i - 1].next = this.path[i];
@@ -37,7 +41,7 @@ class TDMap {
     }
 
     addTower(tower) {
-        if (this.towers.findIndex(t => t.id === tower.id) !== -1)
+        if (this.towers.findIndex(t => t.id === tower.id) === -1)
             this.towers.push(tower);
     }
     removeTower(tower) {
@@ -47,20 +51,16 @@ class TDMap {
             this.towers = this.towers.filter(t => t.id !== tower.id);
     }
 
-    setGridAt(x,y,obj){
-        this.grid[x+1][y+1] = obj;
+    setGridAt(x, y, obj) {
+        this.grid[y + this.margin][x + this.margin] = obj;
     }
 
-    getGridAt(x,y){
-        if(x+1 < 0 || this.grid.length <= x+1){
-            console.log("x", x);
-            return;
-        }
-        if(y+1 < 0 || this.grid[x+1].length <= y+1){
-            console.log("y", y);
-            return;
-        }
-        return this.grid[x+1][y+1];
+    getGridAt(x, y) {
+        if (x + this.margin < 0 || this.gridWidth < x + this.margin)
+            throw new Error("x = " + x + " out of range [-" + this.margin + ", " + (this.gridInnerWidth + this.margin) + "]");
+        if (y + this.margin < 0 || this.gridHeight < y + this.margin)
+            throw new Error("y = " + y + " out of range [-" + this.margin + ", " + (this.gridInnerHeight + this.margin) + "]");
+        return this.grid[y + this.margin][x + this.margin];
     }
 
 
@@ -86,7 +86,7 @@ class TDMap {
         }
     }
 
-    clear(){
+    clear() {
         for (var i = 0; i < this.path.length; i++) {
             this.path[i].clear();
         }
@@ -95,31 +95,24 @@ class TDMap {
 }
 
 class PathTile {
-	constructor(x, y){
-		this.x = x;
-		this.y = y;
-		this.prev = null;
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.prev = null;
         this.next = null;
-        this.data = new LinkedList();
-	}
-
-    add(obj){
-        this.data.push(obj);
+        this.data = new Set();
     }
 
-    remove(obj){
-        let node = this.data.first;
-        while (node !== null && node !== undefined){
-            if (node.obj == obj){
-                this.data.remove(node);
-                return;
-            }
-            node = node.next;
-        }
+    add(obj) {
+        this.data.add(obj);
     }
 
-    hasCreep(){
-        return (this.data.first !== null);
+    remove(obj) {
+        this.data.delete(obj);
+    }
+
+    hasCreep() {
+        return !!this.data.size;
     }
 
 }
