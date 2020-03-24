@@ -14,7 +14,7 @@ class TDMap {
         //så blir det naturligare om man ex. printar till konsolen
         this.grid = Array(this.gridHeight).fill(0).map(
             y => Array(this.gridWidth).fill(0).map(
-                x => []
+                x => null
             )
         );
 
@@ -31,7 +31,7 @@ class TDMap {
             let p = new PathTile(x, y);
 
             this.path.push(p);
-            this.setGridAt(parseInt(x), parseInt(y), p);
+            this.setGridAt(Math.floor(x), Math.floor(y), p);
 
             if (i !== 0) {
                 this.path[i - 1].next = this.path[i];
@@ -125,4 +125,7 @@ class PathTile {
         return !!this.data.size;
     }
 
+    arbitraryCreep() {
+        return this.hasCreep() ? this.data.values().next().value : null;
+    }
 }

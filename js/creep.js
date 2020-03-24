@@ -14,9 +14,13 @@ class BaseCreep extends GameObject {
     }
     onDeath() {
         this.id = null;
+        this.pathtile.remove(this);
+        this.pathtile = null;
     }
     onGoal() {
         this.id = null;
+        this.pathtile.remove(this);
+        this.pathtile = null;
     }
     update(gameArea) {
         if (this.id === null)

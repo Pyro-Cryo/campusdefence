@@ -1,6 +1,6 @@
 class TDController extends Controller {
     constructor() {
-        super(9,9);
+        super(9, 9);
         controller = this;
         let path = [
             [-1, 0],
@@ -35,26 +35,21 @@ class TDController extends Controller {
         ];
         this.map = new TDMap(path, this.gameArea);
 
-        this.jonasInterval = 30;
+        this.jonasInterval = 50;
         this.jonasTimer = 0;
-
-        //this.stop();
-        //this.updateInterval = 500;
-        //this.resume();
     }
     update(gameArea) {
         super.update(gameArea);
         if (this.jonasTimer-- === 0) {
             this.jonasTimer += this.jonasInterval;
             this.registerObject(new Jonas(this.map));
+            this.jonasInterval = Math.max(1, this.jonasInterval - 1);
         }
     }
 }
 
 let jonasimg = new Image();
 jonasimg.src = "img/jonas.png";
-let helmerimg = new Image();
-helmerimg.src = "img/helmer1.png";
 
 
 // Sorry för formuleringen men "creep" är tydligen termen som används
@@ -65,7 +60,7 @@ class Jonas extends BaseCreep {
     onGoal() {
         console.log("Jonas got you!");
         super.onGoal();
-        
+
     }
     update(gameArea) {
         if (!(this.x === this.lastx && this.y === this.lasty))
@@ -74,21 +69,37 @@ class Jonas extends BaseCreep {
     }
 }
 
+let jonasimg2 = new Image();
+jonasimg2.src = "img/jonas3.png";
+
+class SuperSonicJonas extends BasicProjectile {
+    constructor(map, source, target) {
+        super(map, jonasimg2, source.x, source.y, target.x, target.y, 0.03, 1 / controller.updateInterval);
+    }
+}
+
+
+let helmerimg = new Image();
+helmerimg.src = "img/helmer1.png";
 
 class Helmer extends TargetingTower {
-    constructor(map, x, y){
-        super(map, helmerimg, x, y, 0.03, 2.5);
+    constructor(map, x, y) {
+        super(map, helmerimg, x, y, 0.03, 2.5, 1000 / controller.updateInterval);
     }
 
+    fire(target) {
+        controller.registerObject(new SuperSonicJonas(this.map, this, target));
 
+        super.fire(target);
+    }
 }
 
 let controller;
 setTimeout(() => {
-    tdc = new TDController();
-    h1 = new Helmer(tdc.map, 6,4);
-    tdc.registerObject(h1);
-    h2 = new Helmer(tdc.map, 3,7);
-    tdc.registerObject(h2);
+    controller = new TDController();
+    h1 = new Helmer(controller.map, 6, 4);
+    controller.registerObject(h1);
+    h2 = new Helmer(controller.map, 3, 7);
+    controller.registerObject(h2);
 
 }, 1);
