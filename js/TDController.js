@@ -83,8 +83,8 @@ let helmerimg = new Image();
 helmerimg.src = "img/helmer1.png";
 
 class Helmer extends TargetingTower {
-    constructor(map, x, y) {
-        super(map, helmerimg, x, y, 0.03, 2.5, 800 / controller.updateInterval);
+    constructor(controller, x, y) {
+        super(controller, helmerimg, x, y, 0.03, 2.5, 800 / controller.updateInterval);
     }
 
     projectile(target){
@@ -108,8 +108,8 @@ class OneLiner extends SplashProjectile {
 }
 
 class DadyHelmer extends OmniTower {
-    constructor(map, x, y){
-        super(map, dadyhelmer, x, y, 0.04, 2.5, 2500 / controller.updateInterval);
+    constructor(controller, x, y){
+        super(controller, dadyhelmer, x, y, 0.04, 2.5, 2500 / controller.updateInterval);
     }
 
     projectile(target){
@@ -121,11 +121,8 @@ class DadyHelmer extends OmniTower {
 let controller;
 setTimeout(() => {
     controller = new TDController();
-    h1 = new Helmer(controller.map, 6, 4);
-    controller.registerObject(h1);
-    h2 = new Helmer(controller.map, 3, 7);
-    controller.registerObject(h2);
-    dh = new DadyHelmer(controller.map, 3,4);
-    controller.registerObject(dh);
+    h1 = new Helmer(controller, 6, 4);
+    h2 = new Helmer(controller, 3, 7);
+    dh = new DadyHelmer(controller, 3,4);
 
 }, 1000);

@@ -1,15 +1,17 @@
 class BaseTower extends GameObject {
 
     // CoolDowntime is measured in update ticks
-    constructor(map, image, x, y, scale, range, CDtime) {
+    constructor(controller, image, x, y, scale, range, CDtime) {
         super(image, x, y, 0, scale);
-        this.map = map;
+        this.controller = controller;
+        this.map = controller.map;
         this.range = range;
         this.CDtime = CDtime;
         this.CDtimer = 0;
 
         this.inrange = this.pathInRange();
         this.map.addTower(this);
+        this.controller.registerObject(this);
     }
 
     target() {
@@ -23,7 +25,7 @@ class BaseTower extends GameObject {
     }
 
     fire(target) {
-    	controller.registerObject(this.projectile(target));
+    	this.controller.registerObject(this.projectile(target));
     	this.CDtimer = this.CDtime;
 
     }
