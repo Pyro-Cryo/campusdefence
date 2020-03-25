@@ -84,14 +84,38 @@ helmerimg.src = "img/helmer1.png";
 
 class Helmer extends TargetingTower {
     constructor(map, x, y) {
-        super(map, helmerimg, x, y, 0.03, 2.5, 1000 / controller.updateInterval);
+        super(map, helmerimg, x, y, 0.03, 2.5, 800 / controller.updateInterval);
     }
 
-    fire(target) {
-        controller.registerObject(new SuperSonicJonas(this.map, this, target));
-
-        super.fire(target);
+    projectile(target){
+        return new SuperSonicJonas(this.map, this, target);
     }
+}
+
+let dadyhelmer = new Image();
+dadyhelmer.src = "img/dadyhelmer.png";
+
+let oneliner = new Image();
+oneliner.src = "img/oneliner.png";
+let splash = new Image();
+splash.src = "img/boom.png";
+
+class OneLiner extends SplashProjectile {
+
+    constructor(map, source, target) {
+        super(map, oneliner, splash, source.x, source.y, target.x, target.y, 0.1, 1, 2 / controller.updateInterval, 0);
+    }
+}
+
+class DadyHelmer extends OmniTower {
+    constructor(map, x, y){
+        super(map, dadyhelmer, x, y, 0.04, 2.5, 2500 / controller.updateInterval);
+    }
+
+    projectile(target){
+        return new OneLiner(this.map, this, target);
+    }
+
 }
 
 let controller;
@@ -101,5 +125,7 @@ setTimeout(() => {
     controller.registerObject(h1);
     h2 = new Helmer(controller.map, 3, 7);
     controller.registerObject(h2);
+    dh = new DadyHelmer(controller.map, 3,4);
+    controller.registerObject(dh);
 
-}, 1);
+}, 1000);
