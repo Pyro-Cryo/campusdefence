@@ -91,6 +91,10 @@ class Projectile extends GameObject {
         this.id = null;
     }
 
+    hitCreep(creep) {
+        creep.onDeath();
+    }
+
     update(gameArea) {
     	if(this.flying){
 	        let pt;
@@ -115,7 +119,7 @@ class Projectile extends GameObject {
 class BasicProjectile extends Projectile {
     hit(pathTile) {
         let creep = pathTile.arbitraryCreep();
-        creep.onDeath();
+        this.hitCreep(creep);
 
         super.hit(pathTile);
     }
@@ -153,8 +157,8 @@ class SplashProjectile extends BasicProjectile{
 				let pt = this.map.getGridAt(x+dx, y+dy);
 				if (pt instanceof PathTile && pt.hasCreep()){
 					pt.data.forEach(function(creep){
-						creep.onDeath();
-					});
+						this.hitCreep(creep);
+					}.bind(this));
 				}
 			}
 		}

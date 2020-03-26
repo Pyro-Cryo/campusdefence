@@ -92,8 +92,8 @@ class Helmer extends TargetingTower {
     }
 }
 
-let dadyhelmer = new Image();
-dadyhelmer.src = "img/dadyhelmer.png";
+let omnihelmer = new Image();
+omnihelmer.src = "img/helmer2.png";
 
 let oneliner = new Image();
 oneliner.src = "img/oneliner.png";
@@ -101,28 +101,64 @@ let splash = new Image();
 splash.src = "img/boom.png";
 
 class OneLiner extends SplashProjectile {
-
     constructor(map, source, target) {
         super(map, oneliner, splash, source.x, source.y, target.x, target.y, 0.1, 1, 2 / controller.updateInterval, 0);
     }
 }
 
-class DadyHelmer extends OmniTower {
+class OmniHelmer extends OmniTower {
     constructor(controller, x, y){
-        super(controller, dadyhelmer, x, y, 0.04, 2.5, 2500 / controller.updateInterval);
+        super(controller, omnihelmer, x, y, 0.04, 2.5, 2500 / controller.updateInterval);
     }
 
     projectile(target){
         return new OneLiner(this.map, this, target);
     }
-
 }
+
+let helmer3 = new Image();
+helmer3.src = "img/helmer3.png";
+let keytar = new Image();
+keytar.src = "img/keytar.png";
+
+
+class Shoreline extends BaseEffect {
+    constructor(object){
+        super(5000 / controller.updateInterval);
+        object.speed /= 2;
+    }
+    apply(object){
+        object.speed *= 2;
+        this.remove(object);
+    }
+}
+
+class Keytar extends SplashProjectile {
+    constructor(map, source, target){
+        super(map, keytar, splash, source.x, source.y, target.x, target.y, 0.1, 1, 1 / controller.updateInterval, 0);
+    }
+    hitCreep(creep){
+        let e = new Shoreline(creep);
+        creep.addEffect(e);
+    }
+}
+
+class KeytarHelmer extends TargetingTower {
+    constructor(controller, x,y){
+        super(controller, helmer3, x, y, 0.04, 2, 1500 / controller.updateInterval);
+    }
+    projectile(target){
+        return new Keytar(this.map, this, target);
+    }
+}
+
 
 let controller;
 setTimeout(() => {
     controller = new TDController();
-    h1 = new Helmer(controller, 6, 4);
-    h2 = new Helmer(controller, 3, 7);
-    dh = new DadyHelmer(controller, 3,4);
+    new Helmer(controller, 6, 4);
+    new Helmer(controller, 3, 7);
+    new OmniHelmer(controller, 3,4);
+    new KeytarHelmer(controller, 5,1);
 
 }, 1000);
