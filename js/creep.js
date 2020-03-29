@@ -11,7 +11,8 @@ class BaseCreep extends GameObject {
 
 		this.pathtile = map.path[0];
 		this.pathtile.add(this);
-		this.effects = new Set();
+        this.effects = new Set();
+        controller.registerObject(this);
 	}
 	addEffect(effect) {
 		this.effects.add(effect);

@@ -34,131 +34,56 @@ class TDController extends Controller {
             [-1, 8]
         ];
         this.map = new TDMap(path, this.gameArea);
+        this.isPaused = true;
+        this.levelNumber = 0;
+        this.levelIterator = null;
+        this.levelCleared = false;
 
-        this.jonasInterval = 50;
-        this.jonasTimer = 0;
+        //console.log("https://statistik.uhr.se/rest/stats/tableData?request=%7B%22tillfalle%22%3A%22Urval2%22%2C%22vy%22%3A%22Total%22%2C%22antagningsomgang%22%3A%22HT2019%22%2C%22larosateId%22%3A%22KTH%22%2C%22utbildningstyp%22%3A%22p%22%2C%22fritextFilter%22%3A%22Teknisk%22%2C%22urvalsGrupp%22%3A%22%22%2C%22firstResult%22%3A0%2C%22maxResults%22%3A25%2C%22sorteringsKolumn%22%3A1%2C%22sorteringsOrdningDesc%22%3Afalse%2C%22requestNumber%22%3A1%2C%22paginate%22%3Atrue%7D");
+        //TODO: gör nåt av detta
+        this.hp = 139;
+        this.money = 500;
     }
     update(gameArea) {
         super.update(gameArea);
-        if (this.jonasTimer-- === 0) {
-            this.jonasTimer += this.jonasInterval;
-            this.registerObject(new Jonas(this.map));
-            this.jonasInterval = Math.max(1, this.jonasInterval - 1);
+
+        if (!this.isPaused) {
+            if (this.levelIterator) {
+                let done = this.levelIterator.next().done;
+                if (done)
+                    this.levelIterator = null;
+            }
+            else if (!this.levelCleared) {
+                this.levelCleared = this.map.path.every(pt => !pt.hasCreep());
+                if (this.levelCleared)
+                    this.endLevel();
+            }
         }
     }
-}
-
-let jonasimg = new Image();
-jonasimg.src = "img/jonas.png";
-
-
-// Sorry för formuleringen men "creep" är tydligen termen som används
-class Jonas extends BaseCreep {
-    constructor(map) {
-        super(jonasimg, 0.05, map, 0.03);
+    startLevel() {
+        this.isPaused = false;
+        this.levelNumber++;
+        console.log("Starting level " + this.levelNumber);
+        this.levelIterator = getLevel(this.levelNumber, this.updateInterval);
+        this.levelCleared = false;
+        console.log("Time: " + this.levelIterator.totalTime() * this.updateInterval / 1000 + " s");
+        console.log("Total creeps: " + this.levelIterator.totalExplicitCreeps());
+        console.log("Creep summary: ", this.levelIterator.creepSummary());
     }
-    onGoal() {
-        console.log("Jonas got you!");
-        super.onGoal();
-
-    }
-    update(gameArea) {
-        if (!(this.x === this.lastx && this.y === this.lasty))
-            this.angle = Math.PI / 2 + Math.atan2(this.y - this.lasty, this.x - this.lastx);
-        super.update(gameArea);
+    endLevel() {
+        this.isPaused = true;
+        this.levelIterator = null;
+        this.levelCleared = false;
+        console.log("Cleared level " + this.levelNumber);
     }
 }
-
-let jonasimg2 = new Image();
-jonasimg2.src = "img/jonas3.png";
-
-class SuperSonicJonas extends BasicProjectile {
-    constructor(map, source, target) {
-        super(map, jonasimg2, source.x, source.y, target.x, target.y, 0.03, 1 / controller.updateInterval);
-    }
-}
-
-
-let helmerimg = new Image();
-helmerimg.src = "img/helmer1.png";
-
-class Helmer extends TargetingTower {
-    constructor(controller, x, y) {
-        super(controller, helmerimg, x, y, 0.03, 2.5, 800 / controller.updateInterval);
-    }
-
-    projectile(target){
-        return new SuperSonicJonas(this.map, this, target);
-    }
-}
-
-let omnihelmer = new Image();
-omnihelmer.src = "img/helmer2.png";
-
-let oneliner = new Image();
-oneliner.src = "img/oneliner.png";
-let splash = new Image();
-splash.src = "img/boom.png";
-
-class OneLiner extends SplashProjectile {
-    constructor(map, source, target) {
-        super(map, oneliner, splash, source.x, source.y, target.x, target.y, 0.1, 1, 2 / controller.updateInterval, 0);
-    }
-}
-
-class OmniHelmer extends OmniTower {
-    constructor(controller, x, y){
-        super(controller, omnihelmer, x, y, 0.04, 2.5, 2500 / controller.updateInterval);
-    }
-
-    projectile(target){
-        return new OneLiner(this.map, this, target);
-    }
-}
-
-let helmer3 = new Image();
-helmer3.src = "img/helmer3.png";
-let keytar = new Image();
-keytar.src = "img/keytar.png";
-
-
-class Shoreline extends BaseEffect {
-    constructor(object){
-        super(5000 / controller.updateInterval);
-        object.speed /= 2;
-    }
-    apply(object){
-        object.speed *= 2;
-        this.remove(object);
-    }
-}
-
-class Keytar extends SplashProjectile {
-    constructor(map, source, target){
-        super(map, keytar, splash, source.x, source.y, target.x, target.y, 0.1, 1, 1 / controller.updateInterval, 0);
-    }
-    hitCreep(creep){
-        let e = new Shoreline(creep);
-        creep.addEffect(e);
-    }
-}
-
-class KeytarHelmer extends TargetingTower {
-    constructor(controller, x,y){
-        super(controller, helmer3, x, y, 0.04, 2, 1500 / controller.updateInterval);
-    }
-    projectile(target){
-        return new Keytar(this.map, this, target);
-    }
-}
-
 
 let controller;
 setTimeout(() => {
     controller = new TDController();
-    new Helmer(controller, 6, 4);
-    new Helmer(controller, 3, 7);
-    new OmniHelmer(controller, 3,4);
-    new KeytarHelmer(controller, 5,1);
+    new Helmer(6, 4);
+    new Helmer(3, 7);
+    new OmniHelmer(3, 4);
+    new KeytarHelmer(5, 1);
 
 }, 1000);

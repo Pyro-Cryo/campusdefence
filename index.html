@@ -4,20 +4,36 @@
     <title>Campus Defence</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Basic classes for rendering etc. -->
     <script type="text/javascript" src="js/gameArea.js"></script>
+    <script type="text/javascript" src="js/gameObject.js"></script>
     <script type="text/javascript" src="js/controller.js"></script>
+    
+    <!-- Somewhat generic classes for TD games -->
     <script type="text/javascript" src="js/map.js"></script>
     <script type="text/javascript" src="js/tower.js"></script>
+    <script type="text/javascript" src="js/projectile.js"></script>
     <script type="text/javascript" src="js/creep.js"></script>
 
+    <!-- Specific classes for campus defence -->
+    <script type="text/javascript" src="js/specifics.js"></script>
+    <script type="text/javascript" src="js/levels.js"></script>
+
+    <!-- The main controller -->
     <script type="text/javascript" src="js/TDController.js"></script>
-    <!--<script type="text/javascript" src="js/flappyJonas.js"></script>-->
+    <style>
+        body {
+            background-color: black; /*Snällare mot ögonen när man debuggar på natten*/
+        }
+    </style>
 </head>
 <body>
 	<h1>Campus Defence!</h1>
-	<canvas name="gameboard" width="500" height="500" style="border:1px solid #000">
+	<canvas name="gameboard" width="500" height="500" style="border:1px solid #000; background-color: white;">
 
 	</canvas>
+    <br />
+    <button onclick="controller && controller.isPaused ? controller.startLevel() : console.log('Chilla lite på att rundan ska ta slut okej?')">Starta nästa runda</button>
 </body>
 </html>
 
