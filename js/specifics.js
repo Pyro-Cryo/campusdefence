@@ -33,9 +33,10 @@ let helmerimg = new Image();
 helmerimg.src = "img/helmer1.png";
 
 class Helmer extends TargetingTower {
-    constructor(x, y) {
-        super(helmerimg, x, y, 0.03, 2.5, 800 / controller.updateInterval);
-    }
+    static get range() { return 2.5; }
+    static get CDtime() { return 800; }
+    static get image() { return helmerimg; }
+    static get scale() { return 0.03; }
 
     projectile(target) {
         return new SuperSonicJonas(this.map, this, target);
@@ -57,9 +58,10 @@ class OneLiner extends SplashProjectile {
 }
 
 class OmniHelmer extends OmniTower {
-    constructor(x, y) {
-        super(omnihelmer, x, y, 0.04, 2.5, 2500 / controller.updateInterval);
-    }
+    static get range() { return 2.5; }
+    static get CDtime() { return 2500; }
+    static get image() { return omnihelmer; }
+    static get scale() { return 0.04; }
 
     projectile(target) {
         return new OneLiner(this.map, this, target);
@@ -94,9 +96,11 @@ class Keytar extends SplashProjectile {
 }
 
 class KeytarHelmer extends TargetingTower {
-    constructor(x, y) {
-        super(helmer3, x, y, 0.04, 2, 1500 / controller.updateInterval);
-    }
+    static get range() { return 2; }
+    static get CDtime() { return 1500; }
+    static get image() { return helmer3; }
+    static get scale() { return 0.04; }
+
     projectile(target) {
         return new Keytar(this.map, this, target);
     }

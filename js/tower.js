@@ -1,11 +1,29 @@
 class BaseTower extends GameObject {
+    // Range in grid units
+    static get range() {
+        throw new Error("Abstract property range must be overridden by subclass");
+    }
+    // Cooldown time for projectiles, in ms
+    static get CDtime() {
+        throw new Error("Abstract property CDtime must be overridden by subclass");
+    }
+    // The tower's sprite
+    static get image() {
+        throw new Error("Abstract property image must be overridden by subclass");
+    }
+    // The tower's sprite
+    static get scale() {
+        throw new Error("Abstract property scale must be overridden by subclass");
+    }
 
-    // CoolDowntime is measured in update ticks
-    constructor(image, x, y, scale, range, CDtime) {
-        super(image, x, y, 0, scale);
+    // CoolDowntime is measured in update ticks internally
+    constructor(x, y) {
+        super(undefined, x, y, 0, undefined);
+        this.image = this.constructor.image;
+        this.scale = this.constructor.scale;
         this.map = controller.map;
-        this.range = range;
-        this.CDtime = CDtime;
+        this.range = this.constructor.range;
+        this.CDtime = this.constructor.CDtime / controller.updateInterval;
         this.CDtimer = 0;
 
         this.inrange = this.pathInRange();
@@ -31,7 +49,7 @@ class BaseTower extends GameObject {
 
     projectile(target) {
         // Create and return a new projectile object, that is targeted at target
-        throw new Error("Abstract method projectile must be overridden by superclass");
+        throw new Error("Abstract method projectile must be overridden by subclass");
     }
 
     update(gameArea) {

@@ -8,6 +8,11 @@ class GameArea {
         this.gridWidth = gridWidth;
         this.gridHeight = gridHeight;
 
+        let a = this.gridToCanvas(0, 0);
+        let b = this.gridToCanvas(1, 1);
+        this.unitWidth = b[0] - a[0];
+        this.unitHeight = b[1] - a[1];
+        this._scaleFactor = Math.sqrt((Math.pow(this.unitWidth, 2) + Math.pow(this.unitHeight, 2)) / 2);
     }
     clear() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -77,5 +82,25 @@ class GameArea {
             (x * this.gridWidth / this.width) - 0.5,
             (y * this.gridHeight / this.height) - 0.5
         ];
+    }
+    disc(_x, _y, radius, color) {
+        let pos = this.gridToCanvas(_x, _y);
+        let x = pos[0];
+        let y = pos[1];
+        let fillStyle = this.context.fillStyle;
+        this.context.fillStyle = color || "#000000";
+        this.context.beginPath();
+        this.context.arc(x, y, radius * this._scaleFactor, 0, 2 * Math.PI);
+        this.context.fill();
+        this.context.fillStyle = fillStyle;
+    }
+    square(_x, _y, color) {
+        let pos = this.gridToCanvas(_x - 0.5, _y - 0.5);
+        let x = pos[0];
+        let y = pos[1];
+        let fillStyle = this.context.fillStyle;
+        this.context.fillStyle = color || "#000000";
+        this.context.fillRect(x, y, this.unitWidth, this.unitHeight);
+        this.context.fillStyle = fillStyle;
     }
 }

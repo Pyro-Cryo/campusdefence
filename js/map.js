@@ -41,14 +41,14 @@ class TDMap {
     }
 
     addTower(tower) {
-        if (this.towers.findIndex(t => t.id === tower.id) === -1)
+        if (this.towers.findIndex(t => t.id === tower.id) === -1) {
             this.towers.push(tower);
+            this.setGridAt(tower.x, tower.y, tower);
+        }
     }
     removeTower(tower) {
-        if (typeof tower === "number")
-            this.towers = this.towers.filter(t => t.id !== tower);
-        else
-            this.towers = this.towers.filter(t => t.id !== tower.id);
+        this.towers = this.towers.filter(t => t !== tower);
+        this.setGridAt(tower.x, tower.y, null);
     }
 
     setGridAt(x, y, obj) {
@@ -98,6 +98,10 @@ class TDMap {
         }
     }
 
+    drawPath(gameArea) {
+        for (let i = 0; i < this.path.length; i++)
+            gameArea.square(this.path[i].x, this.path[i].y, "rgba(0, 0, 0, 0.2)");
+    }
 }
 
 class PathTile {

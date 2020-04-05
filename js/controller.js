@@ -31,8 +31,11 @@ class Controller {
     }
     // Register an object to receive update calls.
     // It should have an update method accepting a GameArea and allow for setting an id
-    registerObject(object) {
-        this.objects.push(object);
+    registerObject(object, prepend) {
+        if (prepend)
+            this.objects.prepend(object);
+        else
+            this.objects.push(object);
         object.id = this.idCounter++;
     }
     // Make the object stop receiving update calls.
@@ -67,6 +70,18 @@ class LinkedList {
             let node = { obj: obj, next: null, prev: this.last };
             this.last.next = node;
             this.last = node;
+        }
+    }
+    // Add an object at the beginning of the list
+    prepend(obj) {
+        if (this.first === null) {
+            this.first = { obj: obj, next: null, prev: null };
+            this.last = this.first;
+        }
+        else {
+            let node = { obj: obj, next: this.first, prev: null };
+            this.first.prev = node;
+            this.first = node;
         }
     }
     // Remove a node from the list
