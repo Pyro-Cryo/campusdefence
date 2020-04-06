@@ -4,6 +4,9 @@
     <title>Campus Defence</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+
     <!-- Basic classes for rendering etc. -->
     <script type="text/javascript" src="js/gameArea.js"></script>
     <script type="text/javascript" src="js/gameObject.js"></script>
@@ -21,20 +24,43 @@
 
     <!-- The main controller -->
     <script type="text/javascript" src="js/TDController.js"></script>
-    <style>
-        body {
-            background-color: black; /*Snällare mot ögonen när man debuggar på natten*/
-        }
-    </style>
+    
 </head>
 <body>
-	<h1>Campus Defence!</h1>
-	<canvas name="gameboard" width="500" height="500" style="border:1px solid #000; background-color: white;">
+    <div class="header">
+        <h1>Campus Defence!</h1>
+    </div>
+    <div class="main">
+    	
+        <div class="controllbar">
+            <button id="startRoundButton" onclick="controller && controller.isPaused ? controller.startLevel() : console.log('Chilla lite på att rundan ska ta slut okej?')">Starta nästa runda</button>
+        </div>
+        <div class="statusbar" style="float:right">
+            <div class="counter">💰<span id="moneycounter" class="counter">500</span></div>
+            <div class="counter">❤️<span id="healthcounter" class="counter">139</span></div>
+        </div>
+    	<canvas name="gameboard" width="598" height="500" style="border:1px solid #000;">
+    	</canvas>
+        <div class="towerMarket">
+            <div id="towerTemplate" class="towerInfo template">
+                <img name="image" src="img/helmer1.png">
+                <p>
+                    <strong name="title">Title</strong><br>
+                    <span name="desc">Desc. Lorem ipsum dolar sit amet</span>
+                </p>
+                <div>
+                    💰<span name="cost"></span>
+                    <button name="buybtn">Köp</button>
+                </div>
+            </div> 
+        </div>
+        
+    </div>
 
-	</canvas>
-    <table id="towerTable"></table>
-    <br />
-    <button onclick="controller && controller.isPaused ? controller.startLevel() : console.log('Chilla lite på att rundan ska ta slut okej?')">Starta nästa runda</button>
+    <script type="text/javascript">
+        var controller = new TDController();
+        controller.setupTowerTable();   
+    </script>
 </body>
 </html>
 

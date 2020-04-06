@@ -6,8 +6,11 @@ class Projectile extends GameObject {
         let xdist = target_x - x;
         let ydist = target_y - y;
         let dist = Math.sqrt(xdist * xdist + ydist * ydist);
+
+        this.speed = speed;
         this.dx = speed * xdist / dist;
         this.dy = speed * ydist / dist;
+        this.range = 3;
 
         this.flying = true;
     }
@@ -17,11 +20,15 @@ class Projectile extends GameObject {
     }
 
     hitCreep(creep) {
-        creep.onDeath();
+        creep.onHit(this);
     }
 
     update(gameArea) {
         if (this.flying) {
+        	this.x += this.dx;
+            this.y += this.dy;
+            this.range -= this.speed;
+
             let pt;
             try {
                 pt = this.map.getGridAt(Math.round(this.x), Math.round(this.y));
@@ -33,9 +40,9 @@ class Projectile extends GameObject {
             if (pt instanceof PathTile && pt.hasCreep())
                 this.hit(pt);
 
-            this.x += this.dx;
-            this.y += this.dy;
         }
+        if(this.range < 0)
+        	this.id = null;
 
         super.update(gameArea);
     }

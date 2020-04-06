@@ -54,6 +54,7 @@ splash.src = "img/boom.png";
 class OneLiner extends SplashProjectile {
     constructor(map, source, target) {
         super(map, oneliner, splash, source.x, source.y, target.x, target.y, 0.1, 1, 2 / controller.updateInterval, 0);
+        this.range = 2.5;
     }
 }
 
@@ -88,6 +89,7 @@ class Shoreline extends BaseEffect {
 class Keytar extends SplashProjectile {
     constructor(map, source, target) {
         super(map, keytar, splash, source.x, source.y, target.x, target.y, 0.1, 1, 1 / controller.updateInterval, 0);
+        this.range = 4;
     }
     hitCreep(creep) {
         let e = new Shoreline(creep);

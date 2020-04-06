@@ -1,0 +1,71 @@
+body {
+    background-color: black; /*Snällare mot ögonen när man debuggar på natten*/
+}
+div.header{
+    width: 100%;
+    border: 1px solid #000;
+    background-color: #cccccc;
+    padding: 5px; 
+
+}
+div.main{
+    padding: 15px;
+    width: 600px;
+    margin: auto;
+    background-color: #eaeaea;
+    height: auto;
+}
+div.statusbar{
+    float:right;
+}
+div.controllbar{
+    float:left;
+}
+div.counter{
+    margin: 5px;
+    float: left;
+}
+div.towerInfo{
+    position: relative;
+    width: 588px;
+    height: 80px;
+    padding: 5px;
+    border: 1px solid #000;
+    margin-bottom: 10px;
+}
+div.towerInfo.template{
+    display: none;
+}
+div.towerInfo p{
+    width: 400px;
+    float:left;
+    margin: 0px;
+    font-size: 9pt;
+}
+div.towerInfo p strong {
+    font-size: 11pt;
+}
+div.towerInfo img{
+    max-width:80px;
+    max-height:80px;
+    float:left;
+    margin-right: 10px;
+}
+div.towerInfo div{
+    vertical-align: middle;
+    text-align: right;
+    float:right;
+    width: 80px;
+    height: 0px;
+}
+div.towerInfo button{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin-top: 10px;
+    width: 80px;
+}
+span.counter{
+    min-width: 3ex;
+    display: inline-block;
+}

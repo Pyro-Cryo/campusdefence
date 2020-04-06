@@ -1,8 +1,11 @@
 class TDMap {
 
-    constructor(path, gameArea, margin) {
+    constructor(img, path, gameArea, margin) {
+    	this.img = img;
         this.canvasWidth = gameArea.width;
         this.canvasHeight = gameArea.height;
+
+        this.scale = 1/Math.min(img.width/gameArea.width, img.height/gameArea.height);
 
         this.gridInnerWidth = gameArea.gridWidth;
         this.gridInnerHeight = gameArea.gridHeight;
@@ -96,6 +99,11 @@ class TDMap {
         for (var i = 0; i < this.path.length; i++) {
             this.path[i].clear();
         }
+    }
+
+    update(gameArea) {
+    	gameArea.draw(this.img, this.gridInnerWidth/2-1/2, this.gridInnerHeight/2-1/2, 0, this.scale);
+    	this.drawPath(gameArea);
     }
 
     drawPath(gameArea) {
