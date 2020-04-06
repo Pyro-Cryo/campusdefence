@@ -37,7 +37,6 @@
         map_img.src = "img/map.png";
         this.map = new TDMap(map_img, path, this.gameArea);
         this.registerObject(this.map, true);
-        //this.registerObject({ id: null, update: (gA) => this.map.drawPath(gA) }, true);
 
         this.isPaused = true;
         this.levelNumber = 0;

@@ -5,7 +5,15 @@ class TDMap {
         this.canvasWidth = gameArea.width;
         this.canvasHeight = gameArea.height;
 
-        this.scale = 1/Math.min(img.width/gameArea.width, img.height/gameArea.height);
+        let setScale = (() => {
+            this.scale = 1 / Math.min(img.width / gameArea.width, img.height / gameArea.height);;
+        }).bind(this);
+        if (img.complete)
+            setScale();
+        else {
+            this.scale = 1;
+            img.addEventListener('load', setScale);
+        }
 
         this.gridInnerWidth = gameArea.gridWidth;
         this.gridInnerHeight = gameArea.gridHeight;
