@@ -129,7 +129,6 @@ class Runaway extends BaseEffect {
 class ToiletBrush extends SeekingProjectile {
     constructor(source, target){
         super(tb, 0.05, source, target, 3 / controller.updateInterval);
-        console.log(target);
     }
     hitCreep(creep) {
         let e = new Runaway(creep);
@@ -142,10 +141,6 @@ class GKJonas extends TargetingTower {
     static get CDtime() { return 500; }
     static get image() { return jonasimg3; }
     static get scale() { return 0.08; }
-
-    // update(gameArea){
-    //     super.update(gameArea);
-    // }
 
     target(){
         let pt = super.target();

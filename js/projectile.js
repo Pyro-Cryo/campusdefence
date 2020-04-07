@@ -21,7 +21,6 @@ class Projectile extends GameObject {
 
 	hitCreep(creep) {
 		creep.onHit(this);
-		console.log(creep, this);
 	}
 
 	update(gameArea) {
