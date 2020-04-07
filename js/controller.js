@@ -2,7 +2,7 @@ class Controller {
     constructor(gridWidth, gridHeight) {
         // Store the game area, which can be drawn to
         this.gameArea = new GameArea(document.getElementsByTagName("canvas")[0], gridWidth, gridHeight);
-
+        this.isPaused = true;
         // Essentially the frame rate inverse
         this.updateInterval = 20; //milliseconds
         // Store the inteval object so that we can abort the main loop

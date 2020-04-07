@@ -30,8 +30,9 @@ class BaseCreep extends GameObject {
 		this.effects.delete(effect);
 	}
 	onHit(projectile) {
-		if(this.health-- <= 0)
+		if(--this.health <= 0){
 			this.onDeath();
+		}
 	}
 	onDeath() {
 		this.id = null;

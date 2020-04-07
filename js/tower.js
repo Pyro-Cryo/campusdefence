@@ -53,9 +53,7 @@ class BaseTower extends GameObject {
     }
 
     update(gameArea) {
-        if (this.CDtimer > 0)
-            this.CDtimer -= 1;
-        else if (this.CDtimer === 0) {
+        if (--this.CDtimer <= 0) {
             let target = this.target();
             if (target)
                 this.fire(target);

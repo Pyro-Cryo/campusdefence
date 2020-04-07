@@ -38,7 +38,6 @@
         this.map = new TDMap(map_img, path, this.gameArea);
         this.registerObject(this.map, true);
 
-        this.isPaused = true;
         this.levelNumber = 0;
         this.levelIterator = null;
         this.levelCleared = false;
@@ -55,7 +54,6 @@
                 cost: 200,
                 name: "Helmer",
                 description: "Ett väldigt grundläggande torn som skjuter ett skott mot fiender det ser. Det åstadkommer kanske inte så mycket, men i slutändan måste man inte alltid göra det för att vara lycklig här i livet. Det är ändå vännerna man vinner på vägen som räknas.",
-                img: "img/helmer1.png",
                 button: null
             },
             {
@@ -63,7 +61,6 @@
                 cost: 600,
                 name: "Omni-Helmer",
                 description: "Ett torn med enorm potential. Genom att göra skotten mer kompakta kan det träffa flera fiender samtidigt. Det tycker väldigt mycket om den här typen av skott och använder därför hellre för många än för få.",
-                img: "img/helmer2.png",
                 button: null
             },
             {
@@ -71,7 +68,13 @@
                 cost: 500,
                 name: "Keytar-Helmer",
                 description: "Det här tornet förklarar sig självt.",
-                img: "img/helmer3.png",
+                button: null
+            },
+            {
+                type: GKJonas,
+                cost: 300,
+                name: "GK-Jonas",
+                description: "Vad det här tornet gör är ganska uppenbart. Ingen vill kännas vid dess uråldriga kraft.",
                 button: null
             }
         ];
@@ -93,9 +96,26 @@
                 if (this.levelCleared)
                     this.endLevel();
             }
+
+            // Hantera hälsa
             document.getElementById("healthcounter").innerHTML= this.hp.toString();
+            if(this.hp <= 0){
+                this.endLevel();
+                console.log("Game over. You reached level " + this.levelNumber.toString());
+            }
         }
+
+        //Hantera pengar
         document.getElementById("moneycounter").innerHTML= this.money.toString();
+        for (var i = 0; i < this.towerSpecs.length; i++) {
+            // om pengar minskar kan köp-knappen disablas medan du köper tornet, men det verkar osannolikt?
+            if(this.towerSpecs[i].cost > this.money){
+                this.towerSpecs[i].button.disabled = "disabled";
+            }
+            else if (this.towerSpecs[i].button.hasAttribute("disabled")){
+                this.towerSpecs[i].button.removeAttribute("disabled");
+            }
+        }
     }
 
     startLevel() {
@@ -113,6 +133,10 @@
         this.levelIterator = null;
         this.levelCleared = false;
         console.log("Cleared level " + this.levelNumber);
+        this.map.clear();
+    }
+    playPause(){
+        this.isPaused = !this.isPaused;
     }
 
     setupTowerTable() {
@@ -121,13 +145,13 @@
             let spec = this.towerSpecs[i];
 
             let template = document.getElementById("towerTemplate").cloneNode(true);
-            template.querySelector("img[name='image']").src = spec.img;
+            template.querySelector("img[name='image']").src = spec.type.image.src;
             template.querySelector("strong[name='title']").innerText = spec.name;
             template.querySelector("span[name='desc']").innerText = spec.description;
             template.querySelector("span[name='cost']").innerText = spec.cost;
             let btn = template.querySelector("button[name='buybtn']");
             btn.onclick = function(){
-                controller.buyTower(spec.type, spec.cost, btn)
+                controller.buyTower(spec.type, spec.cost, btn);
             }.bind(spec);
 
             template.classList.remove("template");

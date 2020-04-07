@@ -148,4 +148,5 @@ class PathTile {
     arbitraryCreep() {
         return this.hasCreep() ? this.data.values().next().value : null;
     }
+    
 }

@@ -87,8 +87,8 @@ class Shoreline extends BaseEffect {
 }
 
 class Keytar extends SplashProjectile {
-    constructor(map, source, target) {
-        super(map, keytar, splash, source.x, source.y, target.x, target.y, 0.1, 1, 1 / controller.updateInterval, 0);
+    constructor(source, target) {
+        super(controller.map, keytar, splash, source.x, source.y, target.x, target.y, 0.1, 1, 1 / controller.updateInterval, 0);
         this.range = 4;
     }
     hitCreep(creep) {
@@ -104,6 +104,58 @@ class KeytarHelmer extends TargetingTower {
     static get scale() { return 0.04; }
 
     projectile(target) {
-        return new Keytar(this.map, this, target);
+        return new Keytar(this, target);
     }
+}
+
+let jonasimg3 = new Image();
+jonasimg3.src = "img/gk.png";
+let tb = new Image();
+tb.src = "img/tb.png";
+
+
+class Runaway extends BaseEffect {
+    constructor(object) {
+        super(5000 / controller.updateInterval);
+        if(object.speed > 0)
+            object.speed = -object.speed;
+    }
+    apply(object) {
+        object.speed = Math.abs(object.speed);
+        this.remove(object);
+    }
+}
+
+class ToiletBrush extends SeekingProjectile {
+    constructor(source, target){
+        super(tb, 0.05, source, target, 3 / controller.updateInterval);
+        console.log(target);
+    }
+    hitCreep(creep) {
+        let e = new Runaway(creep);
+        creep.addEffect(e);
+    }
+}
+
+class GKJonas extends TargetingTower {
+    static get range() { return 5; }
+    static get CDtime() { return 500; }
+    static get image() { return jonasimg3; }
+    static get scale() { return 0.08; }
+
+    // update(gameArea){
+    //     super.update(gameArea);
+    // }
+
+    target(){
+        let pt = super.target();
+        if(pt)
+            return pt.arbitraryCreep();
+        return null;
+    }
+
+    projectile(target){
+        return new ToiletBrush(this, target);
+    }
+
 }
