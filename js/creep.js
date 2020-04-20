@@ -71,7 +71,7 @@ class BaseCreep extends GameObject {
 		else {
 			// Else add ourselves to pathtile for hit detection
 			if (controller.map.validPosition(this.x, this.y)) {
-				let pt = controller.map.getGridAt(Math.floor(this.x), Math.floor(this.y));
+				let pt = controller.map.getGridAt(Math.round(this.x), Math.round(this.y));
 
 				if (pt !== this.pathtile) {
 					this.pathtile.remove(this);
@@ -82,7 +82,7 @@ class BaseCreep extends GameObject {
 		}
 
 		// Draw ourselves at new position.
-		super.update(gameArea);
+        super.update(gameArea);
 	}
 }
 

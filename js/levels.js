@@ -1,22 +1,22 @@
 function getLevel(number, updateInterval) {
-    let sToTicks = 1000 / updateInterval;
+    let s = 1000 / updateInterval;
     switch (number) {
         case 1:
             return (new CreepSequence()
                 .send(1, Jonas).immediately()
-                .wait(1 * sToTicks)
-                .send(10, Jonas).spaced(1 * sToTicks)
-                .wait(1 * sToTicks)
-                .send(10, Jonas).over(4 * sToTicks)
+                .wait(1 * s)
+                .send(10, Jonas).spaced(1 * s)
+                .wait(1 * s)
+                .send(10, Jonas).over(4 * s)
                 .do(() => console.log("All creeps sent")));
         case 2:
             return (new CreepSequence()
-                .send(20, Jonas).spaced(1 * sToTicks)
-                .interleave(new CreepSequence().wait(7.5 * sToTicks).send(20, Jonas).over(5 * sToTicks))
+                .send(20, Jonas).spaced(1 * s)
+                .interleave(new CreepSequence().wait(7.5 * s).send(20, Jonas).over(5 * s))
                 .do(() => console.log("All creeps sent")));
 
         default:
-            return new CreepSequence().send(number * 20, Jonas).over(Math.max(1, 15 - number) * sToTicks).do(() => console.log("All creeps sent"));
+            return new CreepSequence().send(number * 20, Jonas).over(Math.max(1, 15 - number) * s).do(() => console.log("All creeps sent"));
     }
 }
 
