@@ -103,4 +103,17 @@ class GameArea {
         this.context.fillRect(x, y, this.unitWidth, this.unitHeight);
         this.context.fillStyle = fillStyle;
     }
+    bar(_x, _y, offset, length, width, ratio, fgColor, bgColor) {
+        let pos = this.gridToCanvas(_x, _y);
+        let x = pos[0];
+        let y = pos[1];
+        offset *= this.unitHeight;
+        length *= this.unitWidth;
+        let fillStyle = this.context.fillStyle;
+        this.context.fillStyle = bgColor || "#FF0000";
+        this.context.fillRect(x - length / 2, y + offset, length, width);
+        this.context.fillStyle = fgColor || "#00FF00";
+        this.context.fillRect(x - length / 2, y + offset, length * ratio, width);
+        this.context.fillStyle = fillStyle;
+    }
 }

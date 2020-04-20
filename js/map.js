@@ -6,7 +6,7 @@ class TDMap {
         this.canvasHeight = gameArea.height;
 
         let setScale = (() => {
-            this.scale = 1 / Math.min(img.width / gameArea.width, img.height / gameArea.height);;
+            this.scale = 1 / Math.min(img.width / gameArea.width, img.height / gameArea.height);
         }).bind(this);
         if (img.complete)
             setScale();

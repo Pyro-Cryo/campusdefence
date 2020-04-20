@@ -1,22 +1,54 @@
 let jonasimg = new Image();
 jonasimg.src = "img/jonas.png";
 
-
 // Sorry för formuleringen men "creep" är tydligen termen som används
 class Jonas extends BaseCreep {
-    constructor() {
-        super(jonasimg, 0.05, controller.map, 0.03);
-    }
+    static get speed() { return 0.6; }
+    static get image() { return jonasimg; }
+    static get scale() { return 0.05; }
+
     onGoal() {
         console.log("Jonas got you!");
         super.onGoal();
-
     }
     update(gameArea) {
-        if (!(this.x === this.lastx && this.y === this.lasty))
-            this.angle = Math.PI / 2 + Math.atan2(this.y - this.lasty, this.x - this.lastx);
+        this.rotateMe();
         super.update(gameArea);
     }
+}
+
+let fohsimg = new Image();
+fohsimg.src = "img/fohs.png";
+
+class Ninja extends MatryoshkaCreep {
+    static get speed() { return 0.5; }
+    static get image() { return fohsimg; }
+    static get scale() { return 1; }
+    static get innerCreep() { return Jonas; }
+}
+
+let gabbeimg = new Image();
+gabbeimg.src = "img/gab.png";
+
+class Gabbe extends MatryoshkaCreep {
+    static get speed() { return 0.2; }
+    static get image() { return gabbeimg; }
+    static get scale() { return 0.1; }
+    static get innerCreep() { return Ninja; }
+    static get innerCreepCount() { return 2; }
+    static get health() { return 20; }
+    static get drawHealthBar() { return true; }
+    static get value() { return 50; }
+}
+
+let fohsimg2 = new Image();
+fohsimg2.src = "img/bluefohs.png";
+
+class FastNinja extends MatryoshkaCreep {
+    static get speed() { return 1; }
+    static get image() { return fohsimg2; }
+    static get scale() { return 1; }
+    static get innerCreep() { return Gabbe; }
 }
 
 let jonasimg2 = new Image();

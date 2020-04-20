@@ -1,23 +1,43 @@
 class BaseCreep extends GameObject {
-	constructor(image, scale, map, speed) {
-		let pos = map.getPosition(0);
-		super(image, pos[0], pos[1], 0, scale);
+    // Speed in grid units per second
+    static get speed() {
+        throw new Error("Abstract property speed must be overridden by subclass");
+    }
+    // The creep's sprite
+    static get image() {
+        throw new Error("Abstract property image must be overridden by subclass");
+    }
+    // The creep's sprite's scale
+    static get scale() {
+        throw new Error("Abstract property scale must be overridden by subclass");
+    }
+    // The creep's base hit points
+    static get health() { return 1; }
+    // The amount of money the player gets when the creep is killed
+    static get value() { return 1; }
+    // Damage done to player HP when the creep reaches the end of the path
+    static get damage() { return 1; }
+    // Should the creep draw a health bar?
+    static get drawHealthBar() { return false; }
 
-		// Speed of this creep
-		this.speed = speed;
-		// Health of this creep 
-		this.health = 1;
-		// Value gained when killed
-		this.value = 1;
+	constructor(distance) {
+		let pos = controller.map.getPosition(distance || 0);
+        super(undefined, pos[0], pos[1], 0, undefined);
+        this.image = this.constructor.image;
+        this.scale = this.constructor.scale;
+        this.speed = this.constructor.speed;
+        this.health = this.constructor.health;
+        this.value = this.constructor.value;
+        this.drawHealthBar = this.constructor.drawHealthBar;
 
-		this.pathlength = map.path.length - 1;
+		this.pathlength = controller.map.path.length - 1;
 		// Distance traveled along the path for this creep
-		this.distance = 0;
+		this.distance = distance || 0;
 		this.lastx = this.x;
 		this.lasty = this.y;
 
 		//Pathtile this creep is currently at. For collisiondetection purposes
-		this.pathtile = map.path[0];
+		this.pathtile = controller.map.path[0];
 		this.pathtile.add(this);
 		// Status effect currently affecting this creep
         this.effects = new Set();
@@ -43,9 +63,14 @@ class BaseCreep extends GameObject {
 	onGoal() {
 		this.id = null;
 		this.pathtile.remove(this);
-		this.pathtile = null;
-		controller.hp--;
-	}
+        this.pathtile = null;
+        controller.hp -= this.constructor.damage;
+    }
+    //Call this on update if you want the creep to rotate its sprite according to the path
+    rotateMe(offset) {
+        if (!(this.x === this.lastx && this.y === this.lasty))
+            this.angle = (offset || 0) + Math.PI / 2 + Math.atan2(this.y - this.lasty, this.x - this.lastx);
+    }
 	update(gameArea) {
 		if (this.id === null)
 			return;
@@ -59,7 +84,7 @@ class BaseCreep extends GameObject {
 		this.lastx = this.x;
 		this.lasty = this.y;
 
-		this.distance = Math.max(0, Math.min(this.pathlength, this.distance + this.speed));
+        this.distance = Math.max(0, Math.min(this.pathlength, this.distance + this.speed / controller.updateInterval));
 		let pos = controller.map.getPosition(this.distance);
 		this.x = pos[0];
 		this.y = pos[1];
@@ -83,7 +108,31 @@ class BaseCreep extends GameObject {
 
 		// Draw ourselves at new position.
         super.update(gameArea);
+        if (this.drawHealthBar)
+            gameArea.bar(this.x, this.y, 0.5, 0.8, 3, this.health / this.constructor.health);
 	}
+}
+
+class MatryoshkaCreep extends BaseCreep {
+    // The creep that spawns when this one is killed
+    static get innerCreep() {
+        throw new Error("Abstract property innerCreep must be overridden by subclass");
+    }
+    // Number of inner creeps that spawn
+    static get innerCreepCount() { return 1; }
+    // Overrides BaseCreep.damage
+    static get damage() { return 1 + this.innerCreep.damage * this.innerCreepCount; }
+
+    onDeath() {
+        // TODO: kanske borde göra så att om man dör av en projektil
+        // som gör 5 skada och denna creep har 2 hp så tar inre creepsen
+        // resterande 3 damage var? Iofs gör alla projektiler 1 damage i nuläget
+        for (let i = 0; i < this.constructor.innerCreepCount; i++)
+            new this.constructor.innerCreep(
+                this.distance + this.speed * (0.5 + i - this.constructor.innerCreepCount / 2)
+            );
+        super.onDeath();
+    }
 }
 
 class BaseEffect {

@@ -11,7 +11,7 @@ class BaseTower extends GameObject {
     static get image() {
         throw new Error("Abstract property image must be overridden by subclass");
     }
-    // The tower's sprite
+    // The tower's sprite's scale
     static get scale() {
         throw new Error("Abstract property scale must be overridden by subclass");
     }

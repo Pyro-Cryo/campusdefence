@@ -15,6 +15,14 @@ function getLevel(number, updateInterval) {
                 .interleave(new CreepSequence().wait(7.5 * s).send(20, Jonas).over(5 * s))
                 .do(() => console.log("All creeps sent")));
 
+        case 3:
+            return (new CreepSequence()
+                .send(10, Ninja).over(3 * s));
+
+        case 4:
+            return (new CreepSequence()
+                .send(2, FastNinja).over(5 * s));
+
         default:
             return new CreepSequence().send(number * 20, Jonas).over(Math.max(1, 15 - number) * s).do(() => console.log("All creeps sent"));
     }
