@@ -1,20 +1,20 @@
 # Campus defence
 ## Hur man spelar
-Öppna index.html och titta på när saker skjuter saker på andra saker.
+Ã–ppna index.html, placera ut torn, och titta pÃ¥ nÃ¤r saker skjuter saker pÃ¥ andra saker.
 
 ## Lore primer & beskrivning
-Funderat lite och tror att detta är typ det enda sättet det går att göra loren på om man vill ha det i mottagningstema som inte blir psykopatiskt eller inte funkar med befintlig lore.
+Funderat lite och tror att detta Ã¤r typ det enda sÃ¤ttet det gÃ¥r att gÃ¶ra loren pÃ¥ om man vill ha det i mottagningstema som inte blir psykopatiskt eller inte funkar med befintlig lore.
 
-nØllan sitter glatt på Kemigården och äter pastasallad/schlemar sig/vad de nu gör. (De kommer vara 01or, herregud vad gamla vi är.) Men allt är inte frid och fröjd, för plöstligt börjar marken skävla. Långt bort i fjärran syns Föhseriet nalka sig med tunga, bestämda steg. Med sig har de en miljard ninjor för att det här ska gå ihop rent gameplaymässigt.
+nÃ˜llan sitter glatt pÃ¥ KemigÃ¥rden och Ã¤ter pastasallad/schlemar sig/vad de nu gÃ¶r. (De kommer vara 01or, herregud vad gamla vi Ã¤r.) Men allt Ã¤r inte frid och frÃ¶jd, fÃ¶r plÃ¶stligt bÃ¶rjar marken skÃ¤vla. LÃ¥ngt bort i fjÃ¤rran syns FÃ¶hseriet nalka sig med tunga, bestÃ¤mda steg. Med sig har de en miljard ninjor fÃ¶r att det hÃ¤r ska gÃ¥ ihop rent gameplaymÃ¤ssigt.
 
-Dessa ninjor börjar springa (på led, som artiga ninjor gör) längs Borggården. Nu är det upp till faddrarna och framförallt Fadderiet att stoppa dem innan de når nØllan!
+Dessa ninjor bÃ¶rjar springa (pÃ¥ led, som artiga ninjor gÃ¶r) lÃ¤ngs BorggÃ¥rden. Nu Ã¤r det upp till faddrarna och framfÃ¶rallt Fadderiet att stoppa dem innan de nÃ¥r nÃ˜llan!
 
-Spelaren har X hp, där X är hur många nØllan som börjar. Spelarens mål är att så länge som möjligt stoppa ninjornas (och ibland Föhsarnas) framfart. Om en ninja når fram avschlemas en nØllan och man förlorar ett hp. Når en Föhsare fram är det game over direkt. Ikonen för hp kan antingen vara en Ø eller en stiliserad kåsa.
+Spelaren har X hp, dÃ¤r X Ã¤r hur mÃ¥nga nÃ˜llan som bÃ¶rjar. Spelarens mÃ¥l Ã¤r att sÃ¥ lÃ¤nge som mÃ¶jligt stoppa ninjornas (och ibland FÃ¶hsarnas) framfart. Om en ninja nÃ¥r fram avschlemas en nÃ˜llan och man fÃ¶rlorar ett hp. NÃ¥r en FÃ¶hsare fram Ã¤r det game over direkt. Ikonen fÃ¶r hp kan antingen vara en Ã˜ eller en stiliserad kÃ¥sa.
 
-Spelaren har en viss budget, valutan är [något roligt som faddrarna/fadderiet gillar, typ pastasallad eller kramar eller nåt]. För att köpa torn (=faddrar) spenderas denna, och varje nivå/dödad ninja ger mer. Tornen skjuter kärlek/kramar/gemenskap på Föhsarna/ninjorna, vilket är deras enda svaghet. Faddertorn kanske kan uppgraderas till förfaddertorn?
+Spelaren har en viss budget, valutan Ã¤r [nÃ¥got roligt som faddrarna/fadderiet gillar, typ pastasallad eller kramar eller nÃ¥t]. FÃ¶r att kÃ¶pa torn (=faddrar) spenderas denna, och varje nivÃ¥/dÃ¶dad ninja ger mer. Tornen skjuter kÃ¤rlek/kramar/gemenskap pÃ¥ FÃ¶hsarna/ninjorna, vilket Ã¤r deras enda svaghet. Faddertorn kanske kan uppgraderas till fÃ¶rfaddertorn?
 
-Förutom det grundläggande faddertornet kan fem specialtorn kan konstrueras med olika typer av attacker. Dessa är Nicole, Axel, Frida, Rebecca och maskoten. Maskoten är ju den mest f\*\*\*\*ande av de allihopa och såklart den kraftigaste. (Note: de har haft plojnamn på Slack som man kanske kan basera attackerna på: Fina Nicole, Fackliga Boij, Fuskande Frida och Flamberande Rebecca.)
+FÃ¶rutom det grundlÃ¤ggande faddertornet kan fem specialtorn kan konstrueras med olika typer av attacker. Dessa Ã¤r Nicole, Axel, Frida, Rebecca och maskoten. Maskoten Ã¤r ju den mest f\*\*\*\*ande av de allihopa och sÃ¥klart den kraftigaste. (Note: de har haft plojnamn pÃ¥ Slack som man kanske kan basera attackerna pÃ¥: Fina Nicole, Fackliga Boij, Fuskande Frida och Flamberande Rebecca.)
 
-Nivåerna blir svårare och svårare som alla såna här spel, ibland dyker det upp bossar i form av Föhsare. Först kanske bara en enda eller en småföhs, typ operaföhs, sen fler och sista nivån är hela föhseriet + butler. Butlern kan såklart stunna maskottornet vilket kommer irritera jättemånga som bara har köpt massa av det för att det är bäst.
+NivÃ¥erna blir svÃ¥rare och svÃ¥rare som alla sÃ¥na hÃ¤r spel, ibland dyker det upp bossar i form av FÃ¶hsare. FÃ¶rst kanske bara en enda eller en smÃ¥fÃ¶hs, typ operafÃ¶hs, sen fler och sista nivÃ¥n Ã¤r hela fÃ¶hseriet + butler. Butlern kan sÃ¥klart stunna maskottornet vilket kommer irritera jÃ¤ttemÃ¥nga som bara har kÃ¶pt massa av det fÃ¶r att det Ã¤r bÃ¤st.
 
-Det vore ju väldigt coolt om vi kunde ha en highscorelista på servern där man också sparar den vinnande konfigurationen, och flippa det till att man styr creepsen istället efter stuggasquen. Det är nog en himla massa mer jobb dock.
+Det vore ju vÃ¤ldigt coolt om vi kunde ha en highscorelista pÃ¥ servern dÃ¤r man ocksÃ¥ sparar den vinnande konfigurationen, och flippa det till att man styr creepsen istÃ¤llet efter stuggasquen. Det Ã¤r nog en himla massa mer jobb dock.
