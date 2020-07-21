@@ -38,6 +38,9 @@
         this.map = new TDMap(map_img, path, this.gameArea);
         this.registerObject(this.map, true);
 
+        this.selectedTower = null;
+        this.gameArea.canvas.addEventListener('click', this.onClickBoard.bind(this));
+
         this.levelNumber = 0;
         this.levelIterator = null;
         this.levelCleared = false;
@@ -47,6 +50,7 @@
         // HP borde ju rimligtvis vara 7.5
         this.hp = 139;
         this.money = 500;
+        this.sellPriceMultiplier = 0.8;
 
         this.towerSpecs = [
             {
@@ -54,7 +58,29 @@
                 cost: 200,
                 name: "Helmer",
                 description: "Ett väldigt grundläggande torn som skjuter ett skott mot fiender det ser. Det åstadkommer kanske inte så mycket, men i slutändan måste man inte alltid göra det för att vara lycklig här i livet. Det är ändå vännerna man vinner på vägen som räknas.",
-                button: null
+                button: null,
+                upgrades: [
+                    {
+                        type: KeytarHelmer,
+                        cost: 300,
+                        name: "Keytar-Helmer",
+                        description: "Det här tornet förklarar sig självt.",
+                        upgrades: [
+                            {
+                                type: OmniHelmer,
+                                cost: 100,
+                                name: "Omni-Helmer",
+                                description: "Ett torn med enorm potential. Genom att göra skotten mer kompakta kan det träffa flera fiender samtidigt. Det tycker väldigt mycket om den här typen av skott och använder därför hellre för många än för få."
+                            }
+                        ]
+                    },
+                    {
+                        type: OmniHelmer,
+                        cost: 400,
+                        name: "Omni-Helmer",
+                        description: "Ett torn med enorm potential. Genom att göra skotten mer kompakta kan det träffa flera fiender samtidigt. Det tycker väldigt mycket om den här typen av skott och använder därför hellre för många än för få."
+                    }
+                ]
             },
             {
                 type: OmniHelmer,
@@ -68,7 +94,15 @@
                 cost: 500,
                 name: "Keytar-Helmer",
                 description: "Det här tornet förklarar sig självt.",
-                button: null
+                button: null,
+                upgrades: [
+                    {
+                        type: OmniHelmer,
+                        cost: 100,
+                        name: "Omni-Helmer",
+                        description: "Ett torn med enorm potential. Genom att göra skotten mer kompakta kan det träffa flera fiender samtidigt. Det tycker väldigt mycket om den här typen av skott och använder därför hellre för många än för få."
+                    }
+                ]
             },
             {
                 type: GKJonas,
@@ -137,6 +171,110 @@
     }
     playPause(){
         this.isPaused = !this.isPaused;
+    }
+
+    onClickBoard(event) {
+        if (this.buyingTower !== null)
+            return;
+
+        if (this.selectedTower !== null) {
+            this.selectedTower = null;
+            this.destroyContextMenu();
+        }
+
+        let rect = controller.gameArea.canvas.getBoundingClientRect();
+        let pos = controller.gameArea.canvasToGrid(event.clientX - rect.left, event.clientY - rect.top);
+        this.x = Math.round(pos[0]);
+        this.y = Math.round(pos[1]);
+        if (!controller.map.validPosition(this.x, this.y))
+            return;
+        let tower = controller.map.getGridAt(this.x, this.y);
+        if (tower === null || !(tower instanceof BaseTower))
+            return;
+        
+        //Tower clicked
+        this.selectedTower = tower;
+        this.setupContextMenu();
+    }
+
+    setupContextMenu() {
+        document.querySelector(".towerMarket").classList.add("hideme");
+        document.querySelector(".contextMenu").classList.remove("hideme");
+
+        const scrollAmount = 4; //Valt genom empirisk testning. Mindre än så så cancelleras inte scrollningen.
+        if (window.scrollY < scrollAmount) {
+            window.scrollBy(0, scrollAmount);
+            window.scrollBy(0, -scrollAmount);
+        } else {
+            window.scrollBy(0, -scrollAmount);
+            window.scrollBy(0, scrollAmount);
+        }
+
+        let dollares = document.getElementById("moneycounter").parentElement.innerText.replace(/[\d ]+/, "");
+
+        function contextOption(name, description, buttonLabel, buttonAction) {
+            let option = document.getElementById("optionTemplate").cloneNode(true);
+            option.querySelector("strong[name='title']").innerText = name;
+            option.querySelector("span[name='desc']").innerText = description;
+            let btn = option.querySelector("button[name='actionbtn']");
+            btn.innerText = buttonLabel || name;
+            btn.onclick = buttonAction;
+
+            option.classList.remove("template");
+            option.removeAttribute("id");
+            document.getElementById("optionTemplate").parentElement.appendChild(option);
+        }
+
+        let spec = this.towerSpecs.find(spec => this.selectedTower instanceof spec.type);
+        if (!spec)
+            contextOption(
+                "Skicka hem",
+                "Skicka hem faddern. Du får inte tillbaka några " + dollares + ", men platsen blir ledig för att placera ut en ny.",
+                null, () => {
+                    this.selectedTower.destroy();
+                    this.selectedTower = null;
+                    this.destroyContextMenu();
+                }
+            );
+        else {
+            contextOption(
+                "Sälj",
+                "Skicka faddern att hjälpa en annan sektion. Du får tillbaka " + (this.sellPriceMultiplier * spec.cost) + " " + dollares + ".",
+                null, () => {
+                    this.selectedTower.destroy();
+                    this.selectedTower = null;
+                    this.destroyContextMenu();
+                    this.money += this.sellPriceMultiplier * spec.cost;
+                }
+            );
+            if (spec.upgrades)
+                spec.upgrades.forEach(upgrade => {
+                    contextOption(
+                        "Uppgradera till " + upgrade.name,
+                        "Betala " + upgrade.cost + " " + dollares + " för att uppgradera till " + upgrade.name + ". " + upgrade.description,
+                        "Uppgradera",
+                        () => {
+                            // Gör detta elegantare med knappar som är disabled och enablas när man faktiskt har råd
+                            if (this.money < upgrade.cost)
+                                alert("Du har inte råd med det.");
+                            else {
+                                let x = this.selectedTower.x;
+                                let y = this.selectedTower.y;
+                                this.money -= upgrade.cost;
+                                this.selectedTower.destroy();
+                                this.destroyContextMenu();
+                                this.selectedTower = new upgrade.type(x, y);
+                                this.setupContextMenu();
+                            }
+                        }
+                    );
+                });
+        }
+    }
+    destroyContextMenu() {
+        document.querySelector(".towerMarket").classList.remove("hideme");
+        document.querySelector(".contextMenu").classList.add("hideme");
+        document.querySelectorAll(".contextOption:not(.template)").forEach(option => option.remove())
     }
 
     setupTowerTable() {
@@ -213,8 +351,6 @@
             originatingButton.innerText = "Avbryt";
             originatingButton.title = "Avbryt det pågående köpet";
         }
-
-        console.log("Money:", this.money);
     }
 }
 

@@ -69,3 +69,28 @@ span.counter{
     min-width: 3ex;
     display: inline-block;
 }
+.hideme {
+    display: none;
+}
+
+.contextMenu .contextOption {
+    /*Jag blir typ illamående av alla hårdkodade pixelavstånd här*/
+    position: relative;
+    width: 588px;
+    height: 40px;
+    padding: 5px;
+    border: 1px solid #000;
+    margin-bottom: 10px;
+}
+
+.contextMenu .contextOption.template{
+    display: none;
+}
+
+.contextMenu .contextOption button{
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    margin-top: 10px;
+    width: 80px;
+}

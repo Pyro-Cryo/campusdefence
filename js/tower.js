@@ -1,3 +1,4 @@
+// TODO: Vill man ha att tornen håller koll på hur många kills de fått? Ha det som ett krav för att uppgradera??
 class BaseTower extends GameObject {
     // Range in grid units
     static get range() {
@@ -53,13 +54,19 @@ class BaseTower extends GameObject {
     }
 
     update(gameArea) {
-        if (--this.CDtimer <= 0) {
+        if (this.CDtimer <= 0) {
             let target = this.target();
             if (target)
                 this.fire(target);
-        }
+        } else
+            this.CDtimer--;
 
         super.update(gameArea);
+    }
+
+    destroy() {
+        this.map.removeTower(this);
+        controller.unregisterObject(this);
     }
 }
 
