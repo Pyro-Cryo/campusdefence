@@ -116,7 +116,7 @@
         this.buyingTower = null;
     }
 
-    update(gameArea) {
+    update() {
         super.update();
 
         if (!this.isPaused) {
@@ -150,6 +150,10 @@
                 this.towerSpecs[i].button.removeAttribute("disabled");
             }
         }
+
+        // Highlighta valt torn
+        if (this.selectedTower !== null)
+            this.gameArea.disc(this.selectedTower.x, this.selectedTower.y, 0.5, "rgba(0, 212, 0, 0.4)");
     }
 
     startLevel() {

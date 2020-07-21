@@ -77,7 +77,7 @@ span.counter{
     /*Jag blir typ illamående av alla hårdkodade pixelavstånd här*/
     position: relative;
     width: 588px;
-    height: 40px;
+    min-height: 40px;
     padding: 5px;
     border: 1px solid #000;
     margin-bottom: 10px;
