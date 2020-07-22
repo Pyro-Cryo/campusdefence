@@ -26,6 +26,7 @@ class BaseTower extends GameObject {
         this.range = this.constructor.range;
         this.CDtime = this.constructor.CDtime / controller.updateInterval;
         this.CDtimer = 0;
+        this.hits = 0;
 
         this.inrange = this.pathInRange();
         this.map.addTower(this);
@@ -44,7 +45,9 @@ class BaseTower extends GameObject {
 
     // Vet inte om man borde decoupla det här lite mer så att de skjuter mot godtyckligt (x, y) snarare än en pathtile
     fire(target) {
-        controller.registerObject(this.projectile(target));
+        let proj = this.projectile(target);
+        controller.registerObject(proj);
+        proj.onHitCreep = () => this.hits++;
         this.CDtimer = this.CDtime;
     }
 

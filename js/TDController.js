@@ -62,23 +62,17 @@
                 upgrades: [
                     {
                         type: KeytarHelmer,
-                        cost: 300,
+                        cost: 280,
                         name: "Keytar-Helmer",
                         description: "Det här tornet förklarar sig självt.",
-                        upgrades: [
-                            {
-                                type: OmniHelmer,
-                                cost: 100,
-                                name: "Omni-Helmer",
-                                description: "Ett torn med enorm potential. Genom att göra skotten mer kompakta kan det träffa flera fiender samtidigt. Det tycker väldigt mycket om den här typen av skott och använder därför hellre för många än för få."
-                            }
-                        ]
+                        requiredHits: 20
                     },
                     {
                         type: OmniHelmer,
-                        cost: 400,
+                        cost: 325,
                         name: "Omni-Helmer",
-                        description: "Ett torn med enorm potential. Genom att göra skotten mer kompakta kan det träffa flera fiender samtidigt. Det tycker väldigt mycket om den här typen av skott och använder därför hellre för många än för få."
+                        description: "Ett torn med enorm potential. Genom att göra skotten mer kompakta kan det träffa flera fiender samtidigt. Det tycker väldigt mycket om den här typen av skott och använder därför hellre för många än för få.",
+                        requiredHits: 50
                     }
                 ]
             },
@@ -87,7 +81,8 @@
                 cost: 600,
                 name: "Omni-Helmer",
                 description: "Ett torn med enorm potential. Genom att göra skotten mer kompakta kan det träffa flera fiender samtidigt. Det tycker väldigt mycket om den här typen av skott och använder därför hellre för många än för få.",
-                button: null
+                button: null,
+                cannotPurchaseDirectly: true
             },
             {
                 type: KeytarHelmer,
@@ -98,9 +93,10 @@
                 upgrades: [
                     {
                         type: OmniHelmer,
-                        cost: 100,
+                        cost: 25,
                         name: "Omni-Helmer",
-                        description: "Ett torn med enorm potential. Genom att göra skotten mer kompakta kan det träffa flera fiender samtidigt. Det tycker väldigt mycket om den här typen av skott och använder därför hellre för många än för få."
+                        description: "Ett torn med enorm potential. Genom att göra skotten mer kompakta kan det träffa flera fiender samtidigt. Det tycker väldigt mycket om den här typen av skott och använder därför hellre för många än för få.",
+                        requiredHits: 50
                     }
                 ]
             },
@@ -227,6 +223,7 @@
             option.classList.remove("template");
             option.removeAttribute("id");
             document.getElementById("optionTemplate").parentElement.appendChild(option);
+            return option;
         }
 
         let spec = this.towerSpecs.find(spec => this.selectedTower instanceof spec.type);
@@ -241,6 +238,8 @@
                 }
             );
         else {
+            contextOption(spec.name, "Träffar: " + this.selectedTower.hits)
+                .querySelector("button[name='actionbtn']").classList.add("hideme");
             contextOption(
                 "Sälj",
                 "Skicka faddern att hjälpa en annan sektion. Du får tillbaka " + (this.sellPriceMultiplier * spec.cost) + " " + dollares + ".",
@@ -255,19 +254,26 @@
                 spec.upgrades.forEach(upgrade => {
                     contextOption(
                         "Uppgradera till " + upgrade.name,
-                        "Betala " + upgrade.cost + " " + dollares + " för att uppgradera till " + upgrade.name + ". " + upgrade.description,
+                        "Betala " + upgrade.cost + " " + dollares + " för att uppgradera till " + upgrade.name + ". " +
+                        (upgrade.requiredHits && this.selectedTower.hits < upgrade.requiredHits ? "Kräver " + upgrade.requiredHits + " träffar. " : "") +
+                        upgrade.description,
                         "Uppgradera",
                         () => {
                             // Gör detta elegantare med knappar som är disabled och enablas när man faktiskt har råd
+                            let hitdiff = upgrade.requiredHits - this.selectedTower.hits;
                             if (this.money < upgrade.cost)
                                 alert("Du har inte råd med det.");
+                            else if (hitdiff > 0)
+                                alert("Faddern måste träna mer - den behöver ytterligare " + hitdiff + " träff" + (hitdiff === 1 ? "" : "ar") + ".");
                             else {
                                 let x = this.selectedTower.x;
                                 let y = this.selectedTower.y;
+                                let hits = this.selectedTower.hits;
                                 this.money -= upgrade.cost;
                                 this.selectedTower.destroy();
                                 this.destroyContextMenu();
                                 this.selectedTower = new upgrade.type(x, y);
+                                this.selectedTower.hits = hits;
                                 this.setupContextMenu();
                             }
                         }
@@ -300,6 +306,9 @@
             template.removeAttribute("id");
             document.getElementById("towerTemplate").parentElement.appendChild(template);
             spec.button = btn;
+
+            if (spec.cannotPurchaseDirectly)
+                template.classList.add("hideme");
         }
         
 

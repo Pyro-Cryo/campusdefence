@@ -1,6 +1,6 @@
 class Projectile extends GameObject {
 	// Speed in grid units per tick
-	constructor(map, image, x, y, target_x, target_y, scale, speed) {
+	constructor(map, image, x, y, target_x, target_y, scale, speed, onHitCreep) {
 		super(image, x, y, Math.atan2(target_y - y, target_x - x), scale);
 		this.map = map;
 		let xdist = target_x - x;
@@ -13,6 +13,7 @@ class Projectile extends GameObject {
 		this.range = 3;
 
 		this.flying = true;
+		this.onHitCreep = onHitCreep || null;
 	}
 
 	hit(pathTile) {
@@ -21,6 +22,8 @@ class Projectile extends GameObject {
 
 	hitCreep(creep) {
 		creep.onHit(this);
+		if (this.onHitCreep !== null)
+			this.onHitCreep();
 	}
 
 	update(gameArea) {
@@ -33,7 +36,7 @@ class Projectile extends GameObject {
 			try {
 				pt = this.map.getGridAt(Math.round(this.x), Math.round(this.y));
 			} catch (e) {
-				//Utanför grid
+				//Utanfï¿½r grid
 				this.id = null;
 				return;
 			}
@@ -51,7 +54,8 @@ class Projectile extends GameObject {
 class BasicProjectile extends Projectile {
 	hit(pathTile) {
 		let creep = pathTile.arbitraryCreep();
-		this.hitCreep(creep);
+		if (creep !== null)
+			this.hitCreep(creep);
 
 		super.hit(pathTile);
 	}
@@ -75,9 +79,9 @@ class SplashProjectile extends Projectile {
 	}
 
 	hit(pathTile) {
-		// Är det OP att splash träffar alla creeps inom en radie? 
+		// ï¿½r det OP att splash trï¿½ffar alla creeps inom en radie? 
 		// Ska det bara vara ett visst antal inom en radie?
-		// Jag tycker det är fine, creeps kan ju ha flera hp eller nåt också /Helmer
+		// Jag tycker det ï¿½r fine, creeps kan ju ha flera hp eller nï¿½t ocksï¿½ /Helmer
 		let x = Math.round(this.x);
 		let y = Math.round(this.y);
 		for (var dx = -this.splash_range; dx <= this.splash_range; dx++) {
@@ -117,17 +121,17 @@ class SeekingProjectile extends Projectile{
 		this.source = source;
 		this.range = 10;
 
-		// Hur skarpt vi kan svänga som mest, andel per tick
+		// Hur skarpt vi kan svï¿½nga som mest, andel per tick
 		this.radius = 1/10;
 	}
 
 	update(gameArea){
 		if(this.target == null || this.target.id == null){
-			// Målet har despawnat, be om ett nytt
+			// Mï¿½let har despawnat, be om ett nytt
 			this.target = this.source.target();
 		}
 		else{
-			// Räkna ut ny riktning mot målet
+			// Rï¿½kna ut ny riktning mot mï¿½let
 			let xdist = this.target.x - this.x;
 			let ydist = this.target.y - this.y;
 			let dist = Math.sqrt(xdist * xdist + ydist * ydist);
