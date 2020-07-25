@@ -13,7 +13,13 @@ Spelaren har X hp, där X är hur många nØllan som börjar. Spelarens mål är
 
 Spelaren har en viss budget, valutan är [något roligt som faddrarna/fadderiet gillar, typ pastasallad eller kramar eller nåt]. För att köpa torn (=faddrar) spenderas denna, och varje nivå/dödad ninja ger mer. Tornen skjuter kärlek/kramar/gemenskap på Föhsarna/ninjorna, vilket är deras enda svaghet. Faddertorn kanske kan uppgraderas till förfaddertorn?
 
-Förutom det grundläggande faddertornet kan fem specialtorn kan konstrueras med olika typer av attacker. Dessa är Nicole, Axel, Frida, Rebecca och maskoten. Maskoten är ju den mest f\*\*\*\*ande av de allihopa och såklart den kraftigaste. (Note: de har haft plojnamn på Slack som man kanske kan basera attackerna på: Fina Nicole, Fackliga Boij, Fuskande Frida och Flamberande Rebecca.)
+Förutom det grundläggande faddertornet kan fem specialtorn kan konstrueras med olika typer av attacker. Dessa är Nicole, Axel, Frida, Rebecca och maskoten. Maskoten är ju den mest fjädrande av de allihopa och såklart den kraftigaste. (Note: de har haft plojnamn på Slack som man kanske kan basera attackerna på: Fina Nicole, Fackliga Boij, Fuskande Frida och Flamberande Rebecca.)
+
+* Nicole: skjuter hjärtan som gör att de vänder a là toaborsten
+* Boij: skjuter molotovcocktails (facklor, get it? skitkul ju) som skadar allt i en AOE
+* Frida: skjuter något som orsakar slowdown-grejen från keytaren
+* Becca: eldkastare som skjuter jättemånga partiklar som har en viss chans att missa
+* Lillie: skjuter kanske skott som studsar på fienderna utan att förstöras? Så kommer de tillbaka och har ihjäl fler liksom
 
 Nivåerna blir svårare och svårare som alla såna här spel, ibland dyker det upp bossar i form av Föhsare. Först kanske bara en enda eller en småföhs, typ operaföhs, sen fler och sista nivån är hela föhseriet + butler. Butlern kan såklart stunna maskottornet vilket kommer irritera jättemånga som bara har köpt massa av det för att det är bäst.
 

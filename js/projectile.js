@@ -147,6 +147,10 @@ class SeekingProjectile extends Projectile{
 		// 
 		if(pathTile.data.has(this.target)){
 			this.hitCreep(this.target);
+		} else {
+			let creep = pathTile.arbitraryCreep();
+			if (creep !== null)
+				this.hitCreep(creep);
 		}
 		super.hit(pathTile);
 	}

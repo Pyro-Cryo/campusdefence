@@ -28,6 +28,21 @@ function getLevel(number, updateInterval) {
     }
 }
 
+// Här kan man koda in specialhändelser efter vissa nivåer också (typ att man får ett gratis maskottorn efter lvl 10 eller nåt)
+function levelClearReward(number) {
+    let cash = 0;
+    switch (number) {
+        case 1:
+            cash = 100;
+            break;
+
+        default:
+            cash = number * 50;
+            break;
+    }
+    controller.money += cash;
+}
+
 class CreepSequence {
     constructor() {
         this.iterating = false;

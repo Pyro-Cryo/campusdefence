@@ -36,6 +36,16 @@ div.towerInfo{
 div.towerInfo.template{
     display: none;
 }
+div.towerInfo.locked {
+    color: #444;
+    background-color: #ddd;
+}
+div.towerInfo .unlockInfo {
+    color: red;
+}
+div.towerInfo:not(.locked) .unlockInfo {
+    display: none;
+}
 div.towerInfo p{
     width: 400px;
     float:left;

@@ -1,7 +1,9 @@
+/* ---------- Creeps ---------- */
+
 let jonasimg = new Image();
 jonasimg.src = "img/jonas.png";
 
-// Sorry för formuleringen men "creep" är tydligen termen som används
+// Sorry fï¿½r formuleringen men "creep" ï¿½r tydligen termen som anvï¿½nds
 class Jonas extends BaseCreep {
     static get speed() { return 0.6; }
     static get image() { return jonasimg; }
@@ -51,63 +53,82 @@ class FastNinja extends MatryoshkaCreep {
     static get innerCreep() { return Gabbe; }
 }
 
-let jonasimg2 = new Image();
-jonasimg2.src = "img/jonas3.png";
+/* ---------- Towers and Projectiles ---------- */
+//TODO: MÃ¥nga bilder behÃ¶ver bytas och/eller fixas
 
-class SuperSonicJonas extends BasicProjectile {
-    constructor(map, source, target) {
-        super(map, jonasimg2, source.x, source.y, target.x, target.y, 0.03, 1 / controller.updateInterval);
+class Converted extends BaseEffect {
+    constructor(object) {
+        super(5000 / controller.updateInterval);
+        if (object.speed > 0)
+            object.speed = -object.speed;
+    }
+    apply(object) {
+        object.speed = Math.abs(object.speed);
+        this.remove(object);
     }
 }
 
+let flowerimg = new Image();
+flowerimg.src = "img/flower.png";
 
-let helmerimg = new Image();
-helmerimg.src = "img/helmer1.png";
+class Flower extends SeekingProjectile {
+    constructor(source, target){
+        super(flowerimg, 0.05, source, target, 3 / controller.updateInterval);
+    }
+    hitCreep(creep) {
+        let e = new Converted(creep);
+        creep.addEffect(e);
+    }
+}
 
-class Helmer extends TargetingTower {
-    static get range() { return 2.5; }
-    static get CDtime() { return 800; }
-    static get image() { return helmerimg; }
+let nicoleimg = new Image();
+nicoleimg.src = "img/opaque/nicole.jpg";
+
+class Nicole extends TargetingTower {
+    static get range() { return 3; }
+    static get CDtime() { return 1000; }
+    static get image() { return nicoleimg; }
     static get scale() { return 0.03; }
 
+    target() {
+        let pt = super.target();
+        if (pt)
+            return pt.arbitraryCreep();
+        return null;
+    }
+
     projectile(target) {
-        return new SuperSonicJonas(this.map, this, target);
+        return new Flower(this, target);
     }
 }
 
-let omnihelmer = new Image();
-omnihelmer.src = "img/helmer2.png";
+let explosionimg = new Image();
+explosionimg.src = "img/boom.png";
+let molotovimg = new Image();
+molotovimg.src = "img/tb.png"; //TODO: hitta en bild
 
-let oneliner = new Image();
-oneliner.src = "img/oneliner.png";
-let splash = new Image();
-splash.src = "img/boom.png";
-
-class OneLiner extends SplashProjectile {
+class Molotov extends SplashProjectile {
     constructor(map, source, target) {
-        super(map, oneliner, splash, source.x, source.y, target.x, target.y, 0.1, 1, 2 / controller.updateInterval, 0);
+        super(map, molotovimg, explosionimg, source.x, source.y, target.x, target.y, 0.1, 1, 2 / controller.updateInterval, 0);
         this.range = 2.5;
     }
 }
 
-class OmniHelmer extends OmniTower {
+let axelimg = new Image();
+axelimg.src = "img/opaque/axel.jpg";
+
+class Axel extends OmniTower {
     static get range() { return 2.5; }
     static get CDtime() { return 2500; }
-    static get image() { return omnihelmer; }
-    static get scale() { return 0.04; }
+    static get image() { return axelimg; }
+    static get scale() { return 0.03; }
 
     projectile(target) {
-        return new OneLiner(this.map, this, target);
+        return new Molotov(this.map, this, target);
     }
 }
 
-let helmer3 = new Image();
-helmer3.src = "img/helmer3.png";
-let keytar = new Image();
-keytar.src = "img/keytar.png";
-
-
-class Shoreline extends BaseEffect {
+class Distracted extends BaseEffect {
     constructor(object) {
         super(5000 / controller.updateInterval);
         object.speed /= 2;
@@ -118,71 +139,119 @@ class Shoreline extends BaseEffect {
     }
 }
 
-class Keytar extends SplashProjectile {
+let wolframimg = new Image();
+wolframimg.src = "img/integral.png";
+let splashimg = new Image();
+splashimg.src = "img/boom.png";
+
+class Wolfram extends SplashProjectile {
     constructor(source, target) {
-        super(controller.map, keytar, splash, source.x, source.y, target.x, target.y, 0.1, 1, 1 / controller.updateInterval, 0);
+        super(controller.map, wolframimg, splashimg, source.x, source.y, target.x, target.y, 0.1, 1, 1 / controller.updateInterval, 0);
         this.range = 4;
     }
     hitCreep(creep) {
-        let e = new Shoreline(creep);
+        let e = new Distracted(creep);
         creep.addEffect(e);
     }
 }
 
-class KeytarHelmer extends TargetingTower {
-    static get range() { return 2; }
+let fridaimg = new Image();
+fridaimg.src = "img/original/frida.jpg";
+
+class Frida extends TargetingTower {
+    static get range() { return 2.5; }
     static get CDtime() { return 1500; }
-    static get image() { return helmer3; }
+    static get image() { return fridaimg; }
+    static get scale() { return 0.01; }
+
+    projectile(target) {
+        return new Wolfram(this, target);
+    }
+}
+
+let fireimg = new Image();
+fireimg.src = "img/fire.png";
+
+class Fire extends BasicProjectile {
+    constructor(map, source, target) {
+        super(map, fireimg, source.x, source.y, target.x + Math.random() - 0.5, target.y + Math.random() - 0.5, 1, 1 / controller.updateInterval);
+        this.ignoreTile = null;
+        this.lastTile = null;
+        this.range = 2;
+    }
+
+    hit(pathTile) {
+        if (pathTile !== this.lastTile)
+            this.ignoreTile = Math.random() < 0.3;
+        this.lastTile = pathTile;
+        if (!this.ignoreTile)
+            super.hit(pathTile);
+    }
+}
+
+let beccaimg = new Image();
+beccaimg.src = "img/original/becca.jpg";
+
+class Becca extends TargetingTower {
+    static get range() { return 2; }
+    static get CDtime() { return 250; }
+    static get image() { return beccaimg; }
+    static get scale() { return 0.01; }
+
+    projectile(target) {
+        return new Fire(this.map, this, target);
+    }
+}
+
+let hugimg = new Image();
+hugimg.src = "img/kram.png";
+
+class Hug extends BasicProjectile {
+    constructor(map, source, target) {
+        super(map, hugimg, source.x, source.y, target.x, target.y, 0.1, 1 / controller.updateInterval);
+    }
+}
+
+let fadderimg = new Image();
+fadderimg.src = "img/gab.png";
+
+class Fadder extends TargetingTower {
+    static get range() { return 2.5; }
+    static get CDtime() { return 800; }
+    static get image() { return fadderimg; }
+    static get scale() { return 0.03; }
+
+    projectile(target) {
+        return new Hug(this.map, this, target);
+    }
+}
+
+let forfadder1img = new Image();
+forfadder1img.src = "img/jonas3.png";
+
+let forfadder2img = new Image();
+forfadder2img.src = "img/helmer3.png";
+
+class Forfadder1 extends TargetingTower {
+    static get range() { return 2.5; }
+    static get CDtime() { return 400; }
+    static get image() { return forfadder1img; }
     static get scale() { return 0.04; }
 
     projectile(target) {
-        return new Keytar(this, target);
+        return new Hug(this.map, this, target);
     }
 }
 
-let jonasimg3 = new Image();
-jonasimg3.src = "img/gk.png";
-let tb = new Image();
-tb.src = "img/tb.png";
+class Forfadder2 extends TargetingTower {
+    static get range() { return 4; }
+    static get CDtime() { return 800; }
+    static get image() { return forfadder2img; }
+    static get scale() { return 0.03; }
 
-
-class Runaway extends BaseEffect {
-    constructor(object) {
-        super(5000 / controller.updateInterval);
-        if(object.speed > 0)
-            object.speed = -object.speed;
+    projectile(target) {
+        let hug = new Hug(this.map, this, target);
+        hug.range = this.range;
+        return hug;
     }
-    apply(object) {
-        object.speed = Math.abs(object.speed);
-        this.remove(object);
-    }
-}
-
-class ToiletBrush extends SeekingProjectile {
-    constructor(source, target){
-        super(tb, 0.05, source, target, 3 / controller.updateInterval);
-    }
-    hitCreep(creep) {
-        let e = new Runaway(creep);
-        creep.addEffect(e);
-    }
-}
-
-class GKJonas extends TargetingTower {
-    static get range() { return 5; }
-    static get CDtime() { return 500; }
-    static get image() { return jonasimg3; }
-    static get scale() { return 0.08; }
-
-    target(){
-        let pt = super.target();
-        if(pt)
-            return pt.arbitraryCreep();
-        return null;
-    }
-
-    projectile(target){
-        return new ToiletBrush(this, target);
-    }
-
 }

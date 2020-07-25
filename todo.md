@@ -1,0 +1,17 @@
+- Splash screen med Föhsarna vid gameover ![gameover.jpg](img/gameover.jpg)
+    - Lås spelet också så man inte kan köpa nytt / starta nästa nivå. Kanske kul att låta creepsen gå i mål dock.
+- Nåt sätt att vinna? Vad händer i så fall? Eller ska föhseriet alltid vinna? Jag tycker nästan mer om den idén
+- Fixa bilder
+    - Croppa ut folks ansikten
+    - Fixa bilder på faktiska faddrar / förfaddrar?
+    - Fixa bild på butlern?
+    - Bilden på borggården är ganska lågupplöst (vilket iofs är bra för renderingen eftersom den ritas varje gång, men ändå). Vill man kanske dessutom byta denna till campus och så försöker de ta sig till Kons? Det blir väl ingen kemigårdslunch i år liksom. 
+- Lite optimering. Just nu helikoptrar min laptop även mellan nivåerna vilket känns onödigt
+    - Många bilder är väldigt högupplösta just nu, kan downsamplas en del (särskilt de små)
+- Verkar diffa lite grann mellan rangen som visas när man köper / öppnar ett torn och vad den faktiskt skjuter på. Se särskilt Förfadder (lång).
+- Gör ordentliga levels
+- Gör fler fiender (och kanske typer av fiender?). Ex. huvor i olika färger
+- Fler torn? Hur variera dessa, vilka andra roller i mottagningssammanhang kan man ha? Sektionsordförande / klubbis? Suslil?
+    - Nån motsvarighet till road spikes i bloons som kan ta några ninjor man missat?
+- Balansera, just nu är Axel 3000 ggr starkare än någon annan
+- Nåt bra sätt att presentera lore

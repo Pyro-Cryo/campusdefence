@@ -41,7 +41,7 @@
         this.selectedTower = null;
         this.gameArea.canvas.addEventListener('click', this.onClickBoard.bind(this));
 
-        this.levelNumber = 0;
+        this.levelNumber = 1;
         this.levelIterator = null;
         this.levelCleared = false;
 
@@ -51,61 +51,110 @@
         this.hp = 139;
         this.money = 500;
         this.sellPriceMultiplier = 0.8;
+        this.healthcounter = document.getElementById("healthcounter");
+        this.moneycounter = document.getElementById("moneycounter");
 
         this.towerSpecs = [
             {
-                type: Helmer,
+                type: Fadder,
                 cost: 200,
-                name: "Helmer",
-                description: "Ett väldigt grundläggande torn som skjuter ett skott mot fiender det ser. Det åstadkommer kanske inte så mycket, men i slutändan måste man inte alltid göra det för att vara lycklig här i livet. Det är ändå vännerna man vinner på vägen som räknas.",
+                name: "Fadder",
+                description: "En vanlig fadder som kramar ninjor den ser. Faddern åstadkommer kanske inte så mycket, men i slutändan måste man inte alltid göra det för att vara lycklig här i livet. Det är ändå vännerna man vinner på vägen som räknas.",
                 button: null,
                 upgrades: [
                     {
-                        type: KeytarHelmer,
-                        cost: 280,
-                        name: "Keytar-Helmer",
-                        description: "Det här tornet förklarar sig självt.",
+                        type: Forfadder1,
+                        cost: 150,
+                        name: "Förfadder (snabb)",
+                        description: "Den här förfaddern kramar dubbelt så snabbt som en vanlig fadder.",
                         requiredHits: 20
                     },
                     {
-                        type: OmniHelmer,
-                        cost: 325,
-                        name: "Omni-Helmer",
-                        description: "Ett torn med enorm potential. Genom att göra skotten mer kompakta kan det träffa flera fiender samtidigt. Det tycker väldigt mycket om den här typen av skott och använder därför hellre för många än för få.",
-                        requiredHits: 50
+                        type: Forfadder2,
+                        cost: 150,
+                        name: "Förfadder (lång)",
+                        description: "Den här förfaddern når mycket längre än en vanlig fadder.",
+                        requiredHits: 20
                     }
                 ]
             },
             {
-                type: OmniHelmer,
-                cost: 600,
-                name: "Omni-Helmer",
-                description: "Ett torn med enorm potential. Genom att göra skotten mer kompakta kan det träffa flera fiender samtidigt. Det tycker väldigt mycket om den här typen av skott och använder därför hellre för många än för få.",
-                button: null,
-                cannotPurchaseDirectly: true
-            },
-            {
-                type: KeytarHelmer,
-                cost: 500,
-                name: "Keytar-Helmer",
-                description: "Det här tornet förklarar sig självt.",
-                button: null,
+                type: Forfadder1,
+                cost: 350,
+                name: "Förfadder (snabb)",
+                description: "Den här förfaddern kramar dubbelt så snabbt som en vanlig fadder.",
+                cannotPurchaseDirectly: true,
                 upgrades: [
                     {
-                        type: OmniHelmer,
-                        cost: 25,
-                        name: "Omni-Helmer",
-                        description: "Ett torn med enorm potential. Genom att göra skotten mer kompakta kan det träffa flera fiender samtidigt. Det tycker väldigt mycket om den här typen av skott och använder därför hellre för många än för få.",
+                        type: Becca,
+                        cost: 0,
+                        name: "Fjädrande Becca",
+                        description: "Flamberande Becca har en eldkastare.",
+                        requiredHits: 50
+                    },
+                    {
+                        type: Axel,
+                        cost: 200,
+                        name: "Fjädrande Axel",
+                        description: "Fackliga Axel älskar två saker: facklor och att festa. Han bjuder gärna alla omkring sig på Molotovcocktails, och när dessa exploderar träffar de alla ninjor inom ett visst område.",
                         requiredHits: 50
                     }
                 ]
             },
             {
-                type: GKJonas,
-                cost: 300,
-                name: "GK-Jonas",
-                description: "Vad det här tornet gör är ganska uppenbart. Ingen vill kännas vid dess uråldriga kraft.",
-                button: null
+                type: Forfadder2,
+                cost: 350,
+                name: "Förfadder (lång)",
+                description: "Den här förfaddern når mycket längre än en vanlig fadder.",
+                cannotPurchaseDirectly: true,
+                upgrades: [
+                    {
+                        type: Frida,
+                        cost: 0,
+                        name: "Fjädrande Frida",
+                        description: "Fuskande Frida lägger inte ifrån sig sin avstängda mobil på anvisad plats. När hon skickar lösningarna till lämnisarna till en grupp ninjor försöker de läsa och gå samtidigt, men simultanförmåga är en bristvara hos ninjor.",
+                        requiredHits: 50
+                    },
+                    {
+                        type: Nicole,
+                        cost: 100,
+                        name: "Fjädrande Nicole",
+                        description: "Fina Nicole älskar blommor. När en ninja blir träffad av en blomma inser den hur fel den haft, och ger sig av hemåt igen. Insikten varar tyvärr dock bara några sekunder varpå ninjan fortsätter framåt.",
+                        requiredHits: 50
+                    }
+                ]
+            },
+            {
+                type: Frida,
+                cost: 400,
+                name: "Fjädrande Frida",
+                description: "Fuskande Frida lägger inte ifrån sig sin avstängda mobil på anvisad plats. När hon skickar lösningarna till lämnisarna till en grupp ninjor försöker de läsa och gå samtidigt, men simultanförmåga är en bristvara hos ninjor.",
+                button: null,
+                unlockLevel: 3
+            },
+            {
+                type: Nicole,
+                cost: 500,
+                name: "Fjädrande Nicole",
+                description: "Fina Nicole älskar blommor. När en ninja blir träffad av en blomma inser den hur fel den haft, och ger sig av hemåt igen. Insikten varar tyvärr dock bara några sekunder varpå ninjan fortsätter framåt.",
+                button: null,
+                unlockLevel: 4
+            },
+            {
+                type: Becca,
+                cost: 400,
+                name: "Fjädrande Becca",
+                description: "Flamberande Becca har en eldkastare.",
+                button: null,
+                unlockLevel: 5
+            },
+            {
+                type: Axel,
+                cost: 600,
+                name: "Fjädrande Axel",
+                description: "Fackliga Axel älskar två saker: facklor och att festa. Han bjuder gärna alla omkring sig på Molotovcocktails, och när dessa exploderar träffar de alla ninjor inom ett visst område.",
+                button: null,
+                unlockLevel: 6
             }
         ];
         
@@ -128,7 +177,7 @@
             }
 
             // Hantera hälsa
-            document.getElementById("healthcounter").innerHTML= this.hp.toString();
+            this.healthcounter.innerText = this.hp.toString();
             if(this.hp <= 0){
                 this.endLevel();
                 console.log("Game over. You reached level " + this.levelNumber.toString());
@@ -136,10 +185,10 @@
         }
 
         //Hantera pengar
-        document.getElementById("moneycounter").innerHTML= this.money.toString();
+        this.moneycounter.innerText = this.money.toString();
         for (var i = 0; i < this.towerSpecs.length; i++) {
             // om pengar minskar kan köp-knappen disablas medan du köper tornet, men det verkar osannolikt?
-            if(this.towerSpecs[i].cost > this.money){
+            if (this.towerSpecs[i].cost > this.money || (this.towerSpecs[i].unlockLevel && this.levelNumber < this.towerSpecs[i].unlockLevel)) {
                 this.towerSpecs[i].button.disabled = "disabled";
             }
             else if (this.towerSpecs[i].button.hasAttribute("disabled")){
@@ -149,12 +198,11 @@
 
         // Highlighta valt torn
         if (this.selectedTower !== null)
-            this.gameArea.disc(this.selectedTower.x, this.selectedTower.y, 0.5, "rgba(0, 212, 0, 0.4)");
+            this.gameArea.disc(this.selectedTower.x, this.selectedTower.y, this.selectedTower.range, "rgba(212, 212, 212, 0.4)");
     }
 
     startLevel() {
         this.isPaused = false;
-        this.levelNumber++;
         console.log("Starting level " + this.levelNumber);
         this.levelIterator = getLevel(this.levelNumber, this.updateInterval);
         this.levelCleared = false;
@@ -168,6 +216,16 @@
         this.levelCleared = false;
         console.log("Cleared level " + this.levelNumber);
         this.map.clear();
+
+        levelClearReward(this.levelNumber);
+        document.querySelectorAll(".towerInfo:not(.template)").forEach((ti, i) => {
+            if (this.towerSpecs[i].unlockLevel && this.levelNumber + 1 >= this.towerSpecs[i].unlockLevel)
+            {
+                ti.querySelector("span[class='unlockInfo']").classList.remove("hideme");
+                ti.classList.remove("locked");
+            }
+        });
+        this.levelNumber++;
     }
     playPause(){
         this.isPaused = !this.isPaused;
@@ -297,6 +355,14 @@
             template.querySelector("strong[name='title']").innerText = spec.name;
             template.querySelector("span[name='desc']").innerText = spec.description;
             template.querySelector("span[name='cost']").innerText = spec.cost;
+            if (spec.unlockLevel && spec.unlockLevel > 1)
+            {
+                template.querySelector("span[class='unlockInfo']").innerText = "Låses upp vid nivå " + spec.unlockLevel;
+                template.classList.add("locked");
+            }
+            else
+                template.querySelector("span[class='unlockInfo']").classList.add("hideme");
+
             let btn = template.querySelector("button[name='buybtn']");
             btn.onclick = function(){
                 controller.buyTower(spec.type, spec.cost, btn);

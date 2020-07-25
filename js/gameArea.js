@@ -71,6 +71,7 @@ class GameArea {
             this.context.translate(-x, -y);
         }
     }
+    // TODO: Kan optimeras om man kör x och y för sig och inte packar in i arrays (tar en del tid enl profiler)
     gridToCanvas(x,y) {
         return [
             (x + 0.5) * this.width / this.gridWidth,
