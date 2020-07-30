@@ -45,10 +45,7 @@
         this.levelIterator = null;
         this.levelCleared = false;
 
-        //console.log("https://statistik.uhr.se/rest/stats/tableData?request=%7B%22tillfalle%22%3A%22Urval2%22%2C%22vy%22%3A%22Total%22%2C%22antagningsomgang%22%3A%22HT2019%22%2C%22larosateId%22%3A%22KTH%22%2C%22utbildningstyp%22%3A%22p%22%2C%22fritextFilter%22%3A%22Teknisk%22%2C%22urvalsGrupp%22%3A%22%22%2C%22firstResult%22%3A0%2C%22maxResults%22%3A25%2C%22sorteringsKolumn%22%3A1%2C%22sorteringsOrdningDesc%22%3Afalse%2C%22requestNumber%22%3A1%2C%22paginate%22%3Atrue%7D");
-        //TODO: gör nåt av detta
-        // HP borde ju rimligtvis vara 7.5
-        this.hp = 139;
+        this.hp = 140+51;
         this.money = 500;
         this.sellPriceMultiplier = 0.8;
         this.healthcounter = document.getElementById("healthcounter");
