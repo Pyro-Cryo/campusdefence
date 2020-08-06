@@ -82,7 +82,7 @@ class Flower extends SeekingProjectile {
 }
 
 let nicoleimg = new Image();
-nicoleimg.src = "img/opaque/nicole.jpg";
+nicoleimg.src = "img/transparent/nicole.png";
 
 class Nicole extends TargetingTower {
     static get range() { return 3; }
@@ -115,13 +115,13 @@ class Molotov extends SplashProjectile {
 }
 
 let axelimg = new Image();
-axelimg.src = "img/opaque/axel.jpg";
+axelimg.src = "img/transparent/axel.png";
 
 class Axel extends OmniTower {
     static get range() { return 2.5; }
     static get CDtime() { return 2500; }
     static get image() { return axelimg; }
-    static get scale() { return 0.03; }
+    static get scale() { return 0.2; }
 
     projectile(target) {
         return new Molotov(this.map, this, target);
@@ -156,13 +156,13 @@ class Wolfram extends SplashProjectile {
 }
 
 let fridaimg = new Image();
-fridaimg.src = "img/original/frida.jpg";
+fridaimg.src = "img/transparent/frida.png";
 
 class Frida extends TargetingTower {
     static get range() { return 2.5; }
     static get CDtime() { return 1500; }
     static get image() { return fridaimg; }
-    static get scale() { return 0.01; }
+    static get scale() { return 0.2; }
 
     projectile(target) {
         return new Wolfram(this, target);
@@ -190,13 +190,13 @@ class Fire extends BasicProjectile {
 }
 
 let beccaimg = new Image();
-beccaimg.src = "img/original/becca.jpg";
+beccaimg.src = "img/transparent/becca.png";
 
 class Becca extends TargetingTower {
     static get range() { return 2; }
     static get CDtime() { return 250; }
     static get image() { return beccaimg; }
-    static get scale() { return 0.01; }
+    static get scale() { return 0.2; }
 
     projectile(target) {
         return new Fire(this.map, this, target);
