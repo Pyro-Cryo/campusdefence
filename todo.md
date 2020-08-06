@@ -1,5 +1,3 @@
-- Splash screen med Föhsarna vid gameover ![gameover.jpg](img/gameover.jpg)
-    - Lås spelet också så man inte kan köpa nytt / starta nästa nivå. Kanske kul att låta creepsen gå i mål dock.
 - Nåt sätt att vinna? Vad händer i så fall? Eller ska föhseriet alltid vinna? Jag tycker nästan mer om den idén
 - Fixa bilder
     - Croppa ut folks ansikten
@@ -14,4 +12,6 @@
 - Fler torn? Hur variera dessa, vilka andra roller i mottagningssammanhang kan man ha? Sektionsordförande / klubbis? Suslil?
     - Nån motsvarighet till road spikes i bloons som kan ta några ninjor man missat?
 - Balansera, just nu är Axel 3000 ggr starkare än någon annan
+    - Nåt sätt att lösa att inte runaway-effekten gör att nivåerna aldrig tar slut
+    - Runaway-effekten borde stacka tiden eller nåt, känns rätt buggigt som det är nu
 - Nåt bra sätt att presentera lore

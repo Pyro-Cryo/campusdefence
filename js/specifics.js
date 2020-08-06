@@ -255,3 +255,12 @@ class Forfadder2 extends TargetingTower {
         return hug;
     }
 }
+
+let gameoverimg = new Image();
+gameoverimg.src = "img/gameover.jpg";
+
+class SplashScreen extends GameObject {
+    constructor() {
+        super(gameoverimg, (controller.map.gridInnerWidth - 1) / 2, (controller.map.gridInnerHeight - 1) / 2, 0, 0.35);
+    }
+}
