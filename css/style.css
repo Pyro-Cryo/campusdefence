@@ -75,6 +75,11 @@ div.towerInfo button{
     margin-top: 10px;
     width: 80px;
 }
+
+button.controllerButton{
+    width: 8ex;
+    height: 2em;
+}
 span.counter{
     min-width: 3ex;
     display: inline-block;

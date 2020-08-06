@@ -43,7 +43,7 @@
 
         this.levelNumber = 1;
         this.levelIterator = null;
-        this.levelCleared = false;
+        this.levelCleared = true;
 
         this.hp = 140+51;
         this.money = 500;
@@ -207,13 +207,23 @@
             }
         }
 
+   }
+
+    draw() {
+        super.draw();
         // Highlighta valt torn
         if (this.selectedTower !== null)
             this.gameArea.disc(this.selectedTower.x, this.selectedTower.y, this.selectedTower.range, "rgba(212, 212, 212, 0.4)");
+
+    }
+
+    onPlay() {
+        if(this.levelCleared)
+            this.startLevel();
+        super.onPlay();
     }
 
     startLevel() {
-        this.isPaused = false;
         console.log("Starting level " + this.levelNumber);
         this.levelIterator = getLevel(this.levelNumber, this.updateInterval);
         this.levelCleared = false;
@@ -222,9 +232,9 @@
         console.log("Creep summary: ", this.levelIterator.creepSummary());
     }
     endLevel() {
-        this.isPaused = true;
+        this.onPause();
         this.levelIterator = null;
-        this.levelCleared = false;
+        this.levelCleared = true;
         console.log("Cleared level " + this.levelNumber);
         this.map.clear();
 
@@ -451,9 +461,13 @@ class PseudoTower extends GameObject {
         }
     }
 
-    update(gameArea) {
+    update() {
+        super.update();
+    }
+
+    draw(gameArea) {
         gameArea.disc(this.x, this.y, this.type.range, this.posOK ? "rgba(0, 212, 0, 0.5)" : "rgba(212, 0, 0, 0.5)");
-        super.update(gameArea);
+        super.draw(gameArea);
     }
 }
 

@@ -3,18 +3,76 @@ class Controller {
         // Store the game area, which can be drawn to
         this.gameArea = new GameArea(document.getElementsByTagName("canvas")[0], gridWidth, gridHeight);
         this.isPaused = true;
+        this.isFF = false;
         // Essentially the frame rate inverse
         this.updateInterval = 20; //milliseconds
+        // Framerate for real
+        this.drawInterval = 20;
         // Store the inteval object so that we can abort the main loop
-        this.mainInterval = setInterval(() => this.update(), this.updateInterval);
+        this.mainInterval = null;
+
+        this.drawInterval = setInterval(() => this.draw(), this.drawInterval);
         // All objects which receive update calls
         this.objects = new LinkedList();
         // The id of the next registered object
         this.idCounter = 0;
+
+        // Buttons
+        this.playbutton = document.querySelector("button.controllerButton#playButton");
+        this.ffbutton = document.querySelector("button.controllerButton#fastForwardButton");
+
+        this.playbutton.onclick = this.playpause.bind(this)
+        this.ffbutton.onclick = this.fastforward.bind(this);
     }
+
+    playpause(){
+        if(this.isPaused)
+            this.onPlay();
+        else
+            this.onPause();
+    }
+
+    fastforward(){
+        if(this.isFF){
+            clearInterval(this.mainInterval);
+            this.mainInterval = setInterval(() => this.update(), this.updateInterval);
+            this.onFF();
+            this.isFF = false;
+        }
+        else{
+            clearInterval(this.mainInterval);
+            this.mainInterval = setInterval(() => this.update(), this.updateInterval/3);
+            this.isFF = true;
+        }
+    }
+
+
+    onPlay(){
+
+        this.isPaused = false;
+        this.mainInterval = setInterval(() => this.update(), this.updateInterval);
+
+        this.playbutton.innerHTML = "⏸";
+        this.ffbutton.disabled = false;
+
+    }
+
+    onPause(){
+
+        this.isPaused = true;
+        clearInterval(this.mainInterval);
+        this.playbutton.innerHTML = "▶";
+        this.ffbutton.disabled = true;
+
+    }
+
+    onFF(){
+        
+    }
+
     // Clear the canvas and let all objects redraw themselves
     update() {
-        this.gameArea.clear();
+        
         for (let current = this.objects.first; current !== null; current = current.next) {
             if (current.obj.id === null) {
                 let c = current.prev;
@@ -26,7 +84,21 @@ class Controller {
                     continue;
             }
             if (current.obj.update !== undefined)
-                current.obj.update(this.gameArea);
+                current.obj.update();
+        }
+    }
+    draw() {
+
+        this.gameArea.clear();
+        for (let current = this.objects.first; current !== null; current = current.next) {
+            if (current.obj.id === null){
+                if(current === null)
+                    break;
+                else
+                    continue;
+            }
+            if (current.obj.draw !== undefined)
+                current.obj.draw(this.gameArea);
         }
     }
     // Register an object to receive update calls.
