@@ -8,10 +8,8 @@ class GameArea {
         this.gridWidth = gridWidth;
         this.gridHeight = gridHeight;
 
-        let a = this.gridToCanvas(0, 0);
-        let b = this.gridToCanvas(1, 1);
-        this.unitWidth = b[0] - a[0];
-        this.unitHeight = b[1] - a[1];
+        this.unitWidth = this.gridToCanvasX(1) - this.gridToCanvasX(0);
+        this.unitHeight = this.gridToCanvasY(1) - this.gridToCanvasY(0);
         this._scaleFactor = Math.sqrt((Math.pow(this.unitWidth, 2) + Math.pow(this.unitHeight, 2)) / 2);
     }
     clear() {
@@ -19,9 +17,8 @@ class GameArea {
     }
     //Draws an image centered around (x, y) with the specified angle (in radians) and scale
     draw(image, _x, _y, angle, scale) {
-        let pos = this.gridToCanvas(_x,_y);
-        let x = pos[0];
-        let y = pos[1];
+        let x = this.gridToCanvasX(_x);
+        let y = this.gridToCanvasY(_y);
         if (!angle)
             this.context.drawImage(
                 image,
@@ -46,9 +43,8 @@ class GameArea {
     }
     //Draws a subimage from an image, centered around (x, y) with the specified angle (in radians) and scale
     drawSubimage(image, subimageIndex, subimageWidth, _x, _y, angle, scale) {
-        let pos = this.gridToCanvas(_x,_y);
-        let x = pos[0];
-        let y = pos[1];
+        let x = this.gridToCanvasX(_x);
+        let y = this.gridToCanvasY(_y);
         if (!angle) {
             this.context.drawImage(
                 image,
@@ -71,23 +67,21 @@ class GameArea {
             this.context.translate(-x, -y);
         }
     }
-    // TODO: Kan optimeras om man kör x och y för sig och inte packar in i arrays (tar en del tid enl profiler)
-    gridToCanvas(x,y) {
-        return [
-            (x + 0.5) * this.width / this.gridWidth,
-            (y + 0.5) * this.height / this.gridHeight
-        ];
+    gridToCanvasX(x) {
+        return (x + 0.5) * this.width / this.gridWidth;
     }
-    canvasToGrid(x,y){
-        return [
-            (x * this.gridWidth / this.width) - 0.5,
-            (y * this.gridHeight / this.height) - 0.5
-        ];
+    gridToCanvasY(y) {
+        return (y + 0.5) * this.height / this.gridHeight;
+    }
+    canvasToGridX(x) {
+        return (x * this.gridWidth / this.width) - 0.5;
+    }
+    canvasToGridY(y) {
+        return (y * this.gridHeight / this.height) - 0.5;
     }
     disc(_x, _y, radius, color) {
-        let pos = this.gridToCanvas(_x, _y);
-        let x = pos[0];
-        let y = pos[1];
+        let x = this.gridToCanvasX(_x);
+        let y = this.gridToCanvasY(_y);
         let fillStyle = this.context.fillStyle;
         this.context.fillStyle = color || "#000000";
         this.context.beginPath();
@@ -96,18 +90,16 @@ class GameArea {
         this.context.fillStyle = fillStyle;
     }
     square(_x, _y, color) {
-        let pos = this.gridToCanvas(_x - 0.5, _y - 0.5);
-        let x = pos[0];
-        let y = pos[1];
+        let x = this.gridToCanvasX(_x - 0.5);
+        let y = this.gridToCanvasY(_y - 0.5);
         let fillStyle = this.context.fillStyle;
         this.context.fillStyle = color || "#000000";
         this.context.fillRect(x, y, this.unitWidth, this.unitHeight);
         this.context.fillStyle = fillStyle;
     }
     bar(_x, _y, offset, length, width, ratio, fgColor, bgColor) {
-        let pos = this.gridToCanvas(_x, _y);
-        let x = pos[0];
-        let y = pos[1];
+        let x = this.gridToCanvasX(_x);
+        let y = this.gridToCanvasY(_y);
         offset *= this.unitHeight;
         length *= this.unitWidth;
         let fillStyle = this.context.fillStyle;

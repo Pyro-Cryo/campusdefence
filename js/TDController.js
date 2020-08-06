@@ -249,9 +249,8 @@
         }
 
         let rect = controller.gameArea.canvas.getBoundingClientRect();
-        let pos = controller.gameArea.canvasToGrid(event.clientX - rect.left, event.clientY - rect.top);
-        this.x = Math.round(pos[0]);
-        this.y = Math.round(pos[1]);
+        this.x = Math.round(controller.gameArea.canvasToGridX(event.clientX - rect.left));
+        this.y = Math.round(controller.gameArea.canvasToGridY(event.clientY - rect.top));
         if (!controller.map.validPosition(this.x, this.y))
             return;
         let tower = controller.map.getGridAt(this.x, this.y);
@@ -429,9 +428,8 @@ class PseudoTower extends GameObject {
 
     updatePos(event) {
         let rect = controller.gameArea.canvas.getBoundingClientRect();
-        let pos = controller.gameArea.canvasToGrid(event.clientX - rect.left, event.clientY - rect.top);
-        this.x = Math.round(pos[0]);
-        this.y = Math.round(pos[1]);
+        this.x = Math.round(controller.gameArea.canvasToGridX(event.clientX - rect.left));
+        this.y = Math.round(controller.gameArea.canvasToGridY(event.clientY - rect.top));
         this.posOK = controller.map.validPosition(this.x, this.y) && controller.map.getGridAt(this.x, this.y) === null;
     }
 
