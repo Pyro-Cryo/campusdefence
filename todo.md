@@ -12,9 +12,6 @@
 - Fler torn? Hur variera dessa, vilka andra roller i mottagningssammanhang kan man ha? Sektionsordförande / klubbis? Suslil?
     - Nån motsvarighet till road spikes i bloons som kan ta några ninjor man missat?
 - Balansera, just nu är Axel 3000 ggr starkare än någon annan
-- Nåt bra sätt att presentera lore
-- Snabbspolning!
-- Paus
 - Save state till cookie
 
     - Nåt sätt att lösa att inte runaway-effekten gör att nivåerna aldrig tar slut
