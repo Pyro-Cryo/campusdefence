@@ -119,7 +119,7 @@ class TDMap {
 
     drawPath(gameArea) {
         for (let i = 0; i < this.path.length; i++)
-            gameArea.square(this.path[i].x, this.path[i].y, "rgba(0, 0, 0, 0.2)");
+            gameArea.square(this.path[i].x, this.path[i].y, "rgba(40, 30, 20, 0.6)");
     }
 }
 

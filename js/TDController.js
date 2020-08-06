@@ -1,38 +1,37 @@
 ﻿class TDController extends Controller {
     constructor() {
-        super(9, 9);
+        super(16, 16);
         controller = this;
         let path = [
-            [-1, 0],
-            [0, 0],
-            [1, 0],
-            [2, 0],
-            [3, 0],
-            [4, 0],
-            [4, 1],
-            [4, 2],
-            [4, 3],
+            [15, 16],
+            [15, 13],
+            [9, 13],
+            [9, 12],
+            [8, 12],
+            [8, 11],
+            [7, 11],
+            [7, 6],
+            [11, 6],
+            [11, 4],
+            [9, 4],
+            [9, 2],
+            [7, 2],
+            [7, 1],
+            [5, 1],
             [5, 3],
-            [6, 3],
-            [7, 3],
-            [7, 4],
-            [7, 5],
-            [6, 5],
-            [5, 5],
+            [4, 3],
             [4, 5],
-            [4, 6],
+            [3, 5],
+            [3, 7],
             [4, 7],
             [4, 8],
-            [3, 8],
-            [2, 8],
-            [2, 7],
-            [2, 6],
-            [1, 6],
-            [1, 7],
-            [1, 8],
-            [0, 8],
-            [-1, 8]
+            [5, 8],
+            [5, 10],
+            [3, 10],
+            [3, 9],
+            [-1, 9]
         ];
+        path = this.fixPath(path);
         var map_img = new Image();
         map_img.src = "img/map.png";
         this.map = new TDMap(map_img, path, this.gameArea);
@@ -219,8 +218,13 @@
             }
         }
         // Highlighta valt torn
-        if (this.selectedTower !== null)
+        if (this.selectedTower !== null) {
             this.gameArea.disc(this.selectedTower.x, this.selectedTower.y, this.selectedTower.range, "rgba(212, 212, 212, 0.4)");
+            // Highlighta path som är in range
+            this.selectedTower.inrange.forEach(pt =>
+                this.gameArea.disc(pt.x, pt.y, 0.3, "rgba(255, 255, 255, 0.7)")
+            );
+        }
 
     }
 
@@ -472,6 +476,12 @@ class PseudoTower extends GameObject {
 
     draw(gameArea) {
         gameArea.disc(this.x, this.y, this.type.range, this.posOK ? "rgba(0, 212, 0, 0.5)" : "rgba(212, 0, 0, 0.5)");
+        if (this.posOK)
+            controller.map.path.filter(pt =>
+                Math.sqrt(Math.pow(this.x - pt.x, 2) + Math.pow(this.y - pt.y, 2)) < this.type.range
+            ).forEach(pt =>
+                gameArea.disc(pt.x, pt.y, 0.3, "rgba(255, 255, 255, 0.7)")
+            );
         super.draw(gameArea);
     }
 }
