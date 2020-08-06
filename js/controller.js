@@ -7,7 +7,7 @@ class Controller {
         // Essentially the frame rate inverse
         this.updateInterval = 20; //milliseconds
         // Framerate for real
-        this.drawInterval = 20;
+        this.drawInterval = 25;
         // Store the inteval object so that we can abort the main loop
         this.mainInterval = null;
 
@@ -63,6 +63,7 @@ class Controller {
         clearInterval(this.mainInterval);
         this.playbutton.innerHTML = "▶";
         this.ffbutton.disabled = true;
+        this.isFF = false;
 
     }
 
@@ -92,13 +93,9 @@ class Controller {
         this.gameArea.clear();
         for (let current = this.objects.first; current !== null; current = current.next) {
             if (current.obj.id === null){
-                if(current === null)
-                    break;
-                else
-                    continue;
+                continue
             }
-            if (current.obj.draw !== undefined)
-                current.obj.draw(this.gameArea);
+            current.obj.draw(this.gameArea);
         }
     }
     // Register an object to receive update calls.

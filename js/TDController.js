@@ -161,39 +161,51 @@
     update() {
         super.update();
 
-        if (!this.isPaused) {
-            if (this.levelIterator) {
-                let done = this.levelIterator.next().done;
-                if (done)
-                    this.levelIterator = null;
-            }
-            else if (!this.levelCleared) {
-                this.levelCleared = this.map.path.every(pt => !pt.hasCreep());
-                if (this.levelCleared)
-                    this.endLevel();
-            }
-
-            // Hantera hälsa
-            this.healthcounter.innerText = this.hp.toString();
-            if (this.hp <= 0) {
-                this.isPaused = true;
+        if (this.levelIterator) {
+            let done = this.levelIterator.next().done;
+            if (done)
                 this.levelIterator = null;
-                this.levelCleared = false;
-                this.objects = new LinkedList();
-                this.registerObject(new SplashScreen());
-                console.log("Game over. You reached level " + this.levelNumber.toString());
-                
-                if (this.selectedTower !== null)
-                    this.destroyContextMenu();
-                document.querySelector(".towerMarket").classList.add("hideme");
-                document.querySelector(".contextMenu").classList.remove("hideme");
-                this.contextOption("Spelet över", "Du kom till nivå " + this.levelNumber.toString())
-                    .querySelector("button[name='actionbtn']").classList.add("hideme");
-                document.querySelectorAll("button").forEach(b => {
-                    b.disabled = "disabled";
-                });
-            }
         }
+        else if (!this.levelCleared) {
+            this.levelCleared = this.map.path.every(pt => !pt.hasCreep());
+            if(this.levelCleared){
+                for (let current = this.objects.first; current !== null; current = current.next){
+                    console.log(current.obj);
+                    if(current.obj instanceof Projectile){
+                        this.levelCleared = false;
+                        break;
+                    }
+                }
+            }
+            if (this.levelCleared)
+                this.endLevel();
+        }
+
+        // Hantera hälsa
+        this.healthcounter.innerText = this.hp.toString();
+        if (this.hp <= 0) {
+            this.onPause();
+            this.levelIterator = null;
+            this.levelCleared = false;
+            this.objects = new LinkedList();
+            this.registerObject(new SplashScreen());
+            console.log("Game over. You reached level " + this.levelNumber.toString());
+            
+            if (this.selectedTower !== null)
+                this.destroyContextMenu();
+            document.querySelector(".towerMarket").classList.add("hideme");
+            document.querySelector(".contextMenu").classList.remove("hideme");
+            this.contextOption("Spelet över", "Du kom till nivå " + this.levelNumber.toString())
+                .querySelector("button[name='actionbtn']").classList.add("hideme");
+            document.querySelectorAll("button").forEach(b => {
+                b.disabled = "disabled";
+            });
+        }
+
+   }
+
+    draw() {
+        super.draw();
 
         //Hantera pengar
         this.moneycounter.innerText = this.money.toString();
@@ -206,11 +218,6 @@
                 this.towerSpecs[i].button.removeAttribute("disabled");
             }
         }
-
-   }
-
-    draw() {
-        super.draw();
         // Highlighta valt torn
         if (this.selectedTower !== null)
             this.gameArea.disc(this.selectedTower.x, this.selectedTower.y, this.selectedTower.range, "rgba(212, 212, 212, 0.4)");
