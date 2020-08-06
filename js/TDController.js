@@ -45,7 +45,7 @@
         this.levelIterator = null;
         this.levelCleared = false;
 
-        this.hp = 1;
+        this.hp = 140+51;
         this.money = 500;
         this.sellPriceMultiplier = 0.8;
         this.healthcounter = document.getElementById("healthcounter");

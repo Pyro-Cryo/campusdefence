@@ -1,35 +1,53 @@
 /* ---------- Creeps ---------- */
 
-let jonasimg = new Image();
-jonasimg.src = "img/jonas.png";
-
-// Sorry f�r formuleringen men "creep" �r tydligen termen som anv�nds
-class Jonas extends BaseCreep {
-    static get speed() { return 0.6; }
-    static get image() { return jonasimg; }
-    static get scale() { return 0.05; }
-
-    onGoal() {
-        console.log("Jonas got you!");
-        super.onGoal();
-    }
-    update(gameArea) {
-        this.rotateMe();
-        super.update(gameArea);
-    }
-}
-
 let fohsimg = new Image();
 fohsimg.src = "img/fohs.png";
 
-class Ninja extends MatryoshkaCreep {
+class Ninja extends BaseCreep {
     static get speed() { return 0.5; }
     static get image() { return fohsimg; }
     static get scale() { return 1; }
-    static get innerCreep() { return Jonas; }
 }
 
-let gabbeimg = new Image();
+let colorimgs = [new Image(), new Image(), new Image(), new Image(), new Image()];
+colorimgs[0].src = "img/fohs_red.png";
+colorimgs[1].src = "img/fohs_blue.png";
+colorimgs[2].src = "img/fohs_pink.png";
+colorimgs[3].src = "img/fohs_green.png";
+colorimgs[4].src = "img/fohs_orange.png";
+
+class ColorNinja extends MatryoshkaCreep {
+    static get scale() { return 1; }
+    static get innerCreepCount() { return 2; }
+}
+
+class Red extends ColorNinja {
+    static get speed() { return 0.55; }
+    static get image() { return colorimgs[0]; }
+    static get innerCreep() { return Ninja; }
+}
+class Blue extends ColorNinja {
+    static get speed() { return 0.6; }
+    static get image() { return colorimgs[1]; }
+    static get innerCreep() { return Red; }
+}
+class Pink extends ColorNinja {
+    static get speed() { return 0.65; }
+    static get image() { return colorimgs[2]; }
+    static get innerCreep() { return Blue; }
+}
+class Green extends ColorNinja {
+    static get speed() { return 0.7; }
+    static get image() { return colorimgs[3]; }
+    static get innerCreep() { return Pink; }
+}
+class Orange extends ColorNinja {
+    static get speed() { return 0.75; }
+    static get image() { return colorimgs[4]; }
+    static get innerCreep() { return Green; }
+}
+
+/*let gabbeimg = new Image();
 gabbeimg.src = "img/gab.png";
 
 class Gabbe extends MatryoshkaCreep {
@@ -41,9 +59,9 @@ class Gabbe extends MatryoshkaCreep {
     static get health() { return 20; }
     static get drawHealthBar() { return true; }
     static get value() { return 50; }
-}
+}*/
 
-let fohsimg2 = new Image();
+/*let fohsimg2 = new Image();
 fohsimg2.src = "img/bluefohs.png";
 
 class FastNinja extends MatryoshkaCreep {
@@ -51,7 +69,7 @@ class FastNinja extends MatryoshkaCreep {
     static get image() { return fohsimg2; }
     static get scale() { return 1; }
     static get innerCreep() { return Gabbe; }
-}
+}*/
 
 /* ---------- Towers and Projectiles ---------- */
 //TODO: Många bilder behöver bytas och/eller fixas
@@ -209,6 +227,7 @@ hugimg.src = "img/kram.png";
 class Hug extends BasicProjectile {
     constructor(map, source, target) {
         super(map, hugimg, source.x, source.y, target.x, target.y, 0.1, 1 / controller.updateInterval);
+        this.angle = 0;
     }
 }
 
