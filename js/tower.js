@@ -56,7 +56,7 @@ class BaseTower extends GameObject {
         throw new Error("Abstract method projectile must be overridden by subclass");
     }
 
-    update(gameArea) {
+    update() {
         if (this.CDtimer <= 0) {
             let target = this.target();
             if (target)
@@ -64,7 +64,7 @@ class BaseTower extends GameObject {
         } else
             this.CDtimer--;
 
-        super.update(gameArea);
+        super.update();
     }
 
     destroy() {

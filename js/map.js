@@ -110,8 +110,11 @@ class TDMap {
     }
 
     update(gameArea) {
-    	gameArea.draw(this.img, this.gridInnerWidth/2-1/2, this.gridInnerHeight/2-1/2, 0, this.scale);
-    	this.drawPath(gameArea);
+    }
+
+    draw(gameArea){
+        gameArea.draw(this.img, this.gridInnerWidth/2-1/2, this.gridInnerHeight/2-1/2, 0, this.scale);
+        this.drawPath(gameArea);        
     }
 
     drawPath(gameArea) {
