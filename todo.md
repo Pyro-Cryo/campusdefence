@@ -1,6 +1,5 @@
 - Nåt sätt att vinna? Vad händer i så fall? Eller ska föhseriet alltid vinna? Jag tycker nästan mer om den idén
 - Fixa bilder
-    - Croppa ut folks ansikten
     - Fixa bilder på faktiska faddrar / förfaddrar?
     - Fixa bild på butlern?
     - Bilden på borggården är ganska lågupplöst (vilket iofs är bra för renderingen eftersom den ritas varje gång, men ändå). Vill man kanske dessutom byta denna till campus och så försöker de ta sig till Kons? Det blir väl ingen kemigårdslunch i år liksom. 

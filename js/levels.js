@@ -3,6 +3,19 @@ function getLevel(number, updateInterval) {
     switch (number) {
         case 1:
             return (new CreepSequence()
+                .send(2, Ninja).over(1 * s)
+                .wait(1 * s)
+                .send(2, Red).over(1 * s)
+                .wait(1 * s)
+                .send(2, Blue).over(1 * s)
+                .wait(1 * s)
+                .send(2, Pink).over(1 * s)
+                .wait(1 * s)
+                .send(2, Green).over(1 * s)
+                .wait(1 * s)
+                .send(2, Orange).over(1 * s));
+        /*case 1:
+            return (new CreepSequence()
                 .send(1, Jonas).immediately()
                 .wait(1 * s)
                 .send(10, Jonas).spaced(1 * s)
@@ -21,10 +34,10 @@ function getLevel(number, updateInterval) {
 
         case 4:
             return (new CreepSequence()
-                .send(2, FastNinja).over(5 * s));
+                .send(2, FastNinja).over(5 * s));*/
 
         default:
-            return new CreepSequence().send(number * 20, Jonas).over(Math.max(1, 15 - number) * s).do(() => console.log("All creeps sent"));
+            return new CreepSequence().send(number * 20, Ninja).over(Math.max(1, 15 - number) * s).do(() => console.log("All creeps sent"));
     }
 }
 
