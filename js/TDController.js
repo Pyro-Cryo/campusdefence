@@ -45,7 +45,7 @@
         this.levelIterator = null;
         this.levelCleared = true;
 
-        this.hp = 140+51;
+        this.hp = 1;
         this.money = 500;
         this.sellPriceMultiplier = 0.8;
         this.healthcounter = document.getElementById("healthcounter");
@@ -175,9 +175,23 @@
 
             // Hantera hälsa
             this.healthcounter.innerText = this.hp.toString();
-            if(this.hp <= 0){
-                this.endLevel();
+            if (this.hp <= 0) {
+                this.isPaused = true;
+                this.levelIterator = null;
+                this.levelCleared = false;
+                this.objects = new LinkedList();
+                this.registerObject(new SplashScreen());
                 console.log("Game over. You reached level " + this.levelNumber.toString());
+                
+                if (this.selectedTower !== null)
+                    this.destroyContextMenu();
+                document.querySelector(".towerMarket").classList.add("hideme");
+                document.querySelector(".contextMenu").classList.remove("hideme");
+                this.contextOption("Spelet över", "Du kom till nivå " + this.levelNumber.toString())
+                    .querySelector("button[name='actionbtn']").classList.add("hideme");
+                document.querySelectorAll("button").forEach(b => {
+                    b.disabled = "disabled";
+                });
             }
         }
 
@@ -259,6 +273,20 @@
         this.setupContextMenu();
     }
 
+    contextOption(name, description, buttonLabel, buttonAction) {
+        let option = document.getElementById("optionTemplate").cloneNode(true);
+        option.querySelector("strong[name='title']").innerText = name;
+        option.querySelector("span[name='desc']").innerText = description;
+        let btn = option.querySelector("button[name='actionbtn']");
+        btn.innerText = buttonLabel || name;
+        btn.onclick = buttonAction;
+
+        option.classList.remove("template");
+        option.removeAttribute("id");
+        document.getElementById("optionTemplate").parentElement.appendChild(option);
+        return option;
+    }
+
     setupContextMenu() {
         document.querySelector(".towerMarket").classList.add("hideme");
         document.querySelector(".contextMenu").classList.remove("hideme");
@@ -274,23 +302,9 @@
 
         let dollares = document.getElementById("moneycounter").parentElement.innerText.replace(/[\d ]+/, "");
 
-        function contextOption(name, description, buttonLabel, buttonAction) {
-            let option = document.getElementById("optionTemplate").cloneNode(true);
-            option.querySelector("strong[name='title']").innerText = name;
-            option.querySelector("span[name='desc']").innerText = description;
-            let btn = option.querySelector("button[name='actionbtn']");
-            btn.innerText = buttonLabel || name;
-            btn.onclick = buttonAction;
-
-            option.classList.remove("template");
-            option.removeAttribute("id");
-            document.getElementById("optionTemplate").parentElement.appendChild(option);
-            return option;
-        }
-
         let spec = this.towerSpecs.find(spec => this.selectedTower instanceof spec.type);
         if (!spec)
-            contextOption(
+            this.contextOption(
                 "Skicka hem",
                 "Skicka hem faddern. Du får inte tillbaka några " + dollares + ", men platsen blir ledig för att placera ut en ny.",
                 null, () => {
@@ -300,9 +314,9 @@
                 }
             );
         else {
-            contextOption(spec.name, "Träffar: " + this.selectedTower.hits)
+            this.contextOption(spec.name, "Träffar: " + this.selectedTower.hits)
                 .querySelector("button[name='actionbtn']").classList.add("hideme");
-            contextOption(
+            this.contextOption(
                 "Sälj",
                 "Skicka faddern att hjälpa en annan sektion. Du får tillbaka " + (this.sellPriceMultiplier * spec.cost) + " " + dollares + ".",
                 null, () => {
@@ -314,7 +328,7 @@
             );
             if (spec.upgrades)
                 spec.upgrades.forEach(upgrade => {
-                    contextOption(
+                    this.contextOption(
                         "Uppgradera till " + upgrade.name,
                         "Betala " + upgrade.cost + " " + dollares + " för att uppgradera till " + upgrade.name + ". " +
                         (upgrade.requiredHits && this.selectedTower.hits < upgrade.requiredHits ? "Kräver " + upgrade.requiredHits + " träffar. " : "") +
@@ -380,34 +394,6 @@
             if (spec.cannotPurchaseDirectly)
                 template.classList.add("hideme");
         }
-        
-
-        /*
-        function createTowerButton(spec) {
-            let button = document.createElement("button");
-            button.innerText = spec.name;
-            button.title = spec.description;
-            button.onclick = () => controller.buyTower(spec.type, spec.cost, button);
-
-            spec.button = button;
-            return button;
-        }
-
-        let table = document.getElementById("towerTable");
-        for (let row = 0; row < 2; row++) {
-            let tr = document.createElement("tr");
-            for (let col = 0; col < this.towerSpecs.length / 2; col++) {
-                let td = document.createElement("td");
-                if (col * 2 + row < this.towerSpecs.length) {
-                    td.appendChild(createTowerButton(this.towerSpecs[col * 2 + row]));
-                } else
-                    td.innerHTML = "&nbsp;";
-
-                tr.appendChild(td);
-            }
-            table.appendChild(tr);
-        }
-        */
     }
 
     buyTower(type, cost, originatingButton) {
