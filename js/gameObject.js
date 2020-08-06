@@ -7,8 +7,11 @@ class GameObject {
         this.scale = scale;
         this.id = null;
     }
-    update(gameArea) {
-        gameArea.draw(this.image, this.x, this.y, this.angle, this.scale);
+    update() {
+        
+    }
+    draw(gameArea) {
+        gameArea.draw(this.image, this.x, this.y, this.angle, this.scale);   
     }
 }
 
@@ -19,7 +22,7 @@ class SubimagedGameObject extends GameObject {
         this.subimageIndex = subimageIndex;
         this.subimageWidth = subimageWidth;
     }
-    update(gameArea) {
+    draw(gameArea) {
         gameArea.drawSubimage(this.image, this.subimageIndex, this.subimageWidth, this.x, this.y, this.angle, this.scale);
     }
 }

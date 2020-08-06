@@ -71,7 +71,7 @@ class BaseCreep extends GameObject {
         if (!(this.x === this.lastx && this.y === this.lasty))
             this.angle = (offset || 0) + Math.PI / 2 + Math.atan2(this.y - this.lasty, this.x - this.lastx);
     }
-	update(gameArea) {
+	update() {
 		if (this.id === null)
 			return;
 
@@ -107,8 +107,12 @@ class BaseCreep extends GameObject {
 		}
 
 		// Draw ourselves at new position.
-        super.update(gameArea);
-        if (this.drawHealthBar)
+        super.update();
+    }
+    
+	draw(gameArea){
+		super.draw(gameArea);
+		if (this.drawHealthBar)
             gameArea.bar(this.x, this.y, 0.5, 0.8, 3, this.health / this.constructor.health);
 	}
 }

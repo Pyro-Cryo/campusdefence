@@ -15,3 +15,6 @@
     - Nån motsvarighet till road spikes i bloons som kan ta några ninjor man missat?
 - Balansera, just nu är Axel 3000 ggr starkare än någon annan
 - Nåt bra sätt att presentera lore
+- Snabbspolning!
+- Paus
+- Save state till cookie
