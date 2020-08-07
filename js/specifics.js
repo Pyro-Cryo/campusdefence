@@ -47,19 +47,41 @@ class Orange extends ColorNinja {
     static get innerCreep() { return Green; }
 }
 
-/*let gabbeimg = new Image();
-gabbeimg.src = "img/gab.png";
+let ofimg = new Image();
+ofimg.src = "img/transparent/of.png";
 
-class Gabbe extends MatryoshkaCreep {
-    static get speed() { return 0.2; }
-    static get image() { return gabbeimg; }
-    static get scale() { return 0.1; }
-    static get innerCreep() { return Ninja; }
-    static get innerCreepCount() { return 2; }
-    static get health() { return 20; }
+let sfimg = new Image();
+sfimg.src = "img/transparent/sf.png";
+
+let tfimg = new Image();
+tfimg.src = "img/transparent/tf.png";
+
+class TF_1 extends BaseCreep {
+    static get speed() { return 0.35; }
+    static get image() { return tfimg; }
+    static get scale() { return 0.2; }
+    static get health() { return 80; }
     static get drawHealthBar() { return true; }
     static get value() { return 50; }
-}*/
+}
+
+class SF_1 extends BaseCreep {
+    static get speed() { return 0.65; }
+    static get image() { return sfimg; }
+    static get scale() { return 0.2; }
+    static get health() { return 50; }
+    static get drawHealthBar() { return true; }
+    static get value() { return 50; }
+}
+
+class OF_1 extends BaseCreep {
+    static get speed() { return 0.5; }
+    static get image() { return ofimg; }
+    static get scale() { return 0.2; }
+    static get health() { return 60; }
+    static get drawHealthBar() { return true; }
+    static get value() { return 75; }
+}
 
 /*let fohsimg2 = new Image();
 fohsimg2.src = "img/bluefohs.png";

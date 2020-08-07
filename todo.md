@@ -2,9 +2,6 @@
 - Fixa bilder
     - Fixa bilder på faktiska faddrar / förfaddrar?
     - Fixa bild på butlern?
-    - Bilden på borggården är ganska lågupplöst (vilket iofs är bra för renderingen eftersom den ritas varje gång, men ändå). Vill man kanske dessutom byta denna till campus och så försöker de ta sig till Kons? Det blir väl ingen kemigårdslunch i år liksom. 
-- Lite optimering. Just nu helikoptrar min laptop även mellan nivåerna vilket känns onödigt
-    - Många bilder är väldigt högupplösta just nu, kan downsamplas en del (särskilt de små)
 - Verkar diffa lite grann mellan rangen som visas när man köper / öppnar ett torn och vad den faktiskt skjuter på. Se särskilt Förfadder (lång).
 - Gör ordentliga levels
 - Gör fler fiender (och kanske typer av fiender?). Ex. huvor i olika färger
