@@ -20,8 +20,9 @@ class Controller {
         // Buttons
         this.playbutton = document.querySelector("button.controllerButton#playButton");
         this.ffbutton = document.querySelector("button.controllerButton#fastForwardButton");
+        this.resetbutton = document.querySelector("button.controllerButton#resetButton");
 
-        this.playbutton.onclick = this.playpause.bind(this)
+        this.playbutton.onclick = this.playpause.bind(this);
         this.ffbutton.onclick = this.fastforward.bind(this);
     }
 

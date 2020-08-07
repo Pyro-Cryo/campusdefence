@@ -50,6 +50,14 @@
         this.healthcounter = document.getElementById("healthcounter");
         this.moneycounter = document.getElementById("moneycounter");
 
+        this.resetbutton.onclick = function(){
+            if(!window.confirm("Vill du verkligen börja om? Alla framsteg kommer förloras.")){
+                return;
+            }
+            this.clearState();
+            location.reload();
+        }.bind(this);
+
         this.towerSpecs = [
             {
                 type: Fadder,
@@ -490,7 +498,7 @@
 
     clearState(){
 
-
+        document.cookie = "state=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; samesite=lax";
 
     }
 }
