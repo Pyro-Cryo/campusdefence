@@ -72,6 +72,15 @@ class TF_1 extends BaseCreep {
             return;
         super.addEffect(effect);
     }
+
+    onHit(projectile){
+
+    	for (var i = -1; i < 2; i++) {
+    		let c = new Ninja(this.distance+i);
+    	}
+    	super.onHit();
+    }
+
 }
 
 class SF_1 extends BaseCreep {
@@ -195,7 +204,7 @@ molotovimg.src = "img/cocktail.png";
 
 class Molotov extends SplashProjectile {
     constructor(map, source, target) {
-        super(map, molotovimg, explosionimg, source.x, source.y, target.x, target.y, 0.1, 1, 2 / controller.updateInterval, 0);
+        super(map, molotovimg, explosionimg, source, target.x, target.y, 0.1, 1, 2 / controller.updateInterval, 0);
         this.range = 2.5;
     }
 }
@@ -210,6 +219,7 @@ class Axel extends OmniTower {
     static get scale() { return 0.2; }
 
     projectile(target) {
+    	console.log(target);
         return new Molotov(this.map, this, target);
     }
 }
