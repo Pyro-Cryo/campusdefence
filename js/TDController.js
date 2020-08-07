@@ -156,6 +156,8 @@
         ];
         
         this.buyingTower = null;
+
+        this.loadFromCookie();
     }
 
     update() {
@@ -170,7 +172,6 @@
             this.levelCleared = this.map.path.every(pt => !pt.hasCreep());
             if(this.levelCleared){
                 for (let current = this.objects.first; current !== null; current = current.next){
-                    console.log(current.obj);
                     if(current.obj instanceof Projectile){
                         this.levelCleared = false;
                         break;
@@ -202,7 +203,7 @@
             });
         }
 
-   }
+    }
 
     draw() {
         super.draw();
@@ -254,6 +255,7 @@
             }
         });
         this.levelNumber++;
+        this.saveToCookie();
     }
 
     onClickBoard(event) {
@@ -427,6 +429,66 @@
             originatingButton.title = "Avbryt det pågående köpet";
         }
     }
+
+
+    saveToCookie(){
+
+        let data = {};
+        data.level = this.levelNumber;
+        data.health = this.hp;
+        data.money = this.money;
+        data.towers = [];
+
+        for (let current = this.objects.first; current !== null; current = current.next) {
+            if(current.obj instanceof BaseTower){
+                let t = {};
+                t.type = current.obj.constructor.name;
+                t.x = current.obj.x;
+                t.y = current.obj.y;
+                t.hits = current.obj.hits;
+                data.towers.push(t);
+            }
+        }
+
+        let now = new Date();
+        now.setDate(now.getDate() + 5);
+
+        let cookie = "state="+JSON.stringify(data) + "; expires=" + now.toUTCString() + "; path=/; samesite=lax";
+        document.cookie = cookie;
+
+    }
+
+    loadFromCookie(){
+
+        let cookie = getCookie("state");
+
+        if(cookie == ""){
+            return;
+        }
+
+        let data = JSON.parse(cookie);
+
+        this.levelNumber = data.level;
+        this.hp = data.health;
+        this.money = data.money;
+
+        for (var i = 0; i < data.towers.length; i++) {
+            let x = data.towers[i].x;
+            let y = data.towers[i].y;
+            let type = this.towerSpecs.find(ts => ts.type.name === data.towers[i].type).type;
+            
+            let tower = new type(x, y);
+            tower.hits = data.towers[i].hits;
+
+        }
+
+    }
+
+    clearState(){
+
+
+
+    }
 }
 
 class PseudoTower extends GameObject {
@@ -474,5 +536,22 @@ class PseudoTower extends GameObject {
         gameArea.disc(this.x, this.y, this.type.range, this.posOK ? "rgba(0, 212, 0, 0.5)" : "rgba(212, 0, 0, 0.5)");
         super.draw(gameArea);
     }
+}
+
+
+function getCookie(cname) {
+  var name = cname + "=";
+  var decodedCookie = decodeURIComponent(document.cookie);
+  var ca = decodedCookie.split(';');
+  for(var i = 0; i <ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == ' ') {
+      c = c.substring(1);
+    }
+    if (c.indexOf(name) == 0) {
+      return c.substring(name.length, c.length);
+    }
+  }
+  return "";
 }
 

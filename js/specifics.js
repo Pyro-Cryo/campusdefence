@@ -79,6 +79,12 @@ class Converted extends BaseEffect {
         super(5000 / controller.updateInterval);
         if (object.speed > 0)
             object.speed = -object.speed;
+        else{
+            object.effects.forEach(function(v, k, s){
+                if(v instanceof Converted)
+                    v.cdtime = v.cooldown;
+            });
+        }
     }
     apply(object) {
         object.speed = Math.abs(object.speed);
