@@ -1,15 +1,6 @@
-- Nåt sätt att vinna? Vad händer i så fall? Eller ska föhseriet alltid vinna? Jag tycker nästan mer om den idén
-- Fixa bilder
-    - Fixa bilder på faktiska faddrar / förfaddrar?
-    - Fixa bild på butlern?
-- Verkar diffa lite grann mellan rangen som visas när man köper / öppnar ett torn och vad den faktiskt skjuter på. Se särskilt Förfadder (lång).
-- Gör ordentliga levels
-- Gör fler fiender (och kanske typer av fiender?). Ex. huvor i olika färger
-- Fler torn? Hur variera dessa, vilka andra roller i mottagningssammanhang kan man ha? Sektionsordförande / klubbis? Suslil?
-    - Nån motsvarighet till road spikes i bloons som kan ta några ninjor man missat?
-- Balansera, just nu är Axel 3000 ggr starkare än någon annan
-- Save state till cookie
-
-    - Nåt sätt att lösa att inte runaway-effekten gör att nivåerna aldrig tar slut
-    - Runaway-effekten borde stacka tiden eller nåt, känns rätt buggigt som det är nu
+- Fixa bilder på faktiska faddrar / förfaddrar?
+- Gör fler levels (upp till 30, sen repeteras och blir svårare)
+- Torn: Lillie-Fnöll
+- Nån motsvarighet till road spikes i bloons som kan ta några ninjor man missat?
+- Balansera lite, pengar får man väldigt fort nu
 - Nåt bra sätt att presentera lore

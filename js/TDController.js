@@ -1,31 +1,35 @@
 ﻿class TDController extends Controller {
     constructor() {
-        super(16, 16);
+        super(19, 16);
         controller = this;
         let path = [
-            [15, 16],
-            [15, 13],
-            [9, 13],
-            [9, 12],
-            [8, 12],
+            [18, 16],
+            [18, 13],
+            [13, 13],
+            [13, 12],
+            [10, 12],
+            [10, 11],
             [8, 11],
-            [7, 11],
-            [7, 6],
-            [11, 6],
+            [8, 10],
+            [7, 10],
+            [7, 8],
+            [9, 8],
+            [9, 6],
+            [12, 6],
+            [12, 4],
             [11, 4],
-            [9, 4],
-            [9, 2],
-            [7, 2],
-            [7, 1],
+            [11, 3],
+            [10, 3],
+            [10, 2],
+            [8, 2],
+            [8, 1],
             [5, 1],
             [5, 3],
             [4, 3],
             [4, 5],
             [3, 5],
             [3, 7],
-            [4, 7],
-            [4, 8],
-            [5, 8],
+            [5, 7],
             [5, 10],
             [3, 10],
             [3, 9],
@@ -478,7 +482,7 @@ class PseudoTower extends GameObject {
         gameArea.disc(this.x, this.y, this.type.range, this.posOK ? "rgba(0, 212, 0, 0.5)" : "rgba(212, 0, 0, 0.5)");
         if (this.posOK)
             controller.map.path.filter(pt =>
-                Math.sqrt(Math.pow(this.x - pt.x, 2) + Math.pow(this.y - pt.y, 2)) < this.type.range
+                Math.sqrt(Math.pow(this.x - pt.x, 2) + Math.pow(this.y - pt.y, 2)) < this.type.range + 0.1
             ).forEach(pt =>
                 gameArea.disc(pt.x, pt.y, 0.3, "rgba(255, 255, 255, 0.7)")
             );

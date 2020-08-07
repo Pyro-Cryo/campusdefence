@@ -45,7 +45,7 @@ function getLevel(number, updateInterval) {
             return (new CreepSequence()
                 .send(40, Red).over(20 * s)
                 .interleave(new CreepSequence().send(30, Blue).over(20 * s))
-                .wait(3 * s)
+                .wait(8 * s)
                 .send(10, Pink).over(5 * s));
 
         // Fortsätt introducera föhsare typ var 4-6 nivå, fler föhsspöken
@@ -81,12 +81,8 @@ function getLevel(number, updateInterval) {
 function levelClearReward(number) {
     let cash = 0;
     switch (number) {
-        case 1:
-            cash = 100;
-            break;
-
         default:
-            cash = number * 50;
+            cash = 100;
             break;
     }
     controller.money += cash;

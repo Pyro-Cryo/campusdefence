@@ -94,7 +94,6 @@ class FastNinja extends MatryoshkaCreep {
 }*/
 
 /* ---------- Towers and Projectiles ---------- */
-//TODO: Många bilder behöver bytas och/eller fixas
 
 class Converted extends BaseEffect {
     constructor(object) {
@@ -113,7 +112,7 @@ flowerimg.src = "img/flower.png";
 
 class Flower extends SeekingProjectile {
     constructor(source, target){
-        super(flowerimg, 0.05, source, target, 3 / controller.updateInterval);
+        super(flowerimg, 0.12, source, target, 2 / controller.updateInterval);
     }
     hitCreep(creep) {
         let e = new Converted(creep);
@@ -128,7 +127,7 @@ class Nicole extends TargetingTower {
     static get range() { return 3; }
     static get CDtime() { return 1000; }
     static get image() { return nicoleimg; }
-    static get scale() { return 0.03; }
+    static get scale() { return 0.2; }
 
     target() {
         let pt = super.target();
@@ -145,7 +144,7 @@ class Nicole extends TargetingTower {
 let explosionimg = new Image();
 explosionimg.src = "img/boom.png";
 let molotovimg = new Image();
-molotovimg.src = "img/tb.png"; //TODO: hitta en bild
+molotovimg.src = "img/cocktail.png";
 
 class Molotov extends SplashProjectile {
     constructor(map, source, target) {
