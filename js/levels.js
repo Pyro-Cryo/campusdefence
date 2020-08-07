@@ -3,17 +3,53 @@ function getLevel(number, updateInterval) {
     switch (number) {
         case 1:
             return (new CreepSequence()
-                .send(2, Ninja).over(1 * s)
+                .send(20, Ninja).over(15 * s));
+        case 2:
+            return (new CreepSequence()
+                .send(30, Ninja).over(15 * s)
+                .wait(2 * s)
+                .send(20, Ninja).over(10 * s));
+        case 3:
+            return (new CreepSequence()
+                .send(30, Ninja).over(10 * s)
+                .wait(2 * s)
+                .send(10, Red).over(10 * s));
+        case 4:
+            return (new CreepSequence()
+                .send(40, Ninja).over(20 * s)
+                .interleave(new CreepSequence().send(20, Red).over(20 * s)));
+        case 5:
+            return (new CreepSequence()
+                .send(30, Red).over(20 * s)
                 .wait(1 * s)
-                .send(2, Red).over(1 * s)
-                .wait(1 * s)
-                .send(2, Blue).over(1 * s)
-                .wait(1 * s)
-                .send(2, Pink).over(1 * s)
-                .wait(1 * s)
-                .send(2, Green).over(1 * s)
-                .wait(1 * s)
-                .send(2, Orange).over(1 * s));
+                .send(20, Ninja).over(2 * s)
+                .wait(4 * s)
+                .send(5, Blue).over(3 * s));
+        case 6:
+            return (new CreepSequence()
+                .send(1, Blue).immediately()
+                .wait(2 * s)
+                .send(40, Red).over(20 * s)
+                .interleave(new CreepSequence()
+                    .wait(15 * s)
+                    .send(10, Blue).over(7 * s)));
+        case 7:
+            return (new CreepSequence()
+                .send(40, Red).over(20 * s)
+                .interleave(new CreepSequence().send(20, Blue).over(20 * s)));
+        case 8:
+            return (new CreepSequence()
+                .send(1, TF_1).immediately());
+
+        case 9:
+            return (new CreepSequence()
+                .send(40, Red).over(20 * s)
+                .interleave(new CreepSequence().send(30, Blue).over(20 * s))
+                .wait(3 * s)
+                .send(10, Pink).over(5 * s));
+
+        // Fortsätt introducera föhsare typ var 4-6 nivå, fler föhsspöken
+
         /*case 1:
             return (new CreepSequence()
                 .send(1, Jonas).immediately()
