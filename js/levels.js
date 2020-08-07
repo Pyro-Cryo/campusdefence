@@ -73,7 +73,12 @@ function getLevel(number, updateInterval) {
                 .send(2, FastNinja).over(5 * s));*/
 
         default:
-            return new CreepSequence().send(number * 20, Ninja).over(Math.max(1, 15 - number) * s).do(() => console.log("All creeps sent"));
+            return new CreepSequence().send(number * 20, Ninja).over(Math.max(1, 15 - number) * s)
+            .wait(2 * s)
+            .send(1, TF_1).over(0.2 * 2)
+            .send(1, OF_1).over(0.2 * 2)
+            .send(1, SF_1).over(0.2 * 2)
+            .do(() => console.log("All creeps sent"));
     }
 }
 

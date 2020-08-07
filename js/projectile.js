@@ -1,16 +1,17 @@
 class Projectile extends GameObject {
 	// Speed in grid units per tick
-	constructor(map, image, x, y, target_x, target_y, scale, speed, onHitCreep) {
-		super(image, x, y, Math.atan2(target_y - y, target_x - x), scale);
+	constructor(map, image, source, target_x, target_y, scale, speed, onHitCreep) {
+		super(image, source.x, source.y, Math.atan2(target_y - source.y, target_x - source.x), scale);
 		this.map = map;
-		let xdist = target_x - x;
-		let ydist = target_y - y;
+		let xdist = target_x - source.x;
+		let ydist = target_y - source.y;
 		let dist = Math.sqrt(xdist * xdist + ydist * ydist);
 
 		this.speed = speed;
 		this.dx = speed * xdist / dist;
 		this.dy = speed * ydist / dist;
 		this.range = 3;
+		this.sourceTower = source;
 
 		this.flying = true;
 		this.onHitCreep = onHitCreep || null;
@@ -22,11 +23,12 @@ class Projectile extends GameObject {
 
 	hitCreep(creep) {
 		creep.onHit(this);
+		this.sourceTower.hits++;
 		if (this.onHitCreep !== null)
 			this.onHitCreep();
 	}
 
-	update(gameArea) {
+	update() {
 		if (this.flying) {
 			this.x += this.dx;
 			this.y += this.dy;
@@ -47,7 +49,9 @@ class Projectile extends GameObject {
 		if(this.range < 0)
 			this.id = null;
 
-		super.update(gameArea);
+
+
+		super.update();
 	}
 }
 
@@ -64,18 +68,18 @@ class BasicProjectile extends Projectile {
 
 class SplashProjectile extends Projectile {
 
-	constructor(map, image, splash, x, y, target_x, target_y, scale, splash_scale, speed, splash_range) {
-		super(map, image, x, y, target_x, target_y, scale, speed);
+	constructor(map, image, splash, source, target_x, target_y, scale, splash_scale, speed, splash_range) {
+		super(map, image, source, target_x, target_y, scale, speed);
 		this.splash_img = splash;
 		this.splash_scale = splash_scale;
 		this.splash_range = splash_range;
 	}
 
-	update(gameArea) {
+	draw(gameArea) {
 		if (!this.flying) {
 			this.angle = 2 * Math.PI * Math.random();
 		}
-		super.update(gameArea);
+		super.draw(gameArea);
 	}
 
 	hit(pathTile) {
@@ -116,7 +120,7 @@ class SplashProjectile extends Projectile {
 class SeekingProjectile extends Projectile{
 
 	constructor(image, scale, source, target, speed){
-		super(controller.map, image, source.x, source.y, target.x, target.y, scale, speed);
+		super(controller.map, image, source, target.x, target.y, scale, speed);
 		this.target = target;
 		this.source = source;
 		this.range = 10;
@@ -125,7 +129,7 @@ class SeekingProjectile extends Projectile{
 		this.radius = 1/10;
 	}
 
-	update(gameArea){
+	update(){
 		if(this.target == null || this.target.id == null){
 			// M�let har despawnat, be om ett nytt
 			this.target = this.source.target();
@@ -140,7 +144,7 @@ class SeekingProjectile extends Projectile{
 			this.dx = (this.speed * xdist / dist)*this.radius + (1-this.radius)*this.dx;
 			this.dy = (this.speed * ydist / dist)*this.radius + (1-this.radius)*this.dy;
 		}
-		super.update(gameArea);
+		super.update();
 	}
 
 	hit(pathTile){
@@ -158,3 +162,70 @@ class SeekingProjectile extends Projectile{
 
 
 } 
+
+
+class InverseProjectile extends GameObject {
+	// Speed in grid units per tick
+	constructor(image, source, target, scale, speed) {
+		super(image, source.x, source.y, Math.atan2(target.y - source.y, target.x - source.x), scale);
+		let xdist = target.x - source.x;
+		let ydist = target.y - source.y;
+		let dist = Math.sqrt(xdist * xdist + ydist * ydist);
+
+		this.speed = speed;
+		this.dx = speed * xdist / dist;
+		this.dy = speed * ydist / dist;
+		this.range = 3;
+		this.source = source;
+		this.target = target;
+
+		this.radius = 1/20;
+
+		this.flying = true;
+	}
+
+	hit(tower) {
+		this.hitTower(tower);
+		this.id = null;
+	}
+
+	hitTower(tower) {
+		
+	}
+
+	update() {
+		if (this.flying) {
+			if(this.target != null && this.target.id != null){
+				// Räkna ut ny riktning mot målet
+				let xdist = this.target.x - this.x;
+				let ydist = this.target.y - this.y;
+				let dist = Math.sqrt(xdist * xdist + ydist * ydist);
+				this.angle = Math.atan2(this.target.y - this.y, this.target.x - this.x);
+
+				this.dx = (this.speed * xdist / dist)*this.radius + (1-this.radius)*this.dx;
+				this.dy = (this.speed * ydist / dist)*this.radius + (1-this.radius)*this.dy;
+			}
+			this.x += this.dx;
+			this.y += this.dy;
+			this.range -= this.speed;
+
+			let pt;
+			try {
+				pt = controller.map.getGridAt(Math.round(this.x), Math.round(this.y));
+			} catch (e) {
+				//Utanför grid
+				this.id = null;
+				return;
+			}
+			if (pt === this.target){
+				this.hit(pt);
+				this.flying = false;
+			}
+
+		}
+		if(this.range < 0)
+			this.id = null;
+
+		super.update();
+	}
+}

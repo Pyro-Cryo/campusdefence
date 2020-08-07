@@ -63,6 +63,15 @@ class TF_1 extends BaseCreep {
     static get health() { return 80; }
     static get drawHealthBar() { return true; }
     static get value() { return 50; }
+
+    addEffect(effect) {
+        // TF har oändlig fokus
+        if(effect instanceof Converted)
+            return;
+        if(effect instanceof Distracted)
+            return;
+        super.addEffect(effect);
+    }
 }
 
 class SF_1 extends BaseCreep {
@@ -72,6 +81,14 @@ class SF_1 extends BaseCreep {
     static get health() { return 50; }
     static get drawHealthBar() { return true; }
     static get value() { return 50; }
+
+    // onHit(projectile) {
+    //     if(projectile instanceof Hug){
+    //         // SF kramas inte!
+    //         return false;
+    //     }
+    //     super.onHit(projectile);
+    // }
 }
 
 class OF_1 extends BaseCreep {
@@ -81,6 +98,34 @@ class OF_1 extends BaseCreep {
     static get health() { return 60; }
     static get drawHealthBar() { return true; }
     static get value() { return 75; }
+
+    addEffect(effect) {
+        // ÖF kan inte konverteras
+        if(effect instanceof Converted)
+            return;
+        super.addEffect(effect);
+    }
+
+    onHit(projectile) {
+        // ÖF slår tillbaka! 
+        let proj = new Payback(this, projectile.sourceTower);
+        controller.registerObject(proj);
+        
+        super.onHit(projectile);
+    }
+
+}
+
+let pbimg = new Image();
+pbimg.src = "img/boom.png";
+class Payback extends InverseProjectile {
+    constructor(source, target){
+        super(pbimg, source, target, 0.5, 1/controller.updateInterval);
+
+    }
+    hitTower(tower) {
+        tower.CDtimer = 4000 / controller.updateInterval + tower.CDtime;
+    }
 }
 
 /*let fohsimg2 = new Image();
@@ -96,16 +141,12 @@ class FastNinja extends MatryoshkaCreep {
 /* ---------- Towers and Projectiles ---------- */
 
 class Converted extends BaseEffect {
-    constructor(object) {
+    constructor() {
         super(5000 / controller.updateInterval);
+    }
+    init(object){
         if (object.speed > 0)
             object.speed = -object.speed;
-        else{
-            object.effects.forEach(function(v, k, s){
-                if(v instanceof Converted)
-                    v.cdtime = v.cooldown;
-            });
-        }
     }
     apply(object) {
         object.speed = Math.abs(object.speed);
@@ -121,7 +162,7 @@ class Flower extends SeekingProjectile {
         super(flowerimg, 0.12, source, target, 2 / controller.updateInterval);
     }
     hitCreep(creep) {
-        let e = new Converted(creep);
+        let e = new Converted();
         creep.addEffect(e);
     }
 }
@@ -174,8 +215,10 @@ class Axel extends OmniTower {
 }
 
 class Distracted extends BaseEffect {
-    constructor(object) {
+    constructor() {
         super(5000 / controller.updateInterval);
+    }
+    init(object){
         object.speed /= 2;
     }
     apply(object) {
@@ -191,11 +234,11 @@ splashimg.src = "img/boom.png";
 
 class Wolfram extends SplashProjectile {
     constructor(source, target) {
-        super(controller.map, wolframimg, splashimg, source.x, source.y, target.x, target.y, 0.1, 1, 1 / controller.updateInterval, 0);
+        super(controller.map, wolframimg, splashimg, source, target.x, target.y, 0.1, 1, 1 / controller.updateInterval, 0);
         this.range = 4;
     }
     hitCreep(creep) {
-        let e = new Distracted(creep);
+        let e = new Distracted();
         creep.addEffect(e);
     }
 }
@@ -219,7 +262,7 @@ fireimg.src = "img/fire.png";
 
 class Fire extends BasicProjectile {
     constructor(map, source, target) {
-        super(map, fireimg, source.x, source.y, target.x + Math.random() - 0.5, target.y + Math.random() - 0.5, 1, 1 / controller.updateInterval);
+        super(map, fireimg, source, target.x + Math.random() - 0.5, target.y + Math.random() - 0.5, 1, 1 / controller.updateInterval);
         this.ignoreTile = null;
         this.lastTile = null;
         this.range = 2;
@@ -253,7 +296,7 @@ hugimg.src = "img/kram.png";
 
 class Hug extends BasicProjectile {
     constructor(map, source, target) {
-        super(map, hugimg, source.x, source.y, target.x, target.y, 0.1, 1 / controller.updateInterval);
+        super(map, hugimg, source, target.x, target.y, 0.1, 1 / controller.updateInterval);
         this.angle = 0;
     }
 }

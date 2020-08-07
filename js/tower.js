@@ -94,3 +94,4 @@ class TargetingTower extends BaseTower {
         super.fire(target);
     }
 }
+

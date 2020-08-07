@@ -103,6 +103,8 @@ class TDMap {
         }
     }
 
+
+
     clear() {
         for (var i = 0; i < this.path.length; i++) {
             this.path[i].clear();

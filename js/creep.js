@@ -44,7 +44,14 @@ class BaseCreep extends GameObject {
         controller.registerObject(this);
 	}
 	addEffect(effect) {
+		this.effects.forEach(function(v, k, s){
+            if(v.constructor === effect.constructor){
+                v.cdtime = effect.cooldown;
+                return;
+            }
+        });
 		this.effects.add(effect);
+		effect.init(this);
 	}
 	removeEffect(effect){
 		this.effects.delete(effect);
@@ -53,6 +60,9 @@ class BaseCreep extends GameObject {
 		if(--this.health <= 0){
 			this.onDeath();
 		}
+	}
+	affectedBy(projectile){
+		return true;
 	}
 	onDeath() {
 		this.id = null;
@@ -117,6 +127,7 @@ class BaseCreep extends GameObject {
 	}
 }
 
+
 class MatryoshkaCreep extends BaseCreep {
     // The creep that spawns when this one is killed
     static get innerCreep() {
@@ -142,8 +153,13 @@ class MatryoshkaCreep extends BaseCreep {
 class BaseEffect {
 
 	constructor(cooldown){
+
 		this.cooldown = cooldown;
 		this.cdtime = this.cooldown;
+	}
+
+	init(object){
+
 	}
 
 	update(object){
