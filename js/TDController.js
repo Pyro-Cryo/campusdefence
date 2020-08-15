@@ -89,10 +89,6 @@
             },
             {
                 type: Fnoell,
-                cost: 700,
-                name: "Fjädrande Lillie-Fnöll",
-                description: "Lillie-Fnöll studsar runt över hela campus och kramar alla hon ser! Hon tycker särskilt mycket om att svänga förbi ensamma ninjor som de andra faddrarna glömt bort.",
-                button: null,
                 unlockLevel: 7
             },
             {

@@ -335,6 +335,10 @@ class Fnoell extends BaseTower {
     static get JumpCD() { return 2000; }
     static get TimeBetweenJumps() { return 1000; }
 
+    static get cost() { return 700 }
+    static get name() { return "Fjädrande Lillie-Fnöll"; }
+    static get desc() { return "Lillie-Fnöll studsar runt över hela campus och kramar alla hon ser! Hon tycker särskilt mycket om att svänga förbi ensamma ninjor som de andra faddrarna glömt bort."; }
+
     constructor(x, y) {
         super(x, y);
         this.fireangle = 0;
