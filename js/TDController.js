@@ -50,7 +50,8 @@
         this.levelNumberElement = document.getElementById("levelno");
         this.creepSummaryElement = document.getElementById("creepSummary");
 
-        this.hp = 140+51;
+        this.initialHP = 140+51;
+        this.hp = this.initialHP;
         this.money = 500;
         this.sellPriceMultiplier = 0.8;
         this.healthcounter = document.getElementById("healthcounter");
@@ -152,6 +153,7 @@
 
         this.loadFromCookie();
         this.updateCreepSummary();
+        this.setMessage(levelMessage(this.levelNumber), false);
     }
 
     update() {
@@ -262,6 +264,7 @@
         this.levelNumber++;
         this.saveToCookie();
         this.updateCreepSummary();
+        this.setMessage(levelMessage(this.levelNumber), false);
     }
 
     updateCreepSummary() {

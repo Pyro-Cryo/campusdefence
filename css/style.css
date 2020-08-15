@@ -140,3 +140,11 @@ span.counter{
     margin-top: 10px;
     width: 80px;
 }
+
+#messagebox {
+    font-family: 'Courier New', Courier, monospace;
+    background: black;
+    color: #ff52ba;
+    border-radius: 1ex;
+    padding: 1em;
+}

@@ -16,7 +16,7 @@ function getLevel(number, updateInterval) {
                 .send(10, Red).over(10 * s));
         case 4:
             return (new CreepSequence()
-                .send(40, Ninja).over(20 * s)
+                .wait(10 * s).send(40, Ninja).over(10 * s)
                 .interleave(new CreepSequence().send(20, Red).over(20 * s)));
         case 5:
             return (new CreepSequence()
@@ -91,6 +91,30 @@ function levelClearReward(number) {
             break;
     }
     controller.money += cash;
+}
+
+// Skrivs ut innan respektive nivå
+function levelMessage(number) {
+    switch (number) {
+        case 1: return "Välkommen! Välj en fadder i menyn och placera ut det nära vägen. Ringen och prickarna visar hur långt tornet ser.<br /><br /><i>nØllan sitter glatt och tuggar pastasallad i Konsulatet när plötsligt ninjorna från Föhsarkrocketen visar sig igen, denna gång med ännu ondare avsikter. Nu är det upp till faddrarna att stoppa dem!</i>";
+
+        case 2:
+            if (controller.hp === controller.initialHP)
+                return "Bra jobbat! Du kan klicka på faddrarna du placerat ut för att uppgradera eller sälja dem.<br /><br/><i>Den första attacken avstyrdes enkelt, men ninjorna kommer att återvända i större antal.</i>";
+            else
+                return "Aj då, nu slank det igenom " + (controller.initialHP - controller.hp == 1 ? "en" : "ett par") + ". Prova att placera ut fler torn, eller att sätta dem mer strategiskt! Du kan sälja eller uppgradera dina faddrar genom att klicka på dem.<br /><br /><i>Någon nØllan strök med, men lite svinn får man räkna med. Det är dock än fler ninjor på väg...</i>";
+            
+        case 3: return "Det finns olika typer av ninjor, vilket man kan se på deras färg. De med röd huva har två stycken med svart i sig.<br /><br /><i>Föhseriet inser att faddrarna utgör ett starkare försvar än väntat - som väntat. Taktikföhs sätter in de specialtränade trojanska ninjorna.</i>";
+        
+        case 4: return "Du har nu låst upp två nya sorters torn! I menyn kan du se hur mycket varje torn kostar samt en vag beskrivning av vad de gör.<br /><br /><i>Fjädrande Fadderiet har har fått nys om Föhseriets planer och sällar sig till fadderförsvaret.</i>";
+
+        case 5: return "Fadderisterna har lite olika förmågor - testa dig fram och se vilka du föredrar!<br /><br /><i>Att fadderisterna skulle ansluta sig var väntat - Föhseriet står redo att skicka ut de nästlade trojanska ninjorna.</i>";
+
+        case 6: return "Blåa ninjor har två röda ninjor i sig - mycket att hantera men det klirrar dödsskönt i kassakistan. Varje ninja du kramar ger en peng, förutom extrapengarna du får efter varje nivå.<br /><br /><i></i>"
+
+        default:
+            return "\xa0";
+    }
 }
 
 class CreepSequence {

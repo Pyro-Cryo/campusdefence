@@ -1,6 +1,5 @@
 - Fixa bilder på faktiska faddrar / förfaddrar?
 - Gör fler levels (upp till 30, sen repeteras och blir svårare)
-- Torn: Lillie-Fnöll
 - Nån motsvarighet till road spikes i bloons som kan ta några ninjor man missat?
 - Balansera lite, pengar får man väldigt fort nu
 - Nåt bra sätt att presentera lore
