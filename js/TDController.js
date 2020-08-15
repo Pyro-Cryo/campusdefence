@@ -246,7 +246,14 @@
     onPlay() {
         if(this.levelCleared)
             this.startLevel();
+        if (music.readyState == 4)
+            music.play();
         super.onPlay();
+    }
+
+    onPause() {
+        music.pause();
+        super.onPause();
     }
 
     startLevel() {
