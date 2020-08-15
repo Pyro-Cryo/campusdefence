@@ -73,67 +73,22 @@
                 button: null,
                 upgrades: [
                     {
-                        type: Forfadder1,
-                        cost: 150,
-                        name: "Förfadder (snabb)",
-                        description: "Den här förfaddern kramar dubbelt så snabbt som en vanlig fadder.",
-                        requiredHits: 20
-                    },
-                    {
-                        type: Forfadder2,
-                        cost: 150,
-                        name: "Förfadder (lång)",
-                        description: "Den här förfaddern når mycket längre än en vanlig fadder.",
-                        requiredHits: 20
-                    }
-                ]
+                        type: TakeAwayCoffee,
+                        cost: 100,
+                        name: "Take away Kaffe",
+                        description: "Köp kaffe till faddern så jobbar den snabbare.",
+                        
+                    }],
             },
             {
                 type: Forfadder1,
                 cost: 350,
-                name: "Förfadder (snabb)",
-                description: "Den här förfaddern kramar dubbelt så snabbt som en vanlig fadder.",
-                cannotPurchaseDirectly: true,
-                upgrades: [
-                    {
-                        type: Becca,
-                        cost: 0,
-                        name: "Fjädrande Becca",
-                        description: "Flamberande Becca har en eldkastare.",
-                        requiredHits: 50
-                    },
-                    {
-                        type: Axel,
-                        cost: 200,
-                        name: "Fjädrande Axel",
-                        description: "Fackliga Axel älskar två saker: facklor och att festa. Han bjuder gärna alla omkring sig på Molotovcocktails, och när dessa exploderar träffar de alla ninjor inom ett visst område.",
-                        requiredHits: 50
-                    }
-                ]
+                name: "Förfadder",
+                description: "En förfadder är som en fadder, fast med extra mycket kärlek att ge. En förfadder både kramar snabbare och når längre med sina kramar än en vanlig fadder.",
+                button: null,
+                upgrades: [],
             },
-            {
-                type: Forfadder2,
-                cost: 350,
-                name: "Förfadder (lång)",
-                description: "Den här förfaddern når mycket längre än en vanlig fadder.",
-                cannotPurchaseDirectly: true,
-                upgrades: [
-                    {
-                        type: Frida,
-                        cost: 0,
-                        name: "Fjädrande Frida",
-                        description: "Fuskande Frida lägger inte ifrån sig sin avstängda mobil på anvisad plats. När hon skickar lösningarna till lämnisarna till en grupp ninjor försöker de läsa och gå samtidigt, men simultanförmåga är en bristvara hos ninjor.",
-                        requiredHits: 50
-                    },
-                    {
-                        type: Nicole,
-                        cost: 100,
-                        name: "Fjädrande Nicole",
-                        description: "Fina Nicole älskar blommor. När en ninja blir träffad av en blomma inser den hur fel den haft, och ger sig av hemåt igen. Insikten varar tyvärr dock bara några sekunder varpå ninjan fortsätter framåt.",
-                        requiredHits: 50
-                    }
-                ]
-            },
+
             {
                 type: Frida,
                 cost: 400,
@@ -173,6 +128,15 @@
                 description: "Inget får fysiker att studsa upp så snabbt från sina stolar som Konsulatets kaffekokare. Kaffe gör att en student jobbar dubbelt så snabbt som vanligt, men tyvärr räcker inte kaffet så länge, och snart är det tomt i kannan igen.",
                 button: null,
                 unlockLevel: 8,
+                upgrades: [
+                    {
+                        type: MakeCoffe,
+                        cost: 15,
+                        name: "Sätt på kaffe",
+                        description: "Gör en kanna kaffe och ge dina torn en rejäl boost i fem sekunder.",
+
+                    }
+                ],
             }
         ];
         
@@ -383,8 +347,8 @@
             if (spec.upgrades)
                 spec.upgrades.forEach(upgrade => {
                     this.contextOption(
-                        "Uppgradera till " + upgrade.name,
-                        "Betala " + upgrade.cost + " " + dollares + " för att uppgradera till " + upgrade.name + ". " +
+                        upgrade.name,
+                        "Betala " + upgrade.cost + " " + dollares + "." +
                         (upgrade.requiredHits && this.selectedTower.hits < upgrade.requiredHits ? "Kräver " + upgrade.requiredHits + " träffar. " : "") +
                         upgrade.description,
                         "Uppgradera",
@@ -396,15 +360,9 @@
                             else if (hitdiff > 0)
                                 alert("Faddern måste träna mer - den behöver ytterligare " + hitdiff + " träff" + (hitdiff === 1 ? "" : "ar") + ".");
                             else {
-                                let x = this.selectedTower.x;
-                                let y = this.selectedTower.y;
-                                let hits = this.selectedTower.hits;
                                 this.money -= upgrade.cost;
-                                this.selectedTower.destroy();
-                                this.destroyContextMenu();
-                                this.selectedTower = new upgrade.type(x, y);
-                                this.selectedTower.hits = hits;
-                                this.setupContextMenu();
+                                let gadget = new upgrade.type(this.selectedTower);
+                                // this.setupContextMenu();
                             }
                         }
                     );

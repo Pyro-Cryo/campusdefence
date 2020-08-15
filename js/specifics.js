@@ -348,13 +348,13 @@ let forfadder1img = new Image();
 forfadder1img.src = "img/jonas3.png";
 
 let forfadder2img = new Image();
-forfadder2img.src = "img/helmer3.png";
+forfadder2img.src = "img/helmer2.png";
 
 class Forfadder1 extends TargetingTower {
-    static get range() { return 2.5; }
-    static get CDtime() { return 400; }
-    static get image() { return forfadder1img; }
-    static get scale() { return 0.18; }
+    static get range() { return 4; }
+    static get CDtime() { return 600; }
+    static get image() { return forfadder2img; }
+    static get scale() { return 0.2; }
 
     projectile(target) {
         return new Hug(this.map, this, target);
@@ -390,8 +390,8 @@ class CaffeinKick extends BaseEffect {
     init(object){
         object.CDtime /= 2;
     }
-    apply(){
-    	
+    apply(object){
+    	this.remove(object);
     }
     remove(object) {
         object.CDtime *= 2;
@@ -399,19 +399,67 @@ class CaffeinKick extends BaseEffect {
     }
 }
 
-let coffeimg = new Image();
-coffeimg.src = "img/coffemaker-empty.png";
+let coffeempty = new Image();
+let coffeefull = new Image();
+coffeempty.src = "img/coffemaker-empty.png";
+coffeefull.src = "img/coffemaker-full.png";
 
 class CoffeMaker extends SupportTower {
 
 	static get range() { return 4; }
-	static get CDtime() {return  5000 / controller.updateInterval; }
-	static get image() { return coffeimg; }
-	static get scale() { return 0.2; }
+	static get CDtime() {return  5000;}
+	static get image() { return coffeempty; }
+	static get scale() { return 0.18; }
 
+	constructor(x,y) {
+		super(x,y);
+		this.CDtimer = this.constructor.CDtime;
+		this.apply();
+	}
+	apply() {
+		console.log("Putting coffee on!");
+		this.image = coffeefull;
+		this.effectCDtimer = this.effectCDtime;
+		super.apply();
+	}
+	remove() {
+		console.log("Out of coffee!");
+		this.image = coffeempty;
+		super.remove();
+	}
 	applyTo(tower) {
 		let c = new CaffeinKick();
 		tower.addEffect(c);
+	}
+}
+
+class MakeCoffe extends Gadget {
+
+    // The tower's sprite
+    static get image() { return null; }
+    // The tower's sprite's scale
+    static get scale() { return 1; }
+
+	addTo(tower){
+		tower.apply();
+	}
+
+	draw(gameArea){
+	}
+
+}
+
+let takeawaycup = new Image();
+takeawaycup.src = "img/coffee-takeaway.png";
+
+class TakeAwayCoffee extends Gadget {
+
+	static get image() { return takeawaycup; }
+	static get scale() { return 1; }
+
+	addTo(tower) {
+		tower.CDtime *= 0.75;
+		tower.addGadget(this);
 	}
 
 }
