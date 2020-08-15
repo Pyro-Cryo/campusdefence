@@ -30,6 +30,7 @@ class TDMap {
         );
 
         this.towers = [];
+        this.eventListeners = [];
 
         this.path = [];
         if (path.length < 2)
@@ -51,15 +52,33 @@ class TDMap {
         }
     }
 
+    addEventListener(callback){
+        this.eventListeners.push(callback);
+    }
+
+    removeEventListener(callback) {
+        this.eventListeners = this.eventListeners.filter(function(el){
+            return el != callback;
+        });
+    }
+
     addTower(tower) {
         if (this.towers.findIndex(t => t.id === tower.id) === -1) {
             this.towers.push(tower);
             this.setGridAt(tower.x, tower.y, tower);
+
+            for (var i = 0; i < this.eventListeners.length; i++) {
+                this.eventListeners[i](tower);
+            }
         }
     }
     removeTower(tower) {
         this.towers = this.towers.filter(t => t !== tower);
         this.setGridAt(tower.x, tower.y, null);
+
+        for (var i = 0; i < this.eventListeners.length; i++) {
+            this.eventListeners[i](tower);
+        }
     }
 
     setGridAt(x, y, obj) {

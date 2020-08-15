@@ -163,6 +163,14 @@
                 description: "Fackliga Axel älskar två saker: facklor och att festa. Han bjuder gärna alla omkring sig på Molotovcocktails, och när dessa exploderar träffar de alla ninjor inom ett visst område.",
                 button: null,
                 unlockLevel: 6
+            },
+            {
+                type: CoffeMaker,
+                cost: 1200,
+                name: "Kaffekokare",
+                description: "Inget får fysiker att studsa upp så snabbt från sina stolar som Konsulatets kaffekokare. Kaffe gör att en student jobbar dubbelt så snabbt som vanligt, men tyvärr räcker inte kaffet så länge, och snart är det tomt i kannan igen.",
+                button: null,
+                unlockLevel: 8,
             }
         ];
         
@@ -445,6 +453,8 @@
             originatingButton.title = "Avbryt det pågående köpet";
         }
     }
+
+
 
 
     saveToCookie(){
