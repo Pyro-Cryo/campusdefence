@@ -15,6 +15,16 @@ class BaseTower extends GameObject {
     static get scale() {
         throw new Error("Abstract property scale must be overridden by subclass");
     }
+    static get cost() {
+        throw new Error("Abstract property cost must be overridden by subclass");
+    }
+    static get name() {
+        throw new Error("Abstract property cost must be overridden by subclass");
+    }
+    static get desc() {
+        throw new Error("Abstract property cost must be overridden by subclass");
+    }
+
 
     // CoolDowntime is measured in update ticks internally
     constructor(x, y) {
@@ -26,11 +36,34 @@ class BaseTower extends GameObject {
         this.CDtime = this.constructor.CDtime / controller.updateInterval;
         this.CDtimer = 0;
         this.hits = 0;
+
         this.gadgets = [];
+        this.upgrades = [];
 
         this.inrange = this.pathInRange();
+
         controller.registerObject(this);
         this.map.addTower(this);
+
+        this.configUpgrades();
+    }
+
+    configUpgrades(){
+
+    }
+
+    addUpgrade(gadget, name, desc, cost, requires, blocked, minhits){
+
+        this.upgrades.push({
+            type: gadget,
+            name: name,
+            desc: desc,
+            cost: cost,
+            requires: requires,
+            blocked: blocked,
+            hits: minhits
+        });
+
     }
 
     target() {
@@ -60,6 +93,8 @@ class BaseTower extends GameObject {
 
     addGadget(gadget){
         this.gadgets.push(gadget);
+        this.upgrades = this.upgrades.filter(up => gadget.constructor.name ===  up.type.constructor.name);
+        console.log(this.upgrades);
     }
 
     update() {
@@ -193,7 +228,9 @@ class Gadget extends GameObject {
     }
 
     constructor(parent){
-        super(undefined, parent.x, parent.y, 0, undefined);
+        let x = parent.x + 0.5 - parent.gadgets.length * 0.25;
+        let y = parent.y + 0.5;
+        super(undefined, x, y, 0, undefined);
         this.image = this.constructor.image;
         this.scale = this.constructor.scale;
         this.addTo(parent);
