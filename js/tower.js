@@ -58,6 +58,10 @@ class BaseTower extends GameObject {
         return null;
     }
 
+    addGadget(gadget){
+        this.gadgets.push(gadget);
+    }
+
     update() {
         if (this.CDtimer <= 0) {
             let target = this.target();
@@ -115,10 +119,21 @@ class SupportTower extends BaseTower {
         super(x,y);
         controller.map.addEventListener(this.onMapUpdate.bind(this));
 
+        this.effectCDtime = this.constructor.CDtime / controller.updateInterval;
+        this.effectCDtimer = -1;
         this.towersinrange = this.towersInRange();
-        this.apply();
 
     }
+
+    update() {
+        if(this.effectCDtimer >= 0){
+            if(--this.effectCDtimer <= 0){
+                this.remove();
+            }
+        }
+        super.update();
+    }
+
     towersInRange() {
         return controller.map.towers.filter(function(tower){
             if(tower === this){
@@ -133,6 +148,7 @@ class SupportTower extends BaseTower {
         }
     }
     remove() {
+        this.effectCDtimer = -1;
         for (var i = 0; i < this.towersinrange.length; i++) {
             this.removeFrom(this.towersinrange[i]);
         }
@@ -167,11 +183,24 @@ class SupportTower extends BaseTower {
 
 class Gadget extends GameObject {
 
-    constructor(parent){
-
-
-
+    // The tower's sprite
+    static get image() {
+        throw new Error("Abstract property image must be overridden by subclass");
+    }
+    // The tower's sprite's scale
+    static get scale() {
+        throw new Error("Abstract property scale must be overridden by subclass");
     }
 
+    constructor(parent){
+        super(undefined, parent.x, parent.y, 0, undefined);
+        this.image = this.constructor.image;
+        this.scale = this.constructor.scale;
+        this.addTo(parent);
+    }
+
+    addTo(tower){
+        tower.addGadget(this);
+    }
 
 }
