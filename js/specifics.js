@@ -153,16 +153,6 @@ class Payback extends InverseProjectile {
     }
 }
 
-/*let fohsimg2 = new Image();
-fohsimg2.src = "img/bluefohs.png";
-
-class FastNinja extends MatryoshkaCreep {
-    static get speed() { return 1; }
-    static get image() { return fohsimg2; }
-    static get scale() { return 1; }
-    static get innerCreep() { return Gabbe; }
-}*/
-
 /* ---------- Towers and Projectiles ---------- */
 
 class Converted extends BaseEffect {

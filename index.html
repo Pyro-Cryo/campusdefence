@@ -23,51 +23,69 @@
     <script type="text/javascript" src="js/specifics.js"></script>
     <script type="text/javascript" src="js/levels.js"></script>
 
+    <!-- Background music -->
+    <script>
+        let music = new Audio("audio/myrstacken.mp3");
+        music.loop = true;
+        music.preload = true;
+        music.addEventListener('timeupdate', function () {
+            var buffer = .44;
+            if (this.currentTime > this.duration - buffer) {
+                this.currentTime = 0;
+                this.play();
+            }
+        }, false);
+    </script>
+
     <!-- The main controller -->
     <script type="text/javascript" src="js/TDController.js"></script>
-    
 </head>
 <body>
     <div class="header">
-        <h1>Campus Defence!</h1>
+        Campus Tornförsvar
     </div>
     <div class="main">
-    	
-        <div class="controllbar">
-            <button id="playButton" class="controllerButton">▶</button>
-            <button id="fastForwardButton" class="controllerButton">▶▶</button>
-            <button id="resetButton" class="controllerButton">&#8634;</button>
+        <div class="game">
+            <div class="controllbar">
+                <button id="playButton" class="controllerButton">▶</button>
+                <button id="fastForwardButton" class="controllerButton">▶▶</button>
+                <button id="resetButton" class="controllerButton">&#8634;</button>
+            </div>
+            <div class="infobar">
+                Nivå <span id="levelno">Ø</span> - <div id="creepSummary"></div>
+            </div>
+            <div class="statusbar">
+                <div class="counter">&#128176; <span id="moneycounter" class="counter">500</span></div>
+                <div class="counter">❤️<span id="healthcounter" class="counter">191</span></div>
+            </div>
+            <canvas name="gameboard" width="598" height="500" style="border:1px solid #000;">
+            </canvas>
         </div>
-        <div class="infobar">
-            Nivå <span id="levelno">Ø</span> - <div id="creepSummary"></div>
-        </div>
-        <div class="statusbar">
-            <div class="counter">&#128176; <span id="moneycounter" class="counter">500</span></div>
-            <div class="counter">❤️<span id="healthcounter" class="counter">191</span></div>
-        </div>
-    	<canvas name="gameboard" width="598" height="500" style="border:1px solid #000;">
-    	</canvas>
-        <div class="towerMarket">
-            <div id="towerTemplate" class="towerInfo template">
-                <img name="image" src="img/helmer1.png">
-                <p>
-                    <strong name="title">Title</strong> <span class="unlockInfo">Info</span><br>
-                    <span name="desc">Desc. Lorem ipsum dolar sit amet</span>
-                </p>
-                <div>
-                    💰<span name="cost"></span>
-                    <button name="buybtn">Köp</button>
+        <div class="menus">
+            <div class="towerMarket">
+                <div id="towerTemplate" class="towerInfo template">
+                    <img name="image" src="img/helmer1.png">
+                    <p>
+                        <strong name="title">Title</strong> <span class="unlockInfo">Info</span><br>
+                        <span name="desc">Desc. Lorem ipsum dolor sit amet</span>
+                    </p>
+                    <div>
+                        💰<span name="cost"></span>
+                        <button name="buybtn">Köp</button>
+                    </div>
+                </div> 
+            </div>
+            <div class="contextMenu hideme">
+                <div id="optionTemplate" class="contextOption template">
+                    <strong name="title">Titel</strong>
+                    <span name="desc">Ev. en beskrivning?</span>
+                    <button name="actionbtn">Handling</button>
                 </div>
-            </div> 
-        </div>
-        <div class="contextMenu hideme">
-            <div id="optionTemplate" class="contextOption template">
-                <strong name="title">Titel</strong>
-                <span name="desc">Ev. en beskrivning?</span>
-                <button name="actionbtn">Handling</button>
             </div>
         </div>
-        
+    </div>
+    <div class="footer">
+        Ett spel av <a href="https://f.kth.se/arcade/kvackman" target="_blank">Pyro</a> & Cryo
     </div>
 
     <script type="text/javascript">
