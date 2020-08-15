@@ -1,4 +1,3 @@
-// TODO: Vill man ha att tornen håller koll på hur många kills de fått? Ha det som ett krav för att uppgradera??
 class BaseTower extends GameObject {
     // Range in grid units
     static get range() {
@@ -144,7 +143,7 @@ class OmniTower extends BaseTower {
 
 class TargetingTower extends BaseTower {
     fire(target) {
-        this.angle = Math.atan2(this.y - target.y, this.x - target.x);
+        this.angle = Math.atan2(target.y - this.y, target.x - this.x);
         super.fire(target);
     }
 }

@@ -136,7 +136,7 @@ class MatryoshkaCreep extends BaseCreep {
         // resterande 3 damage var? Iofs gör alla projektiler 1 damage i nuläget
         for (let i = 0; i < this.constructor.innerCreepCount; i++)
             new this.constructor.innerCreep(
-                this.distance + this.speed * (0.5 + i - this.constructor.innerCreepCount / 2)
+                Math.min(controller.map.path.length - 1, Math.max(0, this.distance + this.speed * (0.5 + i - this.constructor.innerCreepCount / 2)))
             );
         super.onDeath();
     }

@@ -22,12 +22,12 @@ div.footer{
 div.main{
     display: flex;
     flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
 }
 div.game{
     padding: 15px;
     width: 600px;
-    margin: auto;
-    height: auto;
 }
 div.statusbar{
     float:right;
@@ -38,6 +38,7 @@ div.controllbar{
 div.infobar {
     float: left;
     margin: 0.5ex;
+    margin-left: 1.5ex;
 }
 #creepSummary {
     display: inline;
@@ -116,8 +117,6 @@ span.counter{
 .menus {
     padding: 15px;
     width: 600px;
-    margin: auto;
-    height: auto;
 }
 
 .contextMenu .contextOption {

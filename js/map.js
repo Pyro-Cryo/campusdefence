@@ -21,8 +21,8 @@ class TDMap {
         this.gridWidth = this.gridInnerWidth + 2 * this.margin;
         this.gridHeight = this.gridInnerHeight + 2 * this.margin;
 
-        //Tror det är bättre att lagra y i första indexet och x i andra,
-        //så blir det naturligare om man ex. printar till konsolen
+        //Tror det ï¿½r bï¿½ttre att lagra y i fï¿½rsta indexet och x i andra,
+        //sï¿½ blir det naturligare om man ex. printar till konsolen
         this.grid = Array(this.gridHeight).fill(0).map(
             y => Array(this.gridWidth).fill(0).map(
                 x => null
@@ -100,6 +100,13 @@ class TDMap {
             && this.gridHeight - 1 >= y + this.margin);
     }
 
+    visiblePosition(x, y) {
+        return (x >= 0
+            && this.gridInnerWidth - 1 >= x
+            && y >= 0
+            && this.gridInnerHeight - 1 >= y);
+    }
+
     // Get the canvas (x, y) from a progress value 0 <= t <= this.path.length - 1.
     getPosition(t) {
         if (t < 0 || t > this.path.length - 1)
@@ -135,7 +142,7 @@ class TDMap {
 
     draw(gameArea){
         gameArea.draw(this.img, this.gridInnerWidth/2-1/2, this.gridInnerHeight/2-1/2, 0, this.scale);
-        this.drawPath(gameArea);        
+        this.drawPath(gameArea);
     }
 
     drawPath(gameArea) {
