@@ -87,17 +87,17 @@ class SF_1 extends BaseCreep {
     static get speed() { return 0.65; }
     static get image() { return sfimg; }
     static get scale() { return 0.2; }
-    static get health() { return 50; }
+    static get health() { return 50*3; }
     static get drawHealthBar() { return true; }
     static get value() { return 50; }
 
-    // onHit(projectile) {
-    //     if(projectile instanceof Hug){
-    //         // SF kramas inte!
-    //         return false;
-    //     }
-    //     super.onHit(projectile);
-    // }
+    onHit(projectile) {
+        if(projectile instanceof Hug){
+            // SF kramas inte!
+            this.health -= 3;
+        }
+        super.onHit(projectile);
+    }
 }
 
 class OF_1 extends BaseCreep {
@@ -306,7 +306,7 @@ hugimg.src = "img/kram.png";
 
 class Hug extends BasicProjectile {
     constructor(map, source, target) {
-        super(map, hugimg, source, target.x, target.y, 0.1, 1 / controller.updateInterval);
+        super(map, hugimg, source, target.x, target.y, 0.1, 2 / controller.updateInterval);
         this.angle = 0;
     }
 }
@@ -343,10 +343,10 @@ class Forfadder1 extends TargetingTower {
 }
 
 class Forfadder2 extends TargetingTower {
-    static get range() { return 4; }
+    static get range() { return 5; }
     static get CDtime() { return 800; }
     static get image() { return forfadder2img; }
-    static get scale() { return 0.03; }
+    static get scale() { return 0.06; }
 
     projectile(target) {
         let hug = new Hug(this.map, this, target);
