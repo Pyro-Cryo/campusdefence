@@ -310,6 +310,100 @@ class Becca extends TargetingTower {
     }
 }
 
+let fnoellimg = new Image();
+fnoellimg.src = "img/transparent/lillie.png";
+
+class Fnoell extends BaseTower {
+    static get range() { return 2; }
+    static get CDtime() { return 1000; }
+    static get image() { return fnoellimg; }
+    static get scale() { return 0.17; }
+
+    static get DPS() { return 8; }
+    static get JumpCD() { return 2000; }
+    static get TimeBetweenJumps() { return 1000; }
+
+    constructor(x, y) {
+        super(x, y);
+        this.fireangle = 0;
+        this.leftToFire = -1;
+        this.DPS = this.constructor.DPS;
+        this.spiralCD = this.constructor.CDtime / this.DPS;
+        this.spiralTimer = 0;
+        this.timeWithoutTarget = 0;
+    }
+
+    projectile(target) {
+        return new Hug(this.map, this, target);
+    }
+
+    fire(target) {
+        this.leftToFire = this.DPS;
+        if (this.timeWithoutTarget > 100)
+            this.fireangle = Math.atan2(target.y - this.y, target.x - this.x);
+        this.CDtimer = this.CDtime;
+    }
+
+    update() {
+        if (this.leftToFire > 0)
+        {
+            this.spiralTimer -= controller.updateInterval;
+            if (this.spiralTimer <= 0)
+            {
+                this.spiralTimer += this.spiralCD;
+                controller.registerObject(new Hug(this.map, this, {x: this.x + Math.cos(this.fireangle), y: this.y + Math.sin(this.fireangle)}));
+                this.fireangle = (this.fireangle + 2 * Math.PI / this.DPS) % (2 * Math.PI);
+                this.leftToFire--;
+            }
+            this.timeWithoutTarget = 0;
+        } else
+            this.timeWithoutTarget += controller.updateInterval;
+
+        if (this.timeWithoutTarget >= this.constructor.JumpCD) {
+            this.jump();
+            this.timeWithoutTarget -= this.constructor.TimeBetweenJumps;
+        }
+        
+        super.update();
+    }
+
+    jump() {
+        let bestX = null;
+        let bestY = null;
+        let best = null;
+        
+        let target = null;
+        for (let i = this.map.path.length - 1; i >= 0; i--)
+            if (this.map.path[i].hasCreep())
+                target = this.map.path[i];
+
+        if (target !== null)
+            for (let x = -2; x <= 2; x++)
+                for (let y = -2; y <= 2; y++)
+                    if (Math.abs(x) + Math.abs(y) === 3
+                            && this.map.visiblePosition(this.x + x, this.y + y)
+                            && this.map.getGridAt(this.x + x, this.y + y) === null)
+                    {
+                        let distsqr = Math.pow(this.x + x - target.x, 2) + Math.pow(this.y + y - target.y, 2);
+                        if (!best || distsqr < best)
+                        {
+                            best = distsqr;
+                            bestX = this.x + x;
+                            bestY = this.y + y;
+                        }
+                    }
+        
+        if (bestX !== null && bestY !== null)
+        {
+            this.map.removeTower(this);
+            this.x = bestX;
+            this.y = bestY;
+            this.map.addTower(this);
+            this.inrange = this.pathInRange();
+        }
+    }
+}
+
 let hugimg = new Image();
 hugimg.src = "img/kram.png";
 
