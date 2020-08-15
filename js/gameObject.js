@@ -6,9 +6,16 @@ class GameObject {
         this.angle = angle;
         this.scale = scale;
         this.id = null;
+
+        this.despawnTimer = -1;
     }
     update() {
-        
+        	
+        if (this.despawnTimer >= 0){
+        	if(--this.despawnTimer <= 0){
+        		this.id = null;
+        	}
+        }
     }
     draw(gameArea) {
         gameArea.draw(this.image, this.x, this.y, this.angle, this.scale);   

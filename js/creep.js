@@ -1,3 +1,6 @@
+let ninjastar = new Image();
+ninjastar.src = "img/ninjastar.png";
+
 class BaseCreep extends GameObject {
     // Speed in grid units per second
     static get speed() {
@@ -65,7 +68,8 @@ class BaseCreep extends GameObject {
 		return true;
 	}
 	onDeath() {
-		this.id = null;
+		this.despawnTimer = 3;
+		this.image = ninjastar;
 		this.pathtile.remove(this);
 		this.pathtile = null;
 		controller.money += this.value;
@@ -84,6 +88,10 @@ class BaseCreep extends GameObject {
 	update() {
 		if (this.id === null)
 			return;
+		if(this.despawnTimer >= 0){
+			super.update();
+			return;
+		}
 
 		// Apply status effects
 		this.effects.forEach(function(obj){

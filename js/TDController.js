@@ -47,6 +47,8 @@
         this.levelNumber = 1;
         this.levelIterator = null;
         this.levelCleared = true;
+        this.levelNumberElement = document.getElementById("levelno");
+        this.creepSummaryElement = document.getElementById("creepSummary");
 
         this.hp = 140+51;
         this.money = 500;
@@ -169,6 +171,7 @@
         this.buyingTower = null;
 
         this.loadFromCookie();
+        this.updateCreepSummary();
     }
 
     update() {
@@ -238,7 +241,6 @@
                 this.gameArea.disc(pt.x, pt.y, 0.3, "rgba(255, 255, 255, 0.7)")
             );
         }
-
     }
 
     onPlay() {
@@ -272,6 +274,26 @@
         });
         this.levelNumber++;
         this.saveToCookie();
+        this.updateCreepSummary();
+    }
+
+    updateCreepSummary() {
+        let iterator = (this.levelIterator || getLevel(this.levelNumber, this.updateInterval));
+        let remaining = iterator.remaining();
+        let codebook = iterator.codebook();
+
+        this.levelNumberElement.innerText = this.levelNumber;
+        while (this.creepSummaryElement.firstChild)
+            this.creepSummaryElement.removeChild(this.creepSummaryElement.lastChild);
+        let i = 0;
+        for (let creepType in remaining)
+        {
+            let img = new Image();
+            img.src = codebook[creepType].image.src;
+            this.creepSummaryElement.appendChild(new Text((i ? ", " : "") + remaining[creepType] + "\xa0"));
+            this.creepSummaryElement.appendChild(img);
+            i++;
+        }
     }
 
     onClickBoard(event) {

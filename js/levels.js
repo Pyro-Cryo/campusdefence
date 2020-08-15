@@ -98,6 +98,8 @@ class CreepSequence {
         this.iterating = false;
         this.currentSequence = [];
         this.totalSequence = [];
+        this._sent = {};
+        this._creepSummary = null;
     }
 
     _checks(shouldBeZero) {
@@ -126,13 +128,51 @@ class CreepSequence {
     }
 
     creepSummary() {
+        if (!this.iterating || !this._creepSummary)
+            this._creepSummary = this.totalSequence.concat(this.currentSequence).reduce((tot, ins) => {
+                if (ins[0] === "spawn") {
+                    if (ins[1] instanceof Array)
+                        for (let i = 0; i < ins[1].length; i++)
+                            tot[ins[1][i].name] = (tot[ins[1][i].name] || 0) + 1;
+                    else
+                        tot[ins[1].name] = (tot[ins[1].name] || 0) + 1;
+                }
+
+                return tot;
+            }, {});
+
+        return this._creepSummary;
+    }
+
+    sent() {
+        return this._sent;
+    }
+
+    remaining() {
+        let cs = this.creepSummary();
+        if (!this.iterating)
+            return cs;
+        let sent = this.sent();
+        let rem = {};
+
+        for (let t in cs)
+            rem[t] = cs[t] - (sent[t] || 0);
+
+        return rem;
+    }
+
+    codebook() {
         return this.totalSequence.concat(this.currentSequence).reduce((tot, ins) => {
             if (ins[0] === "spawn") {
                 if (ins[1] instanceof Array)
+                {
                     for (let i = 0; i < ins[1].length; i++)
-                        tot[ins[1][i].name] = (tot[ins[1][i].name] || 0) + 1;
+                        if (!tot[ins[1][i].name])
+                            tot[ins[1][i].name] = ins[1][i];
+                }
                 else
-                    tot[ins[1].name] = (tot[ins[1].name] || 0) + 1;
+                    if (!tot[ins[1].name])
+                        tot[ins[1].name] = ins[1];
             }
 
             return tot;
@@ -273,9 +313,16 @@ class CreepSequence {
 
                 case "spawn":
                     if (instruction[1] instanceof Array)
+                    {
                         instruction[1].forEach(creepType => new creepType());
+                        for (let i = 0; i < instruction[1].length; i++)
+                            this.sent[instruction[1][i].name] = (this.sent[instruction[1][i].name] || 0) + 1;
+                    }
                     else
+                    {
                         new instruction[1]();
+                        this.sent[instruction[1].name] = (this.sent[instruction[1].name] || 0) + 1;
+                    }
                     break;
             }
 

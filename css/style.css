@@ -1,5 +1,6 @@
 body {
     background-color: black; /*Snällare mot ögonen när man debuggar på natten*/
+    font-family: 'Nunito', sans-serif;
 }
 div.header{
     width: 100%;
@@ -20,6 +21,18 @@ div.statusbar{
 }
 div.controllbar{
     float:left;
+}
+div.infobar {
+    float: left;
+    margin: 0.5ex;
+}
+#creepSummary {
+    display: inline;
+}
+#creepSummary img {
+    position: relative;
+    height: 1em;
+    top: 0.2em;
 }
 div.counter{
     margin: 5px;

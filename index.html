@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="css/style.css">
 
     <!-- Basic classes for rendering etc. -->
@@ -37,7 +38,10 @@
             <button id="fastForwardButton" class="controllerButton">▶▶</button>
             <button id="resetButton" class="controllerButton">&#8634;</button>
         </div>
-        <div class="statusbar" style="float:right">
+        <div class="infobar">
+            Nivå <span id="levelno">Ø</span> - <div id="creepSummary"></div>
+        </div>
+        <div class="statusbar">
             <div class="counter">&#128176; <span id="moneycounter" class="counter">500</span></div>
             <div class="counter">❤️<span id="healthcounter" class="counter">191</span></div>
         </div>
