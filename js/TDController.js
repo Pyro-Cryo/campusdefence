@@ -67,78 +67,38 @@
         this.towerSpecs = [
             {
                 type: Fadder,
-                cost: 200,
-                name: "Fadder",
-                description: "En vanlig fadder som kramar ninjor den ser. Faddern åstadkommer kanske inte så mycket, men i slutändan måste man inte alltid göra det för att vara lycklig här i livet. Det är ändå vännerna man vinner på vägen som räknas.",
-                button: null,
-                upgrades: [
-                    {
-                        type: TakeAwayCoffee,
-                        cost: 100,
-                        name: "Take away Kaffe",
-                        description: "Köp kaffe till faddern så jobbar den snabbare.",
-                        
-                    }],
             },
             {
                 type: Forfadder1,
-                cost: 350,
-                name: "Förfadder",
-                description: "En förfadder är som en fadder, fast med extra mycket kärlek att ge. En förfadder både kramar snabbare och når längre med sina kramar än en vanlig fadder.",
-                button: null,
-                upgrades: [],
             },
-
             {
                 type: Frida,
-                cost: 400,
-                name: "Fjädrande Frida",
-                description: "Fuskande Frida lägger inte ifrån sig sin avstängda mobil på anvisad plats. När hon skickar lösningarna till lämnisarna till en grupp ninjor försöker de läsa och gå samtidigt, men simultanförmåga är en bristvara hos ninjor.",
-                button: null,
                 unlockLevel: 3
             },
             {
                 type: Nicole,
-                cost: 500,
-                name: "Fjädrande Nicole",
-                description: "Fina Nicole älskar blommor. När en ninja blir träffad av en blomma inser den hur fel den haft, och ger sig av hemåt igen. Insikten varar tyvärr dock bara några sekunder varpå ninjan fortsätter framåt.",
-                button: null,
                 unlockLevel: 4
             },
             {
                 type: Becca,
-                cost: 400,
-                name: "Fjädrande Becca",
-                description: "Flamberande Becca har en eldkastare.",
-                button: null,
                 unlockLevel: 5
             },
             {
                 type: Axel,
-                cost: 600,
-                name: "Fjädrande Axel",
-                description: "Fackliga Axel älskar två saker: facklor och att festa. Han bjuder gärna alla omkring sig på Molotovcocktails, och när dessa exploderar träffar de alla ninjor inom ett visst område.",
-                button: null,
                 unlockLevel: 6
             },
             {
                 type: CoffeMaker,
-                cost: 1200,
-                name: "Kaffekokare",
-                description: "Inget får fysiker att studsa upp så snabbt från sina stolar som Konsulatets kaffekokare. Kaffe gör att en student jobbar dubbelt så snabbt som vanligt, men tyvärr räcker inte kaffet så länge, och snart är det tomt i kannan igen.",
-                button: null,
-                unlockLevel: 8,
-                upgrades: [
-                    {
-                        type: MakeCoffe,
-                        cost: 15,
-                        name: "Sätt på kaffe",
-                        description: "Gör en kanna kaffe och ge dina torn en rejäl boost i fem sekunder.",
-
-                    }
-                ],
+                unlockLevel: 8
             }
         ];
+
+        for (var i = 0; i < this.towerSpecs.length; i++) {
+            this.towerSpecs[i].cost = this.towerSpecs[i].type.cost;
+            this.towerSpecs[i].name = this.towerSpecs[i].type.name;
+            this.towerSpecs[i].description = this.towerSpecs[i].type.desc;
+            this.towerSpecs[i].button = null;
+        }
         
         this.buyingTower = null;
 
@@ -343,7 +303,7 @@
                 .querySelector("button[name='actionbtn']").classList.add("hideme");
             this.contextOption(
                 "Sälj",
-                "Skicka faddern att hjälpa en annan sektion. Du får tillbaka " + (this.sellPriceMultiplier * spec.cost) + " " + dollares + ".",
+                "Skicka faddern att hjälpa en annan sektion. Du får tillbaka " + (this.sellPriceMultiplier * spec.cost) + " " + dollares,
                 null, () => {
                     this.selectedTower.destroy();
                     this.selectedTower = null;
@@ -351,17 +311,38 @@
                     this.money += this.sellPriceMultiplier * spec.cost;
                 }
             );
-            if (spec.upgrades)
-                spec.upgrades.forEach(upgrade => {
+            if (this.selectedTower.upgrades){
+
+                for (var i = 0; i < this.selectedTower.upgrades.length; i++) {
+                    let upgrade = this.selectedTower.upgrades[i];
+
+                    // Check if we have all required previous upgrades
+                    if(!upgrade.requires.every(function(elem){
+                        return this.selectedTower.gadgets.some(function(g){
+                            return typeof(g) === elem;
+                        })
+                    }.bind(this))){
+                        continue;
+                    }
+
+                    // Check that we dont have any upgrades that blockes this one
+                    if(upgrade.blocked.some(function(elem){
+                        return this.selectedTower.gadgets.some(function(g){
+                            return typeof(g) === elem;
+                        })
+                    }.bind(this))){
+                        continue;
+                    }
+
                     this.contextOption(
                         upgrade.name,
-                        "Betala " + upgrade.cost + " " + dollares + "." +
-                        (upgrade.requiredHits && this.selectedTower.hits < upgrade.requiredHits ? "Kräver " + upgrade.requiredHits + " träffar. " : "") +
-                        upgrade.description,
+                        "Betala " + upgrade.cost + " " + dollares + " " +
+                        (upgrade.hits && this.selectedTower.hits < upgrade.hits ? "Kräver " + upgrade.hits + " träffar. " : "") +
+                        upgrade.desc,
                         "Uppgradera",
                         () => {
                             // Gör detta elegantare med knappar som är disabled och enablas när man faktiskt har råd
-                            let hitdiff = upgrade.requiredHits - this.selectedTower.hits;
+                            let hitdiff = upgrade.hits - this.selectedTower.hits;
                             if (this.money < upgrade.cost)
                                 alert("Du har inte råd med det.");
                             else if (hitdiff > 0)
@@ -369,11 +350,13 @@
                             else {
                                 this.money -= upgrade.cost;
                                 let gadget = new upgrade.type(this.selectedTower);
-                                // this.setupContextMenu();
+                                this.destroyContextMenu();
+                                this.setupContextMenu();
                             }
                         }
                     );
-                });
+                }
+            }
         }
     }
     destroyContextMenu() {
@@ -381,6 +364,7 @@
         document.querySelector(".contextMenu").classList.add("hideme");
         document.querySelectorAll(".contextOption:not(.template)").forEach(option => option.remove())
     }
+
 
     setupTowerTable() {
 

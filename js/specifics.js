@@ -192,6 +192,9 @@ class Nicole extends TargetingTower {
     static get CDtime() { return 1000; }
     static get image() { return nicoleimg; }
     static get scale() { return 0.2; }
+    static get cost() { return 500; }
+    static get name() { return "Fjädrande Nicole"; }
+    static get desc() { return "Fina Nicole älskar blommor. När en ninja blir träffad av en blomma inser den hur fel den haft, och ger sig av hemåt igen. Insikten varar tyvärr dock bara några sekunder varpå ninjan fortsätter framåt."; }
 
     target() {
         let pt = super.target();
@@ -225,6 +228,9 @@ class Axel extends OmniTower {
     static get CDtime() { return 2500; }
     static get image() { return axelimg; }
     static get scale() { return 0.2; }
+    static get cost() { return 600; }
+    static get name() { return "Fjädrande Axel"; }
+    static get desc() { return "Fackliga Axel älskar två saker: facklor och att festa. Han bjuder gärna alla omkring sig på Molotovcocktails, och när dessa exploderar träffar de alla ninjor inom ett visst område."; }
 
     projectile(target) {
         return new Molotov(this.map, this, target);
@@ -270,6 +276,9 @@ class Frida extends TargetingTower {
     static get CDtime() { return 1500; }
     static get image() { return fridaimg; }
     static get scale() { return 0.2; }
+    static get cost() { return 400; }
+    static get name() { return "Fjädrande Frida"; }
+    static get desc() { return "Fuskande Frida lägger inte ifrån sig sin avstängda mobil på anvisad plats. När hon skickar lösningarna till lämnisarna till en grupp ninjor försöker de läsa och gå samtidigt, men simultanförmåga är en bristvara hos ninjor."; }
 
     projectile(target) {
         return new Wolfram(this, target);
@@ -304,6 +313,9 @@ class Becca extends TargetingTower {
     static get CDtime() { return 250; }
     static get image() { return beccaimg; }
     static get scale() { return 0.2; }
+    static get cost() { return 400; }
+    static get name() { return "Fjädrande Becca"; }
+    static get desc() { return "Flamberande Becca har en eldkastare."; }
 
     projectile(target) {
         return new Fire(this.map, this, target);
@@ -328,9 +340,23 @@ class Fadder extends TargetingTower {
     static get CDtime() { return 800; }
     static get image() { return fadderimg; }
     static get scale() { return 0.18; }
+    static get cost() { return 200; }
+    static get name() { return "Fadder"; }
+    static get desc() { return "En vanlig fadder som kramar ninjor den ser. Faddern åstadkommer kanske inte så mycket, men i slutändan måste man inte alltid göra det för att vara lycklig här i livet. Det är ändå vännerna man vinner på vägen som räknas."; }
 
     projectile(target) {
         return new Hug(this.map, this, target);
+    }
+
+    configUpgrades() {
+		this.addUpgrade(
+			TakeAwayCoffee, 
+			"Take away kaffe", 
+			"Ge faddern lite kaffe så jobbar den snabbare.", 
+			150, 
+			[], 
+			[TakeAwayCoffee],
+			20);
     }
 }
 
@@ -345,24 +371,27 @@ class Forfadder1 extends TargetingTower {
     static get CDtime() { return 600; }
     static get image() { return forfadder2img; }
     static get scale() { return 0.2; }
+    static get cost() { return 350; }
+    static get name() { return "Förfadder"; }
+    static get desc() { return "En förfadder är som en fadder, fast med extra mycket kärlek att ge. En förfadder både kramar snabbare och når längre med sina kramar än en vanlig fadder."; }
 
     projectile(target) {
         return new Hug(this.map, this, target);
     }
 }
 
-class Forfadder2 extends TargetingTower {
-    static get range() { return 5; }
-    static get CDtime() { return 800; }
-    static get image() { return forfadder2img; }
-    static get scale() { return 0.18; }
+// class Forfadder2 extends TargetingTower {
+//     static get range() { return 5; }
+//     static get CDtime() { return 800; }
+//     static get image() { return forfadder2img; }
+//     static get scale() { return 0.18; }
 
-    projectile(target) {
-        let hug = new Hug(this.map, this, target);
-        hug.range = this.range;
-        return hug;
-    }
-}
+//     projectile(target) {
+//         let hug = new Hug(this.map, this, target);
+//         hug.range = this.range;
+//         return hug;
+//     }
+// }
 
 let gameoverimg = new Image();
 gameoverimg.src = "img/gameover.jpg";
@@ -400,6 +429,20 @@ class CoffeMaker extends SupportTower {
 	static get CDtime() {return  5000;}
 	static get image() { return coffeempty; }
 	static get scale() { return 0.18; }
+    static get cost() { return 1200; }
+    static get name() { return "Kaffekokare"; }
+    static get desc() { return "Inget får fysiker att studsa upp så snabbt från sina stolar som Konsulatets kaffekokare. Kaffe gör att en student jobbar dubbelt så snabbt som vanligt, men tyvärr räcker inte kaffet så länge, och snart är det tomt i kannan igen."; }
+
+    configUpgrades() {
+    	this.addUpgrade(
+    		MakeCoffe, 
+    		"Sätt på kaffe", 
+    		"Gör en kanna kaffe och ge dina torn en rejäl boost i fem sekunder.", 
+    		10, 
+    		[], 
+    		[],
+    		-1);
+    }
 
 	constructor(x,y) {
 		super(x,y);
@@ -445,7 +488,7 @@ takeawaycup.src = "img/coffee-takeaway.png";
 class TakeAwayCoffee extends Gadget {
 
 	static get image() { return takeawaycup; }
-	static get scale() { return 1; }
+	static get scale() { return 0.5; }
 
 	addTo(tower) {
 		tower.CDtime *= 0.75;

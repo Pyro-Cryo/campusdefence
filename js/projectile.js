@@ -2,7 +2,7 @@ class Projectile extends GameObject {
 
 	static get damage() { return 1; }
 
-	
+
 	// Speed in grid units per tick
 	constructor(map, image, source, target_x, target_y, scale, speed, onHitCreep) {
 		super(image, source.x, source.y, Math.atan2(target_y - source.y, target_x - source.x), scale);
@@ -22,7 +22,7 @@ class Projectile extends GameObject {
 	}
 
 	hit(pathTile) {
-		this.id = null;
+		this.despawn();
 	}
 
 	hitCreep(creep) {
@@ -43,7 +43,7 @@ class Projectile extends GameObject {
 				pt = this.map.getGridAt(Math.round(this.x), Math.round(this.y));
 			} catch (e) {
 				//Utanf�r grid
-				this.id = null;
+				this.despawn();
 				return;
 			}
 			if (pt instanceof PathTile && pt.hasCreep())
@@ -51,7 +51,7 @@ class Projectile extends GameObject {
 
 		}
 		if(this.range < 0)
-			this.id = null;
+			this.despawn()
 
 
 
