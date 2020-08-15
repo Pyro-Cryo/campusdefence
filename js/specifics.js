@@ -74,9 +74,9 @@ class TF_1 extends BaseCreep {
     }
 
     onHit(projectile){
-
+        const maxdist = controller.map.path.length - 1;
     	for (var i = -1; i < 2; i++) {
-    		let c = new Ninja(this.distance+i);
+    		new Ninja(Math.max(0, Math.min(maxdist, this.distance+i)));
     	}
     	super.onHit(projectile);
     }
