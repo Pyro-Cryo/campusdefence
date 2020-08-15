@@ -60,7 +60,7 @@ class TF_1 extends BaseCreep {
     static get speed() { return 0.35; }
     static get image() { return tfimg; }
     static get scale() { return 0.2; }
-    static get health() { return 80; }
+    static get health() { return 14; }
     static get drawHealthBar() { return true; }
     static get value() { return 50; }
 
@@ -78,7 +78,7 @@ class TF_1 extends BaseCreep {
     	for (var i = -1; i < 2; i++) {
     		new Ninja(Math.max(0, Math.min(maxdist, this.distance+i)));
     	}
-    	super.onHit();
+    	super.onHit(projectile);
     }
 
 }
@@ -87,14 +87,14 @@ class SF_1 extends BaseCreep {
     static get speed() { return 0.65; }
     static get image() { return sfimg; }
     static get scale() { return 0.2; }
-    static get health() { return 50*3; }
+    static get health() { return 60; }
     static get drawHealthBar() { return true; }
     static get value() { return 50; }
 
     onHit(projectile) {
         if(projectile instanceof Hug){
             // SF kramas inte!
-            this.health -= 3;
+            this.health -= projectile.constructor.damage*2;
         }
         super.onHit(projectile);
     }
@@ -104,9 +104,15 @@ class OF_1 extends BaseCreep {
     static get speed() { return 0.5; }
     static get image() { return ofimg; }
     static get scale() { return 0.2; }
-    static get health() { return 60; }
+    static get health() { return 18; }
     static get drawHealthBar() { return true; }
     static get value() { return 75; }
+
+    constructor(distance) {
+    	super(distance);
+    	this.cooldown = 2000 / controller.updateInterval;
+    	this.cdTimer = 0;
+    }
 
     addEffect(effect) {
         // ÖF kan inte konverteras
@@ -115,10 +121,20 @@ class OF_1 extends BaseCreep {
         super.addEffect(effect);
     }
 
+    update() {
+    	if(this.cdTimer > 0){
+    		this.cdTimer--;
+    	}
+    	super.update();
+    }
+
     onHit(projectile) {
         // ÖF slår tillbaka! 
-        let proj = new Payback(this, projectile.sourceTower);
-        controller.registerObject(proj);
+        if(this.cdTimer == 0){
+	        let proj = new Payback(this, projectile.sourceTower);
+	        controller.registerObject(proj);
+	        this.cdTimer = this.cooldown;
+	    }
         
         super.onHit(projectile);
     }
@@ -157,12 +173,14 @@ let flowerimg = new Image();
 flowerimg.src = "img/flower.png";
 
 class Flower extends SeekingProjectile {
+	static get damage() { return 0; }
     constructor(source, target){
         super(flowerimg, 0.12, source, target, 2 / controller.updateInterval);
     }
     hitCreep(creep) {
         let e = new Converted();
         creep.addEffect(e);
+        super.hitCreep(creep);
     }
 }
 
@@ -232,6 +250,7 @@ let splashimg = new Image();
 splashimg.src = "img/boom.png";
 
 class Wolfram extends SplashProjectile {
+	static get damage() { return 0; }
     constructor(source, target) {
         super(controller.map, wolframimg, splashimg, source, target.x, target.y, 0.1, 1, 1 / controller.updateInterval, 0);
         this.range = 4;
@@ -239,6 +258,7 @@ class Wolfram extends SplashProjectile {
     hitCreep(creep) {
         let e = new Distracted();
         creep.addEffect(e);
+        super.hitCreep(creep);
     }
 }
 
@@ -307,7 +327,7 @@ class Fadder extends TargetingTower {
     static get range() { return 2.5; }
     static get CDtime() { return 800; }
     static get image() { return fadderimg; }
-    static get scale() { return 0.03; }
+    static get scale() { return 0.18; }
 
     projectile(target) {
         return new Hug(this.map, this, target);
@@ -324,7 +344,7 @@ class Forfadder1 extends TargetingTower {
     static get range() { return 2.5; }
     static get CDtime() { return 400; }
     static get image() { return forfadder1img; }
-    static get scale() { return 0.04; }
+    static get scale() { return 0.18; }
 
     projectile(target) {
         return new Hug(this.map, this, target);
@@ -335,7 +355,7 @@ class Forfadder2 extends TargetingTower {
     static get range() { return 5; }
     static get CDtime() { return 800; }
     static get image() { return forfadder2img; }
-    static get scale() { return 0.06; }
+    static get scale() { return 0.18; }
 
     projectile(target) {
         let hug = new Hug(this.map, this, target);
@@ -351,4 +371,37 @@ class SplashScreen extends GameObject {
     constructor() {
         super(gameoverimg, (controller.map.gridInnerWidth - 1) / 2, (controller.map.gridInnerHeight - 1) / 2, 0, 0.35);
     }
+}
+
+class CaffeinKick extends BaseEffect {
+    constructor() {
+        super(5000 / controller.updateInterval);
+    }
+    init(object){
+        object.CDtime /= 2;
+    }
+    apply(){
+    	
+    }
+    remove(object) {
+        object.CDtime *= 2;
+        super.remove(object);
+    }
+}
+
+let coffeimg = new Image();
+coffeimg.src = "img/coffemaker-empty.png";
+
+class CoffeMaker extends SupportTower {
+
+	static get range() { return 4; }
+	static get CDtime() {return  5000 / controller.updateInterval; }
+	static get image() { return coffeimg; }
+	static get scale() { return 0.2; }
+
+	applyTo(tower) {
+		let c = new CaffeinKick();
+		tower.addEffect(c);
+	}
+
 }

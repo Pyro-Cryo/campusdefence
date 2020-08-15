@@ -1,5 +1,5 @@
 let ninjastar = new Image();
-ninjastar.src = "img/ninjastar.png";
+ninjastar.src = "img/star.png";
 
 class BaseCreep extends GameObject {
     // Speed in grid units per second
@@ -42,25 +42,11 @@ class BaseCreep extends GameObject {
 		//Pathtile this creep is currently at. For collisiondetection purposes
 		this.pathtile = controller.map.path[0];
 		this.pathtile.add(this);
-		// Status effect currently affecting this creep
-        this.effects = new Set();
         controller.registerObject(this);
 	}
-	addEffect(effect) {
-		this.effects.forEach(function(v, k, s){
-            if(v.constructor === effect.constructor){
-                v.cdtime = effect.cooldown;
-                return;
-            }
-        });
-		this.effects.add(effect);
-		effect.init(this);
-	}
-	removeEffect(effect){
-		this.effects.delete(effect);
-	}
 	onHit(projectile) {
-		if(--this.health <= 0){
+		this.health -= projectile.constructor.damage;
+		if(this.health <= 0){
 			this.onDeath();
 		}
 	}
@@ -68,17 +54,14 @@ class BaseCreep extends GameObject {
 		return true;
 	}
 	onDeath() {
-		this.despawnTimer = 3;
+		this.despawnTimer = 2;
 		this.image = ninjastar;
-		this.pathtile.remove(this);
-		this.pathtile = null;
+		this.angle = -10 + 20*Math.random();
 		controller.money += this.value;
 	}
 	onGoal() {
-		this.id = null;
-		this.pathtile.remove(this);
-        this.pathtile = null;
         controller.hp -= this.constructor.damage;
+        this.despawn();
     }
     //Call this on update if you want the creep to rotate its sprite according to the path
     rotateMe(offset) {
@@ -92,11 +75,6 @@ class BaseCreep extends GameObject {
 			super.update();
 			return;
 		}
-
-		// Apply status effects
-		this.effects.forEach(function(obj){
-			obj.update(this);
-		}.bind(this));
 
 		// Move object
 		this.lastx = this.x;
@@ -127,6 +105,12 @@ class BaseCreep extends GameObject {
 		// Draw ourselves at new position.
         super.update();
     }
+    despawn() {
+		this.pathtile.remove(this);
+        this.pathtile = null;
+
+    	super.despawn();
+    }
     
 	draw(gameArea){
 		super.draw(gameArea);
@@ -147,43 +131,13 @@ class MatryoshkaCreep extends BaseCreep {
     static get damage() { return 1 + this.innerCreep.damage * this.innerCreepCount; }
 
     onDeath() {
-        // TODO: kanske borde göra så att om man dör av en projektil
-        // som gör 5 skada och denna creep har 2 hp så tar inre creepsen
-        // resterande 3 damage var? Iofs gör alla projektiler 1 damage i nuläget
+        // TODO: kanske borde gÃ¶ra sÃ¥ att om man dÃ¶r av en projektil
+        // som gÃ¶r 5 skada och denna creep har 2 hp sÃ¥ tar inre creepsen
+        // resterande 3 damage var? Iofs gÃ¶r alla projektiler 1 damage i nulÃ¤get
         for (let i = 0; i < this.constructor.innerCreepCount; i++)
             new this.constructor.innerCreep(
                 this.distance + this.speed * (0.5 + i - this.constructor.innerCreepCount / 2)
             );
         super.onDeath();
     }
-}
-
-
-class BaseEffect {
-
-	constructor(cooldown){
-
-		this.cooldown = cooldown;
-		this.cdtime = this.cooldown;
-	}
-
-	init(object){
-
-	}
-
-	update(object){
-		if(this.cdtime-- <= 0){
-			this.cdtime = this.cooldown;
-			this.apply(object);
-		}
-	}
-
-	apply(object){
-
-	}
-
-	remove(object){
-		object.removeEffect(this);
-	}
-
 }

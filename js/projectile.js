@@ -1,4 +1,8 @@
 class Projectile extends GameObject {
+
+	static get damage() { return 1; }
+
+	
 	// Speed in grid units per tick
 	constructor(map, image, source, target_x, target_y, scale, speed, onHitCreep) {
 		super(image, source.x, source.y, Math.atan2(target_y - source.y, target_x - source.x), scale);
@@ -76,7 +80,7 @@ class SplashProjectile extends Projectile {
 	}
 
 	draw(gameArea) {
-		if (!this.flying) {
+		if (this.despawnTimer >= 0) {
 			this.angle = 2 * Math.PI * Math.random();
 		}
 		super.draw(gameArea);
@@ -105,15 +109,14 @@ class SplashProjectile extends Projectile {
 		}
 
 		// Change animation to splash image and don't target anything or move.
-		this.flying = false;
 		this.image = this.splash_img;
 		this.scale = this.splash_scale;
-
+		this.speed = 0;
+		this.dx = 0;
+		this.dy = 0;
 		// Set timeout do die properly
-		setTimeout(() => {
-			this.id = null;
-		}, 100);
-
+		this.despawnTimer = 7;
+		this.flying = false;
 	}
 }
 
