@@ -124,7 +124,7 @@
             this.levelCleared = this.map.path.every(pt => !pt.hasCreep());
             if(this.levelCleared){
                 for (let current = this.objects.first; current !== null; current = current.next){
-                    if(current.obj instanceof Projectile){
+                    if(current.obj instanceof Projectile || current.obj instanceof BaseCreep){
                         this.levelCleared = false;
                         break;
                     }
@@ -454,23 +454,16 @@
             }
         }
 
-        let now = new Date();
-        now.setDate(now.getDate() + 5);
-
-        let cookie = "state="+JSON.stringify(data) + "; expires=" + now.toUTCString() + "; path=/; samesite=lax";
-        document.cookie = cookie;
+        window.localStorage.setItem("campusdefence_state", JSON.stringify(data));
 
     }
 
     loadFromCookie(){
 
-        let cookie = getCookie("state");
-
-        if(cookie == ""){
+        let data = window.localStorage.getItem("campusdefence_state");
+        if (!data)
             return;
-        }
-
-        let data = JSON.parse(cookie);
+        data = JSON.parse(data);
 
         this.levelNumber = data.level;
         this.hp = data.health;
@@ -488,10 +481,8 @@
 
     }
 
-    clearState(){
-
-        document.cookie = "state=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; samesite=lax";
-
+    clearState() {
+        window.localStorage.removeItem("campusdefence_state");
     }
 }
 

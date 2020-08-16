@@ -56,11 +56,15 @@ class BaseCreep extends GameObject {
 	onDeath() {
 		this.despawnTimer = 2;
 		this.image = ninjastar;
-		this.angle = -10 + 20*Math.random();
+		this.angle = 360 * Math.random();
 		controller.money += this.value;
+		this.pathtile.remove(this);
+        this.pathtile = null;
 	}
 	onGoal() {
         controller.hp -= this.constructor.damage;
+		this.pathtile.remove(this);
+        this.pathtile = null;
         this.despawn();
     }
     //Call this on update if you want the creep to rotate its sprite according to the path
@@ -104,12 +108,6 @@ class BaseCreep extends GameObject {
 
 		// Draw ourselves at new position.
         super.update();
-    }
-    despawn() {
-		this.pathtile.remove(this);
-        this.pathtile = null;
-
-    	super.despawn();
     }
     
 	draw(gameArea){

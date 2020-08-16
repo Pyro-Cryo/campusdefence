@@ -60,7 +60,7 @@ class TF_1 extends BaseCreep {
     static get speed() { return 0.35; }
     static get image() { return tfimg; }
     static get scale() { return 0.2; }
-    static get health() { return 14; }
+    static get health() { return 30; }
     static get drawHealthBar() { return true; }
     static get value() { return 50; }
 
@@ -347,6 +347,7 @@ class Fnoell extends BaseTower {
         this.spiralCD = this.constructor.CDtime / this.DPS;
         this.spiralTimer = 0;
         this.timeWithoutTarget = 0;
+        this.currentTarget = null;
     }
 
     projectile(target) {
@@ -389,7 +390,7 @@ class Fnoell extends BaseTower {
         let best = null;
         
         let target = null;
-        for (let i = this.map.path.length - 1; i >= 0; i--)
+        for (let i = 0; i < this.map.path.length; i++)
             if (this.map.path[i].hasCreep())
                 target = this.map.path[i];
 
@@ -417,6 +418,7 @@ class Fnoell extends BaseTower {
             this.map.addTower(this);
             this.inrange = this.pathInRange();
         }
+        this.currentTarget = target;
     }
 }
 
@@ -427,6 +429,7 @@ class Hug extends BasicProjectile {
     constructor(map, source, target) {
         super(map, hugimg, source, target.x, target.y, 0.1, 2 / controller.updateInterval);
         this.angle = 0;
+        this.range = source.range + 1;
     }
 }
 
