@@ -54,6 +54,7 @@ class BaseCreep extends GameObject {
 		return true;
 	}
 	onDeath() {
+		
 		this.despawnTimer = 2;
 		this.image = ninjastar;
 		this.angle = -10 + 20*Math.random();
