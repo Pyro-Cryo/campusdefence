@@ -7,7 +7,47 @@ sfimg.src = "img/transparent/sf.png";
 let tfimg = new Image();
 tfimg.src = "img/transparent/tf.png";
 
-class TF_1 extends BaseCreep {
+let doors = [];
+for (var i = 0; i < 5; i++) {
+    let img = new Image();
+    img.src = "img/door" + (i+1).toString() + ".png";
+    doors.push(img);
+    console.log(doors[i]);
+}
+
+
+class BaseFohs extends BaseCreep {
+
+    constructor(x,y){
+        super(x,y);
+        this.despawnTime = doors.length*3;
+        this.fudge = 7;
+    }
+
+    update(){
+        if(this.despawnTimer >= 0){
+            let dt = this.despawnTime / doors.length;
+            for (var i = 0; i < doors.length; i++) {
+                if(this.despawnTimer >= this.despawnTime+this.fudge - dt*(i+1)){
+                    this.image = doors[i];
+                    break;
+                }
+            }
+        }
+        super.update();
+    }
+
+    onDeath(){
+        super.onDeath();
+        this.scale = 1.0;
+        // this.image = doors[0];
+        this.angle = 0;
+        this.despawnTimer = this.despawnTime + this.fudge;
+    }
+
+}
+
+class TF_1 extends BaseFohs {
     static get speed() { return 0.35; }
     static get image() { return tfimg; }
     static get scale() { return 0.2; }
@@ -34,7 +74,7 @@ class TF_1 extends BaseCreep {
 
 }
 
-class SF_1 extends BaseCreep {
+class SF_1 extends BaseFohs {
     static get speed() { return 0.65; }
     static get image() { return sfimg; }
     static get scale() { return 0.2; }
@@ -51,7 +91,7 @@ class SF_1 extends BaseCreep {
     }
 }
 
-class OF_1 extends BaseCreep {
+class OF_1 extends BaseFohs {
     static get speed() { return 0.5; }
     static get image() { return ofimg; }
     static get scale() { return 0.2; }
