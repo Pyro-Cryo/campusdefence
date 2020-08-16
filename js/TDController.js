@@ -317,13 +317,17 @@
             );
             if (this.selectedTower.upgrades){
 
+                console.log("Upgrades", this.selectedTower.upgrades.length);
                 for (var i = 0; i < this.selectedTower.upgrades.length; i++) {
                     let upgrade = this.selectedTower.upgrades[i];
+                    console.log(upgrade.name, upgrade.requires);
 
                     // Check if we have all required previous upgrades
                     if(!upgrade.requires.every(function(elem){
+                        console.log("requires", elem);
                         return this.selectedTower.gadgets.some(function(g){
-                            return typeof(g) === elem;
+                            console.log(g.constructor.name, elem.name, g.constructor.name === elem.name);
+                            return g.constructor.name === elem.name;
                         })
                     }.bind(this))){
                         continue;
@@ -332,7 +336,8 @@
                     // Check that we dont have any upgrades that blockes this one
                     if(upgrade.blocked.some(function(elem){
                         return this.selectedTower.gadgets.some(function(g){
-                            return typeof(g) === elem;
+                            return g.constructor.name === elem.name;
+                            // return typeof(g) === elem;
                         })
                     }.bind(this))){
                         continue;

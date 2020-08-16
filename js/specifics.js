@@ -206,6 +206,17 @@ class Nicole extends TargetingTower {
     projectile(target) {
         return new Flower(this, target);
     }
+
+    configUpgrades() {
+		this.addUpgrade(
+			TakeAwayCoffee, 
+			"Take away kaffe", 
+			"Ge faddern lite kaffe så jobbar den snabbare.", 
+			150, 
+			[], 
+			[TakeAwayCoffee],
+			20);
+    }
 }
 
 let explosionimg = new Image();
@@ -234,6 +245,17 @@ class Axel extends OmniTower {
 
     projectile(target) {
         return new Molotov(this.map, this, target);
+    }
+
+    configUpgrades() {
+		this.addUpgrade(
+			TakeAwayCoffee, 
+			"Take away kaffe", 
+			"Ge faddern lite kaffe så jobbar den snabbare.", 
+			150, 
+			[], 
+			[TakeAwayCoffee],
+			20);
     }
 }
 
@@ -283,6 +305,17 @@ class Frida extends TargetingTower {
     projectile(target) {
         return new Wolfram(this, target);
     }
+
+    configUpgrades() {
+		this.addUpgrade(
+			TakeAwayCoffee, 
+			"Take away kaffe", 
+			"Ge faddern lite kaffe så jobbar den snabbare.", 
+			150, 
+			[], 
+			[TakeAwayCoffee],
+			20);
+    }
 }
 
 let fireimg = new Image();
@@ -319,6 +352,17 @@ class Becca extends TargetingTower {
 
     projectile(target) {
         return new Fire(this.map, this, target);
+    }
+
+    configUpgrades() {
+		this.addUpgrade(
+			TakeAwayCoffee, 
+			"Take away kaffe", 
+			"Ge faddern lite kaffe så jobbar den snabbare.", 
+			150, 
+			[], 
+			[TakeAwayCoffee],
+			20);
     }
 }
 
@@ -453,7 +497,23 @@ class Fadder extends TargetingTower {
 			"Ge faddern lite kaffe så jobbar den snabbare.", 
 			150, 
 			[], 
-			[TakeAwayCoffee],
+			[TakeAwayCoffee, Mek2],
+			20);
+		this.addUpgrade(
+			Mek1, 
+			"Mekanik grundkurs", 
+			"I mek I kursen får en lära sig om statik och partikeldynamik, vilket ger bättre förståelse för de banrörelser som faddern behöver ta för att nå fram med sina kramar. Efter avslutad kurs har faddern lite längre räckvidd.", 
+			150, 
+			[], 
+			[Mek1],
+			20);
+		this.addUpgrade(
+			Mek2, 
+			"Mekanik fortsättningskurs", 
+			"I mek II kursen får en lära sig om dynamik och rörelse i roterande koordinatsystem. Efter avklarad kurs har faddern väldigt mycket bättre förståelse för rörelser och därför ännu längre räckvidd.",
+			300, 
+			[Mek1],
+			[TakeAwayCoffee], 
 			20);
     }
 }
@@ -475,6 +535,17 @@ class Forfadder1 extends TargetingTower {
 
     projectile(target) {
         return new Hug(this.map, this, target);
+    }
+
+    configUpgrades() {
+		this.addUpgrade(
+			TakeAwayCoffee, 
+			"Take away kaffe", 
+			"Ge faddern lite kaffe så jobbar den snabbare.", 
+			200, 
+			[], 
+			[TakeAwayCoffee],
+			30);
     }
 }
 
@@ -590,7 +661,38 @@ class TakeAwayCoffee extends Gadget {
 
 	addTo(tower) {
 		tower.CDtime *= 0.75;
-		tower.addGadget(this);
+		super.addTo(tower);
+	}
+
+}
+
+let mek1 = new Image();
+let mek2 = new Image();
+mek1.src = "img/mek1.png";
+mek2.src = "img/mek2.png";
+
+class Mek1 extends Gadget {
+
+	static get image() { return mek1; }
+	static get scale() { return 0.5; }
+
+	addTo(tower) {
+		tower.range += 0.5;
+		tower.inrange = tower.pathInRange();
+		super.addTo(tower);
+	}
+
+}
+
+class Mek2 extends Gadget {
+
+	static get image() { return mek2; }
+	static get scale() { return 0.5; }
+
+	addTo(tower) {
+		tower.range += 1;
+		tower.inrange = tower.pathInRange();
+		super.addTo(tower);
 	}
 
 }
