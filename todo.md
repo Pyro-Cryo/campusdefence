@@ -4,3 +4,4 @@
 - Balansera lite, pengar får man väldigt fort nu
 - Nåt bra sätt att presentera lore
 - Visuell bugg: upplåsta torn står som låsta om man refreshar (dock går de fortfarande att köpa som intended)
+- Disablea fast forward innan nivån börjar
