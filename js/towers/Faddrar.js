@@ -162,13 +162,11 @@ class CoffeMaker extends SupportTower {
         this.apply();
     }
     apply() {
-        console.log("Putting coffee on!");
         this.image = coffeefull;
         this.effectCDtimer = this.effectCDtime;
         super.apply();
     }
     remove() {
-        console.log("Out of coffee!");
         this.image = coffeempty;
         super.remove();
     }
