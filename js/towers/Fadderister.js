@@ -1,5 +1,12 @@
 
+let flowerimg = new Image();
+flowerimg.src = "img/flower.png";
+
 class Converted extends BaseEffect {
+
+    static get image() { return flowerimg; }
+    static get scale() { return 0.5; }
+
     constructor() {
         super(5000 / controller.updateInterval);
     }
@@ -13,13 +20,10 @@ class Converted extends BaseEffect {
     }
 }
 
-let flowerimg = new Image();
-flowerimg.src = "img/flower.png";
-
 class Flower extends SeekingProjectile {
 	static get damage() { return 0; }
     constructor(source, target){
-        super(flowerimg, 0.12, source, target, 2 / controller.updateInterval);
+        super(flowerimg, 0.5, source, target, 2 / controller.updateInterval);
     }
     hitCreep(creep) {
         let e = new Converted();
@@ -165,12 +169,33 @@ class Frida extends TargetingTower {
 let fireimg = new Image();
 fireimg.src = "img/fire.png";
 
+
+class Burning extends BaseEffect {
+
+    static get image() { return fireimg; }
+    static get scale() { return 0.5; }
+    static get persistent() { return true; }
+
+    constructor(){
+        super(2000/controller.updateInterval);
+    }
+
+    apply(creep){
+        this.remove(creep);
+        creep.health--;
+        if(creep.health <= 0){
+            creep.onDeath();
+        }
+    }
+}
+
 class Fire extends BasicProjectile {
-    constructor(map, source, target) {
+    constructor(map, source, target, type) {
         super(map, fireimg, source, target.x + Math.random() - 0.5, target.y + Math.random() - 0.5, 1, 1 / controller.updateInterval);
         this.ignoreTile = null;
         this.lastTile = null;
         this.range = 2;
+        this.type = type;
     }
 
     hit(pathTile) {
@@ -179,6 +204,14 @@ class Fire extends BasicProjectile {
         this.lastTile = pathTile;
         if (!this.ignoreTile)
             super.hit(pathTile);
+    }
+
+    hitCreep(creep) {
+        if(this.type > 1){
+            let e = new Burning();
+            creep.addEffect(e);
+        }
+        super.hitCreep(creep);
     }
 }
 
@@ -194,8 +227,13 @@ class Becca extends TargetingTower {
     static get name() { return "Fjädrande Becca"; }
     static get desc() { return "Flamberande Becca har en eldkastare."; }
 
+    constructor(x,y){
+        super(x,y);
+        this.projectiletype = 2;
+    }
+
     projectile(target) {
-        return new Fire(this.map, this, target);
+        return new Fire(this.map, this, target, this.projectiletype);
     }
 
     configUpgrades() {

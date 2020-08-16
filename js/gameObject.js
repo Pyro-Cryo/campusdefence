@@ -26,7 +26,11 @@ class GameObject {
         }
     }
     draw(gameArea) {
-        gameArea.draw(this.image, this.x, this.y, this.angle, this.scale);   
+        gameArea.draw(this.image, this.x, this.y, this.angle, this.scale);
+        var index = 0;
+        this.effects.forEach(function(obj){
+			index = obj.draw(this, gameArea, index);
+		}.bind(this));
     }
     despawn() {
     	this.id = null;
@@ -62,6 +66,11 @@ class SubimagedGameObject extends GameObject {
 
 class BaseEffect {
 
+	// Om effecten förs över till MatryoshkaCreep-barn
+	static get persistent() { return false; }
+	static get image() { return null; }
+	static get scale() { return 1; }
+
 	constructor(cooldown){
 
 		this.cooldown = cooldown;
@@ -77,6 +86,18 @@ class BaseEffect {
 			this.cdtime = this.cooldown;
 			this.apply(object);
 		}
+	}
+
+	draw(object, gameArea, index) {
+		let img = this.constructor.image;
+		if(img === null)
+			return;
+
+		console.log(index);
+		let x = object.x + 0.5 - 0.3*index;
+		let y = object.y - 0.5;
+		gameArea.draw(img, x, y, 0, this.constructor.scale);
+		return index+1;
 	}
 
 	apply(object){
