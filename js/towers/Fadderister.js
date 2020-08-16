@@ -74,7 +74,7 @@ molotovimg.src = "img/cocktail.png";
 
 class Molotov extends SplashProjectile {
     constructor(map, source, target) {
-        super(map, molotovimg, explosionimg, source, target.x, target.y, 0.1, 1, 2 / controller.updateInterval, 0);
+        super(map, molotovimg, explosionimg, source, target.x, target.y, 0.5, 1, 2 / controller.updateInterval, 0);
         this.range = 2.5;
     }
 }

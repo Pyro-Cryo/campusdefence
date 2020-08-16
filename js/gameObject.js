@@ -93,7 +93,6 @@ class BaseEffect {
 		if(img === null)
 			return;
 
-		console.log(index);
 		let x = object.x + 0.5 - 0.3*index;
 		let y = object.y - 0.5;
 		gameArea.draw(img, x, y, 0, this.constructor.scale);

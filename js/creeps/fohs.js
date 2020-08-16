@@ -95,6 +95,7 @@ class OF_1 extends BaseCreep {
 let pbimg = new Image();
 pbimg.src = "img/boom.png";
 class Payback extends InverseProjectile {
+
     constructor(source, target){
         super(pbimg, source, target, 0.5, 1/controller.updateInterval);
 
