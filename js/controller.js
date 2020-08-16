@@ -24,6 +24,9 @@ class Controller {
 
         this.playbutton.onclick = this.playpause.bind(this);
         this.ffbutton.onclick = this.fastforward.bind(this);
+
+        // Info field
+        this.messagebox = document.getElementById("messagebox");
     }
 
     fixPath(path) {
@@ -85,6 +88,17 @@ class Controller {
 
     onFF(){
         
+    }
+
+    setMessage(message, pureText) {
+        if (pureText)
+            this.messagebox.innerText = message;
+        else
+            this.messagebox.innerHTML = message;
+    }
+
+    clearMessage() {
+        this.messagebox.innerText = "\xa0";
     }
 
     // Clear the canvas and let all objects redraw themselves
