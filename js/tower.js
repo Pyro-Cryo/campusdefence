@@ -90,7 +90,7 @@ class BaseTower extends GameObject {
         else{
             controller.registerObject(proj);
         }
-        this.CDtimer = this.CDtime;
+        this.CDtimer += this.CDtime;
     }
 
     projectile(target) {
@@ -108,7 +108,8 @@ class BaseTower extends GameObject {
             let target = this.target();
             if (target)
                 this.fire(target);
-        } else
+        }
+        else
             this.CDtimer--;
 
 

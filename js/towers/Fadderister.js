@@ -240,13 +240,18 @@ class Burning extends BaseEffect {
 
     constructor(){
         super(2000/controller.updateInterval);
+        this.iterations = 3;
     }
 
     apply(creep){
-        this.remove(creep);
         creep.health--;
         if(creep.health <= 0){
+            this.remove(creep);
             creep.onDeath();
+            return;
+        }
+        if(--this.iterations <= 0){
+            this.remove(creep);
         }
     }
 }
@@ -258,7 +263,9 @@ class Fire extends BasicProjectile {
     }
 
     constructor(map, source, target) {
-        super(map, fireimg, source, target.x + Math.random() - 0.5, target.y + Math.random() - 0.5, 1, 1 / controller.updateInterval);
+        let a = Math.atan2(source.x-target.x, source.y-target.y) + Math.PI/2;
+        let da = (0.5-Math.random())*Math.PI/4
+        super(map, fireimg, source, source.x + Math.cos(a+da), source.y - Math.sin(a+da), 1, 1 / controller.updateInterval);
         this.ignoreTile = null;
         this.lastTile = null;
         this.range = 2;
@@ -287,17 +294,17 @@ class HotFire extends Fire {
 
 class FireBomb extends SplashProjectile {
 
-    get damage() {
-        return this._damage;
+    static get damage() {
+        return 4;
     }
-    static get maxHits() { return 10; }
+    static get maxHits() { return 15; }
 
     constructor(map, source, target){
-        super(map, gasoline, firebomb, source, target.x + Math.random() - 0.5, target.y + Math.random() - 0.5, 1, 1, 1 / controller.updateInterval, 1);
+        super(map, gasoline, firebomb, source, target.x + Math.random() - 0.5, target.y + Math.random() - 0.5, 0.5, 2, 1 / controller.updateInterval, 1);
         this.ignoreTile = null;
         this.lastTile = null;
         this.range = 2;
-        this._damage = 4;
+        source.CDtimer *= 2;
     }
 
     hitCreep(creep) {
@@ -305,7 +312,7 @@ class FireBomb extends SplashProjectile {
         creep.addEffect(b);
 
         super.hitCreep(creep);
-        this._damage = 0;
+        this.damage = 1;
     }
 }
 
@@ -316,17 +323,18 @@ class FireRing extends Projectile {
 
         this.flying = false;
         this.angle = 0;
-        this.runticks = 1000 / controller.updateInterval;
+        this.runticks = 800 / controller.updateInterval;
+        source.CDtimer += parseInt(this.runticks*1.5);
     }
 
     update() {
-        this.angle += 5 * Math.PI * 2 / this.runticks;
-        this.scale = 0.9*this.scale + 0.1;
+        this.angle += Math.PI * 2 / this.runticks;
+        this.scale = 0.95*this.scale + 0.05;
 
         if(--this.runticks <= 0){
             // Träffar alla creeps inom tornets radius
-            for (var i = 0; i < this.sourcetower.inrange.length; i++) {
-                this.sourcetower.inrange[i].data.forEach(function(creep){
+            for (var i = 0; i < this.sourceTower.inrange.length; i++) {
+                this.sourceTower.inrange[i].data.forEach(function(creep){
                     this.hitCreep(creep);
                 }.bind(this));
             }
@@ -376,6 +384,7 @@ class DoubleBarell extends Gadget {
         tower.double = true;
         super.addTo(tower);
     }
+    draw(gameArea){}
 }
 
 class RingOfFire extends Gadget {
@@ -387,6 +396,7 @@ class RingOfFire extends Gadget {
         tower.upgradeLevel = 3;
         super.addTo(tower);
     }
+    draw(gameArea){}
 
 }
 
@@ -411,11 +421,12 @@ class Becca extends TargetingTower {
 
     projectile(target) {
 
-        if(this.upgradeLevel >= 2 && Math.random() < 0.1){
+        if(this.upgradeLevel == 2 && Math.random() < 0.2){
             return new FireBomb(this.map, this, target);
         }
-        if(this.upgradeLevel >= 3 && Math.random() < 0.1){
-            return new FireBomb(this.map, this, target);
+        if(this.upgradeLevel == 3 && Math.random() < 0.1){
+            this.angle = 0;
+            return new FireRing(this.map, this);
         }
         if(this.projectiletype == 1){
             var t = Fire;

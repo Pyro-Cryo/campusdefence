@@ -84,7 +84,10 @@ class SF_1 extends BaseFohs {
     onHit(projectile) {
         if(projectile instanceof Hug){
             // SF kramas inte!
-            this.health -= projectile.constructor.damage*2;
+            projectile.damage *= 2;
+        }
+        else{
+            projectile.damage = 1;
         }
         super.onHit(projectile);
     }

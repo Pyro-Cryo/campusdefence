@@ -362,7 +362,7 @@
                             else {
                                 this.money -= upgrade.cost;
                                 let gadget = new upgrade.type(this.selectedTower);
-                                console.log(gadget);
+
                                 this.destroyContextMenu();
                                 this.setupContextMenu();
                             }
