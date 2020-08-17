@@ -418,10 +418,10 @@ class Becca extends TargetingTower {
             return new FireBomb(this.map, this, target);
         }
         if(this.projectiletype == 1){
-            let t = Fire;
+            var t = Fire;
         }
         else{
-            let t = HotFire;
+            var t = HotFire;
         }
 
         if(this.double){
