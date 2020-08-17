@@ -3,6 +3,7 @@
 - Nån motsvarighet till road spikes i bloons som kan ta några ninjor man missat?
 - Balansera lite, pengar får man väldigt fort nu
 - Nåt bra sätt att presentera lore
+- Uppgraderingar sparas inte i cookie/local storage
 - Contextmenyn borde uppgraderas ifall man har den uppe medan tornet skjuter
     - Också skicka inte meddelanden via alerts och confirms egentligen egentligen
     - Stylea om contextmeny och towermarket
@@ -27,7 +28,7 @@ Axel:
 	Grundskott:
 	- Drink (splash damage)
 	Upgraderingar:
-	- Irish coffee (snabbare)
+	- Irish coffee (snabbare) -> Vatten? (ännu snabbare) [Axel känns lite alk-hetsig just nu, kanske är bra att ha nått alkfritt också?]
 	XOR{
 		- Promille (extra damage) -> Shrodingers shot (50/50 Hög damage/Låg damage+stunned effekt)
 		- Champagne (Omni-skott) -> Dompa (Målsökande omni-skott) -> Bjud på dompa (Engångsattack, skadar alla creeps på kartan)
@@ -38,7 +39,7 @@ Frida:
 	- Lämnis (slowdown effekt)
 	Uppgraderingar:
 	XOR{
-		- Knölig handstil (varar längre) -> Större papper (träffar flera samtidigt) -> Klisterpapper (ärvs av subcreeps)
+		- Inses lätt (varar längre) -> Flervariabel (träffar flera samtidigt) -> Klisterpapper (ärvs av subcreeps)
 		- Subtila fel (Gör damage) -> ??? (Mer damage) -> Diciplinnämnden (Engångsattack, förintar alla creeps som någon gång blivit träffade av Fridatorn)
 	}
 
