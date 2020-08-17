@@ -82,7 +82,14 @@ class BaseTower extends GameObject {
         if(proj === null) {
             return;
         }
-        controller.registerObject(proj);
+        if(proj instanceof Array){
+            for (var i = 0; i < proj.length; i++) {
+                controller.registerObject(proj[i]);
+            }
+        }
+        else{
+            controller.registerObject(proj);
+        }
         this.CDtimer = this.CDtime;
     }
 

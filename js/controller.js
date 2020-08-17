@@ -24,6 +24,7 @@ class Controller {
 
         this.playbutton.onclick = this.playpause.bind(this);
         this.ffbutton.onclick = this.fastforward.bind(this);
+        this.ffbutton.disabled = true;
 
         // Info field
         this.messagebox = document.getElementById("messagebox");

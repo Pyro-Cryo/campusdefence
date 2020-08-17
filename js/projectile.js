@@ -1,6 +1,7 @@
 class Projectile extends GameObject {
 
 	static get damage() { return 1; }
+	static get hitpoints() { return 1; }
 
 
 	// Speed in grid units per tick
@@ -19,10 +20,14 @@ class Projectile extends GameObject {
 
 		this.flying = true;
 		this.onHitCreep = onHitCreep || null;
+
+		this.hitpoints = this.constructor.hitpoints;
+
 	}
 
 	hit(pathTile) {
-		this.despawn();
+		if(--this.hitpoints <= 0)
+			this.despawn();
 	}
 
 	hitCreep(creep) {

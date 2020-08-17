@@ -213,7 +213,11 @@
         document.querySelectorAll(".towerInfo:not(.template)").forEach((ti, i) => {
             if (this.towerSpecs[i].unlockLevel && this.levelNumber + 1 >= this.towerSpecs[i].unlockLevel)
             {
-                ti.querySelector("span[class='unlockInfo']").classList.remove("hideme");
+                let cl = ti.querySelector("span[class='unlockInfo']");
+                if(!cl){
+                    return;
+                }
+                cl.classList.remove("hideme");
                 ti.classList.remove("locked");
             }
         });
@@ -388,7 +392,7 @@
             template.querySelector("strong[name='title']").innerText = spec.name;
             template.querySelector("span[name='desc']").innerText = spec.description;
             template.querySelector("span[name='cost']").innerText = spec.cost;
-            if (spec.unlockLevel && spec.unlockLevel > 1)
+            if (spec.unlockLevel && spec.unlockLevel > this.levelNumber)
             {
                 template.querySelector("span[class='unlockInfo']").innerText = "Låses upp vid nivå " + spec.unlockLevel;
                 template.classList.add("locked");

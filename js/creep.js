@@ -59,13 +59,13 @@ class BaseCreep extends GameObject {
 		this.image = ninjastar;
 		this.angle = 360 * Math.random();
 		controller.money += this.value;
-		this.pathtile.remove(this);
-        this.pathtile = null;
+		if(this.pathtile !== null){
+			this.pathtile.remove(this);
+	        this.pathtile = null;
+		}
 	}
 	onGoal() {
         controller.hp -= this.constructor.damage;
-		this.pathtile.remove(this);
-        this.pathtile = null;
         this.despawn();
     }
     //Call this on update if you want the creep to rotate its sprite according to the path
@@ -110,6 +110,14 @@ class BaseCreep extends GameObject {
 		// Draw ourselves at new position.
         super.update();
     }
+
+    despawn(){
+    	if(this.pathtile !== null){
+			this.pathtile.remove(this);
+	        this.pathtile = null;
+		}
+		super.despawn();
+    }
     
 	draw(gameArea){
 		super.draw(gameArea);
@@ -130,13 +138,27 @@ class MatryoshkaCreep extends BaseCreep {
     static get damage() { return 1 + this.innerCreep.damage * this.innerCreepCount; }
 
     onDeath() {
-        // TODO: kanske borde g√∂ra s√• att om man d√∂r av en projektil
-        // som g√∂r 5 skada och denna creep har 2 hp s√• tar inre creepsen
-        // resterande 3 damage var? Iofs g√∂r alla projektiler 1 damage i nul√§get
-        for (let i = 0; i < this.constructor.innerCreepCount; i++)
-            new this.constructor.innerCreep(
+        for (let i = 0; i < this.constructor.innerCreepCount; i++){
+            let nc = new this.constructor.innerCreep(
                 Math.min(controller.map.path.length - 1, Math.max(0, this.distance + this.speed * (0.5 + i - this.constructor.innerCreepCount / 2)))
             );
+
+            // Persistent effects carry over
+            this.effects.forEach(function(obj){
+				if(obj.constructor.persistent){
+					nc.addEffect(obj);
+				}
+			});
+
+            // Om projectilen skadade oss mer ‰n vi hade h‰lsa skadas vÂra barn ocksÂ
+            if(this.health < 0){
+            	nc.health--;
+				if(nc.health <= 0){
+					nc.onDeath();
+				}
+            }
+
+        }
         super.onDeath();
     }
 }
