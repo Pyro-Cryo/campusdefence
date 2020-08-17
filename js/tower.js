@@ -19,10 +19,10 @@ class BaseTower extends GameObject {
         throw new Error("Abstract property cost must be overridden by subclass");
     }
     static get name() {
-        throw new Error("Abstract property cost must be overridden by subclass");
+        throw new Error("Abstract property name must be overridden by subclass");
     }
     static get desc() {
-        throw new Error("Abstract property cost must be overridden by subclass");
+        throw new Error("Abstract property desc must be overridden by subclass");
     }
 
 

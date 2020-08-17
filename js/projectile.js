@@ -77,11 +77,14 @@ class BasicProjectile extends Projectile {
 
 class SplashProjectile extends Projectile {
 
+	static get maxHits() { return Number.POSITIVE_INFINITY; }
+
 	constructor(map, image, splash, source, target_x, target_y, scale, splash_scale, speed, splash_range) {
 		super(map, image, source, target_x, target_y, scale, speed);
 		this.splash_img = splash;
 		this.splash_scale = splash_scale;
 		this.splash_range = splash_range;
+		this.maxHits = this.constructor.maxHits;
 	}
 
 	draw(gameArea) {
@@ -106,8 +109,10 @@ class SplashProjectile extends Projectile {
 
 				let pt = this.map.getGridAt(x + dx, y + dy);
 				if (pt instanceof PathTile && pt.hasCreep()) {
+					let i = 0;
 					pt.data.forEach(function (creep) {
-						this.hitCreep(creep);
+						if (i++ < this.maxHits)
+							this.hitCreep(creep);
 					}.bind(this));
 				}
 			}
