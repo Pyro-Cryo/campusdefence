@@ -45,7 +45,7 @@ class BaseCreep extends GameObject {
         controller.registerObject(this);
 	}
 	onHit(projectile) {
-		this.health -= projectile.constructor.damage;
+		this.health -= projectile.damage;
 		if(this.health <= 0){
 			this.onDeath();
 		}
@@ -150,7 +150,7 @@ class MatryoshkaCreep extends BaseCreep {
 				}
 			});
 
-            // Om projectilen skadade oss mer än vi hade hälsa skadas våra barn också
+            // Om projectilen skadade oss mer ï¿½n vi hade hï¿½lsa skadas vï¿½ra barn ocksï¿½
             if(this.health < 0){
             	nc.health--;
 				if(nc.health <= 0){

@@ -22,7 +22,7 @@ class Projectile extends GameObject {
 		this.onHitCreep = onHitCreep || null;
 
 		this.hitpoints = this.constructor.hitpoints;
-
+		this.damage = this.constructor.damage;
 	}
 
 	hit(pathTile) {
@@ -95,9 +95,6 @@ class SplashProjectile extends Projectile {
 	}
 
 	hit(pathTile) {
-		// �r det OP att splash tr�ffar alla creeps inom en radie? 
-		// Ska det bara vara ett visst antal inom en radie?
-		// Jag tycker det �r fine, creeps kan ju ha flera hp eller n�t ocks� /Helmer
 		let x = Math.round(this.x);
 		let y = Math.round(this.y);
 		for (var dx = -this.splash_range; dx <= this.splash_range; dx++) {
