@@ -67,15 +67,31 @@ class Nicole extends TargetingTower {
     }
 }
 
+let promilleimg = new Image();
+promilleimg.src = "img/promille.png";
+
+class Promille extends Gadget {
+
+	static get image() { return promilleimg; }
+	static get scale() { return 0.05; }
+
+	addTo(tower) {
+        tower.maxHitsOverride = Number.POSITIVE_INFINITY;
+		super.addTo(tower);
+	}
+
+}
+
 let explosionimg = new Image();
 explosionimg.src = "img/boom.png";
 let molotovimg = new Image();
 molotovimg.src = "img/cocktail.png";
 
 class Molotov extends SplashProjectile {
+    static get maxHits() { return 4; }
     constructor(map, source, target) {
         super(map, molotovimg, explosionimg, source, target.x, target.y, 0.5, 1, 2 / controller.updateInterval, 0);
-        this.range = 2.5;
+        this.range = 3;
     }
 }
 
@@ -84,7 +100,7 @@ axelimg.src = "img/transparent/axel.png";
 
 class Axel extends OmniTower {
     static get range() { return 2.5; }
-    static get CDtime() { return 2500; }
+    static get CDtime() { return 3000; }
     static get image() { return axelimg; }
     static get scale() { return 0.2; }
     static get cost() { return 600; }
@@ -92,18 +108,29 @@ class Axel extends OmniTower {
     static get desc() { return "Fackliga Axel älskar två saker: facklor och att festa. Han bjuder gärna alla omkring sig på Molotovcocktails, och när dessa exploderar träffar de alla ninjor inom ett visst område."; }
 
     projectile(target) {
-        return new Molotov(this.map, this, target);
+        let m = new Molotov(this.map, this, target);
+        if (this.maxHitsOverride !== undefined)
+            m.maxHits = this.maxHitsOverride;
+        return m;
     }
 
     configUpgrades() {
 		this.addUpgrade(
 			TakeAwayCoffee, 
-			"Take away kaffe", 
-			"Ge faddern lite kaffe så jobbar den snabbare.", 
+			"Hets på I", 
+			"Ge faddern lite koffein så jobbar den snabbare.", 
 			150, 
 			[], 
 			[TakeAwayCoffee],
-			20);
+            20);
+        this.addUpgrade(
+            Promille, 
+            "Promilleacceleratorn", 
+            "Det ökade alkoholinnehållet gör att cocktailarna kan träffa hur många tätt packade ninjor som helst, istället för bara " + Molotov.maxHits + ".", 
+            150, 
+            [], 
+            [Promille],
+            100);
     }
 }
 

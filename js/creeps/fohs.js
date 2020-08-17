@@ -51,7 +51,7 @@ class TF_1 extends BaseFohs {
     static get speed() { return 0.35; }
     static get image() { return tfimg; }
     static get scale() { return 0.2; }
-    static get health() { return 30; }
+    static get health() { return 23; }
     static get drawHealthBar() { return true; }
     static get value() { return 50; }
 

@@ -48,29 +48,16 @@ function getLevel(number, updateInterval) {
                 .wait(8 * s)
                 .send(10, Pink).over(5 * s));
 
+        case 10:
+            return (new CreepSequence()
+                .send(30, Blue).over(15 * s)
+                .interleave(new CreepSequence().send(10, Red).over(10 * s))
+                .wait(4 * s)
+                .send(20, Pink).over(12 * s)
+                .wait(3 * s)
+                .send(10, Blue).over(4 * s));
+
         // Fortsätt introducera föhsare typ var 4-6 nivå, fler föhsspöken
-
-        /*case 1:
-            return (new CreepSequence()
-                .send(1, Jonas).immediately()
-                .wait(1 * s)
-                .send(10, Jonas).spaced(1 * s)
-                .wait(1 * s)
-                .send(10, Jonas).over(4 * s)
-                .do(() => console.log("All creeps sent")));
-        case 2:
-            return (new CreepSequence()
-                .send(20, Jonas).spaced(1 * s)
-                .interleave(new CreepSequence().wait(7.5 * s).send(20, Jonas).over(5 * s))
-                .do(() => console.log("All creeps sent")));
-
-        case 3:
-            return (new CreepSequence()
-                .send(10, Ninja).over(3 * s));
-
-        case 4:
-            return (new CreepSequence()
-                .send(2, FastNinja).over(5 * s));*/
 
         default:
             return new CreepSequence().send(number * 20, Ninja).over(Math.max(1, 15 - number) * s)
