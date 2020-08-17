@@ -71,7 +71,6 @@ let promilleimg = new Image();
 promilleimg.src = "img/promille.png";
 
 class Promille extends Gadget {
-
 	static get image() { return promilleimg; }
 	static get scale() { return 0.05; }
 
@@ -79,7 +78,19 @@ class Promille extends Gadget {
         tower.maxHitsOverride = Number.POSITIVE_INFINITY;
 		super.addTo(tower);
 	}
+}
 
+let schroedingerimg = new Image();
+schroedingerimg.src = "img/schroedinger.png";
+
+class Schroedinger extends Gadget {
+	static get image() { return schroedingerimg; }
+	static get scale() { return 0.05; }
+
+	addTo(tower) {
+        tower.schroedinger = true;
+		super.addTo(tower);
+	}
 }
 
 let explosionimg = new Image();
@@ -111,6 +122,14 @@ class Axel extends OmniTower {
         let m = new Molotov(this.map, this, target);
         if (this.maxHitsOverride !== undefined)
             m.maxHits = this.maxHitsOverride;
+        if (this.schroedinger) {
+            if (Math.random() < 0.5)
+                m.damage *= 3;
+            else {
+                m.damage = 0;
+                m.hitCreep = Wolfram.prototype.hitCreep.bind(m);
+            }
+        }
         return m;
     }
 
@@ -130,6 +149,14 @@ class Axel extends OmniTower {
             150, 
             [], 
             [Promille],
+            100);
+        this.addUpgrade(
+            Schroedinger, 
+            "Schrödingers", 
+            "Man vet aldrig vad man får när man beställer Schrödingers. Det är 50 % chans att ninjorna tar 3x så mycket skada, och 50 % chans att deras hastighet istället tillfälligt halveras.",
+            200, 
+            [Promille], 
+            [Schroedinger],
             100);
     }
 }
