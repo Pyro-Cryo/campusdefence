@@ -47,7 +47,8 @@ Becca:
 	Grundskott:
 	- Eldkastare (2 damage, hög firerate)
 	Uppgraderingar:
-	- Högre temperatur (+1 damage) -> Dubbla munstycken (skjuter två eld samtidigt med olika vinkel) -> Bensinbomb (skadar det creep det träffar, sätter eld på flera creeps i närheten) -> Ring of fire (Engångsattack, Alla creeps inom radie får burning-effekt)
+	- Högre temperatur (+1 damage) -> Dubbla munstycken (skjuter två eld samtidigt med olika vinkel) 
+	- Bensinbomb (skadar det creep det träffar, sätter eld på flera creeps i närheten) -> Ring of fire (Engångsattack, Alla creeps inom radie får burning-effekt)
 
 Nicole:
 	Grundskott:

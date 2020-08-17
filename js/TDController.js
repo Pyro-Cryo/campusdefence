@@ -324,16 +324,12 @@
             );
             if (this.selectedTower.upgrades){
 
-                console.log("Upgrades", this.selectedTower.upgrades.length);
                 for (var i = 0; i < this.selectedTower.upgrades.length; i++) {
                     let upgrade = this.selectedTower.upgrades[i];
-                    console.log(upgrade.name, upgrade.requires);
 
                     // Check if we have all required previous upgrades
                     if(!upgrade.requires.every(function(elem){
-                        console.log("requires", elem);
                         return this.selectedTower.gadgets.some(function(g){
-                            console.log(g.constructor.name, elem.name, g.constructor.name === elem.name);
                             return g.constructor.name === elem.name;
                         })
                     }.bind(this))){
@@ -366,6 +362,7 @@
                             else {
                                 this.money -= upgrade.cost;
                                 let gadget = new upgrade.type(this.selectedTower);
+                                console.log(gadget);
                                 this.destroyContextMenu();
                                 this.setupContextMenu();
                             }

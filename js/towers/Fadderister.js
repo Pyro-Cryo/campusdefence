@@ -195,6 +195,14 @@ class Frida extends TargetingTower {
 
 let fireimg = new Image();
 fireimg.src = "img/fire.png";
+let gasoline = new Image();
+gasoline.src = "img/gasoline.png";
+let propane = new Image();
+propane.src = "img/propane.png";
+let firebomb = new Image();
+firebomb.src = "img/firebomb.png";
+let ringofire = new Image();
+ringofire.src = "img/ringofire.png";
 
 
 class Burning extends BaseEffect {
@@ -217,12 +225,16 @@ class Burning extends BaseEffect {
 }
 
 class Fire extends BasicProjectile {
-    constructor(map, source, target, type) {
+
+    static get damage() {
+        return 2;
+    }
+
+    constructor(map, source, target) {
         super(map, fireimg, source, target.x + Math.random() - 0.5, target.y + Math.random() - 0.5, 1, 1 / controller.updateInterval);
         this.ignoreTile = null;
         this.lastTile = null;
         this.range = 2;
-        this.type = type;
     }
 
     hit(pathTile) {
@@ -233,13 +245,122 @@ class Fire extends BasicProjectile {
             super.hit(pathTile);
     }
 
+    // hitCreep(creep) {
+    //     if(this.type > 1){
+    //         let e = new Burning();
+    //         creep.addEffect(e);
+    //     }
+    //     super.hitCreep(creep);
+    // }
+}
+
+class HotFire extends Fire {
+    static get damage() { return 3; }
+}
+
+class FireBomb extends SplashProjectile {
+
+    get damage() {
+        return this._damage;
+    }
+    static get maxHits() { return 10; }
+
+    constructor(map, source, target){
+        super(map, gasoline, firebomb, source, target.x + Math.random() - 0.5, target.y + Math.random() - 0.5, 1, 1, 1 / controller.updateInterval, 1);
+        this.ignoreTile = null;
+        this.lastTile = null;
+        this.range = 2;
+        this._damage = 4;
+    }
+
     hitCreep(creep) {
-        if(this.type > 1){
-            let e = new Burning();
-            creep.addEffect(e);
+        let b = new Burning();
+        creep.addEffect(b);
+
+        super.hitCreep(creep);
+        this._damage = 0;
+    }
+}
+
+class FireRing extends Projectile {
+
+    constructor(map, source) {
+        super(map, ringofire, source, 0, 0, 0.2, 0, undefined);
+
+        this.flying = false;
+        this.angle = 0;
+        this.runticks = 1000 / controller.updateInterval;
+    }
+
+    update() {
+        this.angle += 5 * Math.PI * 2 / this.runticks;
+        this.scale = 0.9*this.scale + 0.1;
+
+        if(--this.runticks <= 0){
+            // Träffar alla creeps inom tornets radius
+            for (var i = 0; i < this.sourcetower.inrange.length; i++) {
+                this.sourcetower.inrange[i].data.forEach(function(creep){
+                    this.hitCreep(creep);
+                }.bind(this));
+            }
+            this.despawn();
         }
+        super.update();
+    }
+
+    hitCreep(creep){
+        let b = new Burning();
+        creep.addEffect(b);
+
         super.hitCreep(creep);
     }
+
+}
+
+
+class Gasoline extends Gadget {
+
+    static get image() { return gasoline; }
+    static get scale() { return 0.5; }
+
+    addTo(tower){
+        tower.upgradeLevel = 2;
+        super.addTo(tower);
+    }
+}
+
+class Propane extends Gadget {
+
+    static get image() { return propane; }
+    static get scale() { return 0.5; }
+
+    addTo(tower){
+        tower.projectiletype = 2;
+        super.addTo(tower);
+    }
+}
+
+class DoubleBarell extends Gadget {
+
+    static get image() { return null; }
+    static get scale() { return 1; }
+
+    addTo(tower){
+        tower.double = true;
+        super.addTo(tower);
+    }
+}
+
+class RingOfFire extends Gadget {
+
+    static get image() { return null; }
+    static get scale() { return 1; }
+
+    addTo(tower){
+        tower.upgradeLevel = 3;
+        super.addTo(tower);
+    }
+
 }
 
 let beccaimg = new Image();
@@ -256,11 +377,34 @@ class Becca extends TargetingTower {
 
     constructor(x,y){
         super(x,y);
-        this.projectiletype = 2;
+        this.upgradeLevel = 1;
+        this.projectiletype = 1;
+        this.double = false;
     }
 
     projectile(target) {
-        return new Fire(this.map, this, target, this.projectiletype);
+
+        if(this.upgradeLevel >= 2 && Math.random() < 0.1){
+            return new FireBomb(this.map, this, target);
+        }
+        if(this.upgradeLevel >= 3 && Math.random() < 0.1){
+            return new FireBomb(this.map, this, target);
+        }
+        if(this.projectiletype == 1){
+            let t = Fire;
+        }
+        else{
+            let t = HotFire;
+        }
+
+        if(this.double){
+            return [
+                new t(this.map, this, target, this.projectiletype), 
+                new t(this.map, this, target, this.projectiletype)
+            ];
+
+        }
+        return new t(this.map, this, target, this.projectiletype);
     }
 
     configUpgrades() {
@@ -272,6 +416,38 @@ class Becca extends TargetingTower {
 			[], 
 			[TakeAwayCoffee],
 			20);
+        this.addUpgrade(
+            Propane,
+            "Propangas",
+            "Ren propangas brinner varmare än hårspray, och gör extra skada.",
+            300,
+            [],
+            [Propane],
+            );
+        this.addUpgrade(
+            Gasoline,
+            "Bensin",
+            "Bensin brinner också bra",
+            500,
+            [Propane],
+            [Gasoline]
+            );
+        this.addUpgrade(
+            DoubleBarell,
+            "Dubbelpipa",
+            "Vad kan vara bättre än en eldkastare? Två eldkastare såklart.",
+            700,
+            [Propane],
+            [DoubleBarell, RingOfFire]
+            );
+        this.addUpgrade(
+            RingOfFire,
+            "Ring of fire",
+            "Använder man en eldkastare kan vad som helst hända",
+            1000,
+            [Propane, Gasoline],
+            [RingOfFire, DoubleBarell]
+            );
     }
 }
 

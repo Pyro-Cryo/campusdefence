@@ -12,7 +12,6 @@ for (var i = 0; i < 5; i++) {
     let img = new Image();
     img.src = "img/door" + (i+1).toString() + ".png";
     doors.push(img);
-    console.log(doors[i]);
 }
 
 
