@@ -136,6 +136,7 @@ class BaseTower extends GameObject {
 
 class OmniTower extends BaseTower {
     fire(target) {
+        let cdtimer = this.CDtimer;
         for (var dx = -1; dx < 2; dx++) {
             for (var dy = -1; dy < 2; dy++) {
                 if (dx === 0 && dy === 0)
@@ -144,6 +145,7 @@ class OmniTower extends BaseTower {
                 super.fire(t);
             }
         }
+        this.CDtimer = cdtimer + this.CDtime;
     }
 }
 

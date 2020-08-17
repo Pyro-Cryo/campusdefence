@@ -363,6 +363,110 @@ class Schroedinger extends Gadget {
 	}
 }
 
+let vattenimg = new Image();
+vattenimg.src = "img/vatten.png";
+
+class Vatten extends Gadget {
+	static get image() { return vattenimg; }
+	static get scale() { return 0.1; }
+
+	addTo(tower) {
+		tower.CDtime *= 0.8;
+		super.addTo(tower);
+	}
+}
+
+let champagneimg = new Image();
+champagneimg.src = "img/champagne.png";
+
+class Champagne extends Gadget {
+	static get image() { return champagneimg; }
+	static get scale() { return 0.3; }
+
+	addTo(tower) {
+        tower.champagne = true;
+        tower.preferredTargets = this.computePreferredTargets(tower, tower.inrange);
+        super.addTo(tower);
+    }
+
+    computePreferredTargets(tower, inrange) {
+        if (inrange.length === 0)
+            return null;
+        else {
+            let directions = [];
+            for (let x = -1; x <= 1; x++)
+                for (let y = -1; y <= 1; y++)
+                    if (x !== 0 || y !== 0)
+                        directions.push([x, y]);
+
+            let dircosts = inrange.map(pathTile =>
+                directions.map(dir => {
+                    const delta = Math.abs(Math.atan2(dir[1], dir[0]) - Math.atan2(pathTile.y - tower.y, pathTile.x - tower.x));
+                    const angularDiff = Math.min(2 * Math.PI - delta, delta);
+                    const radialDiff = Math.sqrt(Math.pow(pathTile.x - tower.x - dir[0], 2) + Math.pow(pathTile.y - tower.y - dir[1], 2));
+                    const val = angularDiff + radialDiff;
+                    return val;
+                })
+            );
+
+            let preferredTarget = directions.map(_ => null);
+            let takenPathtiles = [];
+            while (preferredTarget.some(dir => dir === null)) {
+                if (takenPathtiles.length === inrange.length)
+                    takenPathtiles = [];
+                let bestDirection = null;
+                let bestPathtile = null;
+                let bestVal = Number.POSITIVE_INFINITY;
+                for (let i = 0; i < dircosts.length; i++) {
+                    if (takenPathtiles.indexOf(i) !== -1)
+                        continue;
+                    for (let j = 0; j < dircosts[i].length; j++) {
+                        if (preferredTarget[j] !== null)
+                            continue;
+                        if (dircosts[i][j] < bestVal) {
+                            bestVal = dircosts[i][j];
+                            bestPathtile = i;
+                            bestDirection = j;
+                        }
+                    }
+                }
+
+                takenPathtiles.push(bestPathtile);
+                preferredTarget[bestDirection] = [directions[bestDirection][0], directions[bestDirection][1], inrange[bestPathtile]];
+            }
+            return preferredTarget;
+        }
+    }
+}
+
+let dompaimg = new Image();
+dompaimg.src = "img/dompa.png";
+
+class Dompa extends Gadget {
+	static get image() { return dompaimg; }
+	static get scale() { return 0.5; }
+
+	addTo(tower) {
+		controller.map.path.forEach(pathTile => pathTile.data.forEach(creep => {
+            let molotov = tower.projectile(creep);
+            molotov.target = creep;
+            molotov.range = Number.POSITIVE_INFINITY;
+            let hit = molotov.hit.bind(molotov);
+            // Träffa inga creeps på vägen till den vi siktar på
+            molotov.hit = function (pathTile) {
+                if (this.target && pathTile.data.has(this.target))
+                    hit(pathTile);
+            }.bind(molotov);
+
+            molotov.source = {target: () => {
+                molotov.hit = hit;
+            }};
+
+            controller.registerObject(molotov);
+        }));
+	}
+}
+
 let explosionimg = new Image();
 explosionimg.src = "img/boom.png";
 let molotovimg = new Image();
@@ -388,6 +492,15 @@ class Axel extends OmniTower {
     static get name() { return "Fjädrande Axel"; }
     static get desc() { return "Fackliga Axel älskar två saker: facklor och att festa. Han bjuder gärna alla omkring sig på Molotovcocktails, och när dessa exploderar träffar de alla ninjor inom ett visst område."; }
 
+    pathInRange() {
+        let inrange = super.pathInRange();
+        // Ja, det här uppdaterar preferredTargets även om pathinrange inte skulle uppdatera inrange på tornet
+        // Eventuella buggar som uppkommer pga det borde inte påverka gameplay nämnvärt
+        if (this.champagne)
+            this.preferredTargets = Champagne.prototype.computePreferredTargets(this, inrange);
+        return inrange;
+    }
+
     projectile(target) {
         let m = new Molotov(this.map, this, target);
         if (this.maxHitsOverride !== undefined)
@@ -399,6 +512,22 @@ class Axel extends OmniTower {
                 m.damage = 0;
                 m.hitCreep = Wolfram.prototype.hitCreep.bind(m);
             }
+        }
+        if (this.champagne) {
+            // Håhå det här är en klar contender för det fulaste jag nånsin skrivit
+            // Vi basically snor funktionaliteten från en SeekingProjectile
+            m.source = {target: Nicole.prototype.target.bind(this)};
+            if (this.preferredTargets)
+            {
+                let preferredTarget = this.preferredTargets.find(arr => Math.abs((target.x - this.x)/this.range - arr[0]) < 0.1 && Math.abs((target.y - this.y)/this.range - arr[1]) < 0.1);
+                if (preferredTarget)
+                    m.target = preferredTarget[2].arbitraryCreep();
+            }
+            if (!m.target)
+                m.target = m.source.target;
+            m.range *= 1.5;
+            m.radius = 1/10;
+            m.update = SeekingProjectile.prototype.update.bind(m);
         }
         return m;
     }
@@ -413,12 +542,20 @@ class Axel extends OmniTower {
 			[TakeAwayCoffee],
             20);
         this.addUpgrade(
+            Vatten, 
+            "Varannan Vatten", 
+            "Axel håller sig hydrerad och orkar festa ännu intensivare!", 
+            150, 
+            [TakeAwayCoffee], 
+            [Vatten],
+            50);
+        this.addUpgrade(
             Promille, 
             "Promilleacceleratorn", 
             "Det ökade alkoholinnehållet gör att cocktailarna kan träffa hur många tätt packade ninjor som helst, istället för bara " + Molotov.maxHits + ".", 
             150, 
             [], 
-            [Promille],
+            [Promille, Champagne],
             100);
         this.addUpgrade(
             Schroedinger, 
@@ -428,6 +565,22 @@ class Axel extends OmniTower {
             [Promille], 
             [Schroedinger],
             100);
+        this.addUpgrade(
+            Champagne, 
+            "Champagne", 
+            "Bjuder man på champagne gäller det att inte spilla! Axel missar knappt längre, utan drinkarna söker nu automatiskt upp ninjor.",
+            600, 
+            [], 
+            [Promille, Champagne],
+            100);
+        this.addUpgrade(
+            Dompa, 
+            "Dompa", 
+            "Axel bjuder varenda ninja på en drink. Dompa åt alla! Mest värt det när du har en överväldigande mängd ninjor att fort hantera.",
+            600,
+            [Champagne],
+            [],
+            300);
     }
 }
 
@@ -500,6 +653,8 @@ let firebomb = new Image();
 firebomb.src = "img/firebomb.png";
 let ringofire = new Image();
 ringofire.src = "img/ringofire.png";
+let johnnycashimg = new Image();
+johnnycashimg.src = "img/johnnycash.png"
 
 
 class Burning extends BaseEffect {
@@ -647,27 +802,24 @@ class Propane extends Gadget {
 
 class DoubleBarell extends Gadget {
 
-    static get image() { return null; }
-    static get scale() { return 1; }
+    static get image() { return beccaimg; }
+    static get scale() { return 0.08; }
 
     addTo(tower){
         tower.double = true;
         super.addTo(tower);
     }
-    draw(gameArea){}
 }
 
 class RingOfFire extends Gadget {
 
-    static get image() { return null; }
-    static get scale() { return 1; }
+    static get image() { return johnnycashimg; }
+    static get scale() { return 0.05; }
 
     addTo(tower){
         tower.upgradeLevel = 3;
         super.addTo(tower);
     }
-    draw(gameArea){}
-
 }
 
 let beccaimg = new Image();
@@ -741,20 +893,20 @@ class Becca extends TargetingTower {
             [Gasoline]
             );
         this.addUpgrade(
-            DoubleBarell,
-            "Dubbelpipa",
-            "Vad kan vara bättre än en eldkastare? Två eldkastare såklart.",
-            700,
-            [Propane],
-            [DoubleBarell, RingOfFire]
-            );
-        this.addUpgrade(
             RingOfFire,
             "Ring of fire",
             "Använder man en eldkastare kan vad som helst hända",
             1000,
             [Propane, Gasoline],
             [RingOfFire, DoubleBarell]
+            );
+        this.addUpgrade(
+            DoubleBarell,
+            "Dubbelpipa",
+            "Vad kan vara bättre än en eldkastare? Två eldkastare såklart.",
+            700,
+            [Propane],
+            [DoubleBarell, RingOfFire]
             );
     }
 }
