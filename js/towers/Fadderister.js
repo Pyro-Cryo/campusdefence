@@ -383,6 +383,8 @@ let firebomb = new Image();
 firebomb.src = "img/firebomb.png";
 let ringofire = new Image();
 ringofire.src = "img/ringofire.png";
+let johnnycashimg = new Image();
+johnnycashimg.src = "img/johnnycash.png"
 
 
 class Burning extends BaseEffect {
@@ -530,27 +532,24 @@ class Propane extends Gadget {
 
 class DoubleBarell extends Gadget {
 
-    static get image() { return null; }
-    static get scale() { return 1; }
+    static get image() { return beccaimg; }
+    static get scale() { return 0.08; }
 
     addTo(tower){
         tower.double = true;
         super.addTo(tower);
     }
-    draw(gameArea){}
 }
 
 class RingOfFire extends Gadget {
 
-    static get image() { return null; }
-    static get scale() { return 1; }
+    static get image() { return johnnycashimg; }
+    static get scale() { return 0.05; }
 
     addTo(tower){
         tower.upgradeLevel = 3;
         super.addTo(tower);
     }
-    draw(gameArea){}
-
 }
 
 let beccaimg = new Image();
@@ -624,20 +623,20 @@ class Becca extends TargetingTower {
             [Gasoline]
             );
         this.addUpgrade(
-            DoubleBarell,
-            "Dubbelpipa",
-            "Vad kan vara bättre än en eldkastare? Två eldkastare såklart.",
-            700,
-            [Propane],
-            [DoubleBarell, RingOfFire]
-            );
-        this.addUpgrade(
             RingOfFire,
             "Ring of fire",
             "Använder man en eldkastare kan vad som helst hända",
             1000,
             [Propane, Gasoline],
             [RingOfFire, DoubleBarell]
+            );
+        this.addUpgrade(
+            DoubleBarell,
+            "Dubbelpipa",
+            "Vad kan vara bättre än en eldkastare? Två eldkastare såklart.",
+            700,
+            [Propane],
+            [DoubleBarell, RingOfFire]
             );
     }
 }
