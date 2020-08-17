@@ -363,6 +363,7 @@
                                 this.money -= upgrade.cost;
                                 let gadget = new upgrade.type(this.selectedTower);
 
+                                this.saveToCookie();
                                 this.destroyContextMenu();
                                 this.setupContextMenu();
                             }
@@ -429,17 +430,15 @@
                 spec.button.innerText = "Köp";
                 spec.button.title = spec.description;
                 controller.buyingTower = null;
+                this.saveToCookie();
 
-                console.log("Money:", controller.money);
+                // console.log("Money:", controller.money);
             });
             this.registerObject(this.buyingTower);
             originatingButton.innerText = "Avbryt";
             originatingButton.title = "Avbryt det pågående köpet";
         }
     }
-
-
-
 
     saveToCookie(){
 
@@ -456,6 +455,10 @@
                 t.x = current.obj.x;
                 t.y = current.obj.y;
                 t.hits = current.obj.hits;
+                t.gadgets = [];
+                for (var i = 0; i < current.obj.gadgets.length; i++) {
+                    t.gadgets.push(current.obj.gadgets[i].constructor.name)
+                }
                 data.towers.push(t);
             }
         }
@@ -471,6 +474,7 @@
             return;
         data = JSON.parse(data);
 
+
         this.levelNumber = data.level;
         this.hp = data.health;
         this.money = data.money;
@@ -479,12 +483,21 @@
             let x = data.towers[i].x;
             let y = data.towers[i].y;
             let type = this.towerSpecs.find(ts => ts.type.name === data.towers[i].type).type;
-            
             let tower = new type(x, y);
             tower.hits = data.towers[i].hits;
 
+            if(data.towers[i].gadgets){
+            
+                for (var j = 0; j < data.towers[i].gadgets.length; j++) {
+                    for (var k = 0; k < tower.upgrades.length; k++) {
+                        if(tower.upgrades[k].type.name == data.towers[i].gadgets[j]){
+                            let g = new tower.upgrades[k].type(tower);
+                            break;
+                        }
+                    }
+                }
+            }
         }
-
     }
 
     clearState() {

@@ -35,6 +35,7 @@ class Projectile extends GameObject {
 		this.sourceTower.hits++;
 		if (this.onHitCreep !== null)
 			this.onHitCreep();
+
 	}
 
 	update() {

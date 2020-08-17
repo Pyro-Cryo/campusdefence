@@ -75,10 +75,11 @@ class BaseEffect {
 
 		this.cooldown = cooldown;
 		this.cdtime = this.cooldown;
+		this.timesinitialized = 0;
 	}
 
 	init(object){
-
+		this.timesinitialized++;
 	}
 
 	update(object){

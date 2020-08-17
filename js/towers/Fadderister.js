@@ -1,18 +1,33 @@
 
 let flowerimg = new Image();
 flowerimg.src = "img/flower.png";
+let fleshimg = new Image();
+fleshimg.src = "img/tentacula.png";
+let gmotentacula = new Image();
+gmotentacula.src = "img/gmo-tentacula.png";
+let bouquet = new Image();
+bouquet.src = "img/bouquet.png";
+let calendar = new Image();
+calendar.src = "img/calendar.png";
+let cornfield = new Image();
+cornfield.src = "img/cornfield.png";
+let corn = new Image();
+corn.src = "img/corn.png";
+let nutrient = new Image();
+nutrient.src = "img/nutrients.png";
 
 class Converted extends BaseEffect {
 
     static get image() { return flowerimg; }
     static get scale() { return 0.5; }
 
-    constructor() {
-        super(5000 / controller.updateInterval);
+    constructor(time) {
+        super(time / controller.updateInterval);
     }
     init(object){
         if (object.speed > 0)
             object.speed = -object.speed;
+        super.init(object);
     }
     apply(object) {
         object.speed = Math.abs(object.speed);
@@ -20,15 +35,194 @@ class Converted extends BaseEffect {
     }
 }
 
+class FleshEatingConverted extends Converted {
+    static get image() { return fleshimg; }
+    static get persistent() { return true; }
+
+    constructor(time){
+        super(time);
+        this.conv = true;
+    }
+    apply(object) {
+        if(this.conv){
+            object.speed = Math.abs(object.speed);
+            this.conv = false;
+        }
+        this.remove(object);
+        if(--object.health <= 0){
+            object.onDeath();
+        }
+    }
+}
+
+class GMOConverted extends FleshEatingConverted {
+    static get image() { return gmotentacula; }
+
+    init(object){
+        // Det bara funkar med 4, okej?
+        if(this.timesinitialized <= 4)
+            super.init(object);
+    }
+    apply(object){
+        if(object.speed < 0){
+            object.speed = Math.abs(object.speed);
+        }
+        if(--object.health <= 0)
+            object.onDeath();
+    }
+}
+
 class Flower extends SeekingProjectile {
-	static get damage() { return 0; }
-    constructor(source, target){
+    static get damage() { return 0; }
+    constructor(source, target, damage, time){
         super(flowerimg, 0.5, source, target, 2 / controller.updateInterval);
+        this.damage = damage;
+        this.time = time;
     }
     hitCreep(creep) {
-        let e = new Converted();
+        if(this.damage == 0){
+            let e = new Converted(this.time);
+            creep.addEffect(e);
+        }
+        super.hitCreep(creep);
+    }
+}
+
+class FleshEatingFlower extends SeekingProjectile {
+    static get damage(){ return 1; }
+    constructor(source, target, time) {
+        super(fleshimg, 0.5, source, target, 2/controller.updateInterval);
+        this.time = time;
+    }
+    hitCreep(creep) {
+        let e = new FleshEatingConverted(this.time);
         creep.addEffect(e);
         super.hitCreep(creep);
+    }
+}
+
+class GMOFlower extends SeekingProjectile {
+    static get damage(){ return 2; }
+    constructor(source, target, time) {
+        super(gmotentacula, 0.5, source, target, 2/controller.updateInterval);
+        this.time = time;
+    }
+    hitCreep(creep) {
+        let e = new GMOConverted(this.time);
+        creep.addEffect(e);
+        super.hitCreep(creep);
+    }
+}
+
+class Bouquet extends Flower {
+
+    static get hitpoints() { return 5; }
+    static get damage() { return 0; }
+    
+    constructor(source, target, damage, time){
+        super(source, target, damage, time);
+        this.image = bouquet;
+        this.time = time;
+    }
+}
+
+class Corn extends Projectile {
+
+    static get damage() { return 1; }
+
+    constructor(source, target, time){
+        super(controller.map, corn, source, target.x, target.y, 0.5, 1.5/controller.updateInterval, undefined);
+        this.time = time;
+    }
+
+    hit(pathTile){
+        let type = pathTile.arbitraryCreep().constructor.name;
+        pathTile.data.forEach(function(creep){
+            if(creep.constructor.name == type){
+                this.hitCreep(creep);
+            }
+        }.bind(this));
+        super.hit(pathTile);
+    }
+
+    // hitCreep(creep){
+    //     let e = new FleshEatingConverted(this.time);
+    //     creep.addEffect(e);
+    //     super.hitCreep(creep);
+    // }
+}
+
+
+class Nutrient extends Gadget {
+
+    static get image() { return nutrient; }
+    static get scale() { return 0.2; }
+
+    addTo(tower){
+        tower.CDtime *= 0.7;
+        super.addTo(tower);
+    }
+}
+
+
+class Pollen extends Gadget {
+
+    static get image() { return calendar; }
+    static get scale() { return 0.45; }
+
+    addTo(tower){
+        tower.flowerdamage = 1;
+        super.addTo(tower);
+    }
+}
+
+class FleshEating extends Gadget {
+
+    static get image() { return fleshimg; }
+    static get scale() { return 0.5; }
+
+    addTo(tower){
+        tower.bouquet = false;
+        tower.flesheating = true;
+        tower.upgradeLevel = 2;
+        super.addTo(tower);
+    }
+}
+
+class GMOEating extends Gadget {
+
+    static get image() { return gmotentacula; }
+    static get scale() { return 0.5; }
+
+    addTo(tower){
+        tower.flesheating = true;
+        tower.upgradeLevel = 3;
+        super.addTo(tower);
+    }
+}
+
+
+class MultiFlower extends Gadget {
+
+    static get image() { return bouquet; }
+    static get scale() { return 0.6; }
+
+    addTo(tower){
+        tower.bouquet = true;
+        super.addTo(tower);
+    }
+}
+
+class MonoCulture extends Gadget {
+
+    static get image() { return cornfield; }
+    static get scale() { return 0.6; }
+
+    addTo(tower){
+        tower.bouquet = true;
+        tower.flesheating = false;
+        tower.upgradeLevel = 2;
+        super.addTo(tower);
     }
 }
 
@@ -44,6 +238,15 @@ class Nicole extends TargetingTower {
     static get name() { return "Fjädrande Nicole"; }
     static get desc() { return "Fina Nicole älskar blommor. När en ninja blir träffad av en blomma inser den hur fel den haft, och ger sig av hemåt igen. Insikten varar tyvärr dock bara några sekunder varpå ninjan fortsätter framåt."; }
 
+    constructor(x,y){
+        super(x,y);
+        this.bouquet = false;
+        this.flesheating = false;
+        this.upgradeLevel = 1;
+        this.flowerdamage = 0;
+        this.convertedtime = 3000;
+    }
+
     target() {
         let pt = super.target();
         if (pt)
@@ -52,18 +255,85 @@ class Nicole extends TargetingTower {
     }
 
     projectile(target) {
-        return new Flower(this, target);
+
+        if(this.flesheating){
+            if(this.upgradeLevel == 2)
+                return new FleshEatingFlower(this, target, this.convertedtime);
+            if(this.upgradeLevel == 3)
+                return new GMOFlower(this, target, this.convertedtime);
+        }
+
+        let damage = 0;
+        if(this.flowerdamage > 0 && Math.random() < 0.3){
+            damage = this.flowerdamage;
+        }
+
+        if(this.bouquet){
+            if(this.upgradeLevel == 2)
+                return new Corn(this, target, this.convertedtime);
+            return new Bouquet(this, target, damage, this.convertedtime);
+        }
+
+        return new Flower(this, target, damage, this.convertedtime);
     }
 
     configUpgrades() {
-		this.addUpgrade(
-			TakeAwayCoffee, 
-			"Take away kaffe", 
-			"Ge faddern lite kaffe så jobbar den snabbare.", 
-			150, 
-			[], 
-			[TakeAwayCoffee],
-			20);
+		// this.addUpgrade(
+		// 	TakeAwayCoffee, 
+		// 	"Take away kaffe", 
+		// 	"Ge faddern lite kaffe så jobbar den snabbare.", 
+		// 	150, 
+		// 	[], 
+		// 	[TakeAwayCoffee],
+		// 	20);
+        this.addUpgrade(
+            Nutrient,
+            "Växtnäring",
+            "Näring får blommor att växa snabbare.",
+            200,
+            [],
+            [Nutrient],
+            20);
+        this.addUpgrade(
+            Pollen,
+            "Pollensäsong",
+            "Genom att plocka blommorna under pollensäsongen kan Nicole utnyttja att vissa ninjor har pollenallergi.",
+            300,
+            [],
+            [Pollen],
+            30);
+        this.addUpgrade(
+            FleshEating,
+            "Köttätande växter",
+            "Alla blommor är inte fina. Vissa bits också.",
+            450,
+            [Pollen],
+            [FleshEating, MultiFlower, MonoCulture],
+            30);
+        this.addUpgrade(
+            GMOEating,
+            "Genmodifiering",
+            "Genom experimenterande och avancerad genmodifiering har Nicole skapat köttätande väster som klänger sig fast vid sitt offer.",
+            550,
+            [Pollen, FleshEating],
+            [GMOEating, MultiFlower, MonoCulture],
+            100);
+        this.addUpgrade(
+            MultiFlower,
+            "Blombukett",
+            "Genom effektiv paketering kan en hel bunt ninjor träffas av blommor samtidigt, med kraftigt ökad effekt.",
+            350,
+            [],
+            [MultiFlower, FleshEating, GMOEating],
+            30);
+        this.addUpgrade(
+            MonoCulture,
+            "Monokultur",
+            "Genom industriell odling kan tillräckligt många blommor tas fram samtidigt för att ge till alla ninjor av en viss sort inom räckhåll.",
+            500,
+            [Nutrient, MultiFlower],
+            [MonoCulture, FleshEating, GMOEating],
+            50);
     }
 }
 
