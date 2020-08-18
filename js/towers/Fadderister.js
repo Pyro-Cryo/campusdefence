@@ -1010,7 +1010,7 @@ class Becca extends TargetingTower {
     static get CDtime() { return 250; }
     static get image() { return beccaimg; }
     static get scale() { return 0.2; }
-    static get cost() { return 400; }
+    static get cost() { return 450; }
     static get name() { return "Fjädrande Becca"; }
     static get desc() { return "Flamberande Becca har en eldkastare."; }
 
@@ -1060,7 +1060,7 @@ class Becca extends TargetingTower {
             Propane,
             "Propangas",
             "Ren propangas brinner varmare än hårspray, och gör 50\% extra skada.",
-            300,
+            350,
             [],
             [Propane],
             );
@@ -1189,4 +1189,18 @@ class Fnoell extends BaseTower {
         }
         this.currentTarget = target;
     }
+
+    // nearestTower(){
+
+    //     let distance = 100;
+    //     let tower = null;
+        
+    //     for (var i = 0; i < controller.map.towers.length; i++) {
+    //         let dist =  
+    //         if(controller.map.towers[i]){
+
+    //         }
+    //     }
+
+    // }
 }

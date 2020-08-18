@@ -57,6 +57,13 @@ function getLevel(number, updateInterval) {
                 .wait(3 * s)
                 .send(10, Blue).over(4 * s));
 
+        case 11:
+            return (new CreepSequence()
+                .send(20, Pink).over(10 * s)
+                .interleave(new CreepSequence().send(20, Blue).over(10 * s))
+                .send(25, Pink).over(5 * s)
+                )
+
         // Fortsätt introducera föhsare typ var 4-6 nivå, fler föhsspöken
 
         default:
@@ -89,11 +96,11 @@ function autolevel(levelnumber, updateInterval){
 	}
 
 	if(levelnumber % 4 == 0 || levelnumber % 6 == 0){
-		cs.send(1, TF_1).immediately()
+		cs.send(1, TF_inf).immediately()
 		.wait(0.2 * s)
-		.send(1, OF_1).immediately()
+		.send(1, OF_inf).immediately()
 		.wait(0.2 * s)
-		.send(1, SF_1).immediately()
+		.send(1, SF_inf).immediately()
 		.wait(1 * s);
 	}
 

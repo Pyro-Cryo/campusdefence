@@ -63,23 +63,47 @@ class TF_1 extends BaseFohs {
         super.addEffect(effect);
     }
 
+    static get creepCount() { return 3; }
+    static get spread() { return 1; }
+    static get ninjaType() { return Ninja; }
+
     onHit(projectile){
         const maxdist = controller.map.path.length - 1;
-    	for (var i = -1; i < 2; i++) {
-    		new Ninja(Math.max(0, Math.min(maxdist, this.distance+i)));
+        let low = -Math.floor(this.constructor.creepCount/2);
+        let high = Math.ceil(this.constructor.creepCount/2);
+        let type = this.ninjaType();
+    	for (var i = -low; i < high; i++) {
+    		new type(Math.max(0, Math.min(maxdist, this.distance+i*this.constructor.spread)));
     	}
     	super.onHit(projectile);
     }
 
 }
 
-// class TF_inf extends TF_1 {
-
-//     constructor(distance){
-//         super(distance)
-//     }
-
-// }
+class TF_inf extends TF_1 {
+    static get creepCount() { 
+        if(controller.levelNumber < 30)
+            return 3;
+        if(controller.levelNumber < 40)
+            return 5;
+        return 7;
+    }
+    static get spread() { return 3/TF_inf.creepCount; }
+    static get ninjaType() { 
+        if(controller.levelNumber < 30)
+            return Pink;
+        if(controller.levelNumber < 40)
+            return Green;
+        if(controller.levelNumber < 50)
+            return Violet;
+        return Orange;
+    }
+    constructor(distance){
+        super(distance);
+        this.speed = 0.5;
+        this.health = controller.levelNumber * 3;
+    }
+}
 
 class SF_1 extends BaseFohs {
     static get speed() { return 0.65; }
@@ -101,11 +125,19 @@ class SF_1 extends BaseFohs {
     }
 }
 
+class SF_inf extends SF_1 {
+    constructor(distance){
+        super(distance);
+        this.speed = 0.5;
+        this.health = controller.levelNumber * 9;
+    }
+}
+
 class OF_1 extends BaseFohs {
     static get speed() { return 0.5; }
     static get image() { return ofimg; }
     static get scale() { return 0.2; }
-    static get health() { return 18; }
+    static get health() { return 20; }
     static get drawHealthBar() { return true; }
     static get value() { return 75; }
 
@@ -140,6 +172,15 @@ class OF_1 extends BaseFohs {
         super.onHit(projectile);
     }
 
+}
+
+class OF_inf extends OF_1 {
+    constructor(distance){
+        super(distance);
+        this.speed = 0.5;
+        this.cooldown *= 50/controller.levelNumber;
+        this.health = Math.floor(controller.levelNumber * 2.5);
+    }
 }
 
 

@@ -100,7 +100,7 @@ class BaseTower extends GameObject {
 
     addGadget(gadget){
         this.gadgets.push(gadget);
-        this.upgrades = this.upgrades.filter(up => gadget.constructor.name !== up.type.name);
+        // this.upgrades = this.upgrades.filter(up => gadget.constructor.name !== up.type.name);
     }
 
     update() {
