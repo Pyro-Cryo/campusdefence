@@ -190,7 +190,10 @@
     }
 
     onPause() {
+        if (music_speedy.duration > 0 && !music_speedy.paused)
+            music.currentTime = music_speedy.currentTime * music.duration / music_speedy.duration;
         music.pause();
+        music_speedy.pause();
         super.onPause();
     }
 
