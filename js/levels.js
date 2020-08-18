@@ -81,7 +81,12 @@ function autolevel(levelnumber, updateInterval){
 		.wait(3 * s)
 		.send(4*levelnumber, Green).over(levelnumber/4 * s)
 		.interleave(new CreepSequence().send(2*levelnumber, Pink).over(8/levelnumber * s))
-		.wait(5 * s);
+		.wait(4 * s);
+
+	if(levelnumber > 20){
+		cs.send(2*levelnumber, Orange).over(10 * s)
+		.interleave(new CreepSequence().send(levelnumber, Pink).over(10 * s));
+	}
 
 	if(levelnumber % 4 == 0 || levelnumber % 6 == 0){
 		cs.send(1, TF_1).immediately()
@@ -89,15 +94,16 @@ function autolevel(levelnumber, updateInterval){
 		.send(1, OF_1).immediately()
 		.wait(0.2 * s)
 		.send(1, SF_1).immediately()
-		.wait(2 * s);
+		.wait(1 * s);
 	}
 
-	if(levelnumber > 40){
+	if(levelnumber > 20){
 		cs.send(2*levelnumber, Orange).over(10 * s);
 	}
 
 	cs.send(100, Blue).over(20 * s)
-		.interleave(new CreepSequence().send(40, Red).over(10 * s).send(40, Pink).over(10 * s))
+		.interleave(new CreepSequence().send(40, Red).over(10 * s))
+		.interleave(new CreepSequence().send(40, Pink).over(10 * s))
 		.send(5 * levelnumber, Pink).over(15 * s);
 
 

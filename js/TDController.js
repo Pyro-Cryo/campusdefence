@@ -453,6 +453,11 @@
 
     saveToCookie(){
 
+        if(this.levelIterator !== null){
+            // Spara inte mitt i en level
+            return;
+        }
+
         let data = {};
         data.level = this.levelNumber;
         data.health = this.hp;

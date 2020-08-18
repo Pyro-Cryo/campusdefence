@@ -7,7 +7,7 @@
 - Contextmenyn borde uppgraderas ifall man har den uppe medan tornet skjuter
     - Också skicka inte meddelanden via alerts och confirms egentligen egentligen
     - Stylea om contextmeny och towermarket
-
+- Flytta föhs frammåt i z-buffer (kanske inte går?)
 
 Fadder:
 	Grundskott:
