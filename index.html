@@ -39,6 +39,17 @@
                 this.play();
             }
         }, false);
+        
+        let music_speedy = new Audio("audio/myrstacken_speedy.mp3");
+        music_speedy.loop = true;
+        music_speedy.preload = true;
+        music_speedy.addEventListener('timeupdate', function () {
+            var buffer = .44;
+            if (this.currentTime > this.duration - buffer) {
+                this.currentTime = 0;
+                this.play();
+            }
+        }, false);
     </script>
 
     <!-- The main controller -->

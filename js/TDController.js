@@ -194,6 +194,17 @@
         super.onPause();
     }
 
+    onFF() {
+        music.pause();
+        music_speedy.currentTime = music.currentTime * music_speedy.duration / music.duration;
+        music_speedy.play();
+    }
+    offFF() {
+        music_speedy.pause();
+        music.currentTime = music_speedy.currentTime * music.duration / music_speedy.duration;
+        music.play();
+    }
+
     startLevel() {
         console.log("Starting level " + this.levelNumber);
         this.levelIterator = getLevel(this.levelNumber, this.updateInterval);
