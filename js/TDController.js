@@ -142,17 +142,8 @@
             this.levelCleared = false;
             this.objects = new LinkedList();
             this.registerObject(new SplashScreen());
-            console.log("Game over. You reached level " + this.levelNumber.toString());
-            
-            if (this.selectedTower !== null)
-                this.destroyContextMenu();
-            document.querySelector(".towerMarket").classList.add("hideme");
-            document.querySelector(".contextMenu").classList.remove("hideme");
-            this.contextOption("Spelet över", "Du kom till nivå " + this.levelNumber.toString())
-                .querySelector("button[name='actionbtn']").classList.add("hideme");
-            document.querySelectorAll("button").forEach(b => {
-                b.disabled = "disabled";
-            });
+            this.setMessage("<b>Game over</b><br /><br />Du nådde till nivå " + this.levelNumber.toString() + ".");
+            this.clearState();
         }
 
     }
