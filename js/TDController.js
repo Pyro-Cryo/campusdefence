@@ -190,8 +190,22 @@
     }
 
     onPause() {
+        if (music_speedy.duration > 0 && !music_speedy.paused)
+            music.currentTime = music_speedy.currentTime * music.duration / music_speedy.duration;
         music.pause();
+        music_speedy.pause();
         super.onPause();
+    }
+
+    onFF() {
+        music.pause();
+        music_speedy.currentTime = music.currentTime * music_speedy.duration / music.duration;
+        music_speedy.play();
+    }
+    offFF() {
+        music_speedy.pause();
+        music.currentTime = music_speedy.currentTime * music.duration / music_speedy.duration;
+        music.play();
     }
 
     startLevel() {

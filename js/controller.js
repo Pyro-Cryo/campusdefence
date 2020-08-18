@@ -56,12 +56,13 @@ class Controller {
         if(this.isFF){
             clearInterval(this.mainInterval);
             this.mainInterval = setInterval(() => this.update(), this.updateInterval);
-            this.onFF();
+            this.offFF();
             this.isFF = false;
         }
         else{
             clearInterval(this.mainInterval);
             this.mainInterval = setInterval(() => this.update(), this.updateInterval/3);
+            this.onFF();
             this.isFF = true;
         }
     }
@@ -89,6 +90,10 @@ class Controller {
 
     onFF(){
         
+    }
+
+    offFF() {
+
     }
 
     setMessage(message, pureText) {
