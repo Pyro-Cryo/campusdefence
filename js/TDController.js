@@ -224,6 +224,9 @@
                 }
                 cl.classList.remove("hideme");
                 ti.classList.remove("locked");
+                ti.classList.add("unlocked");
+                console.log("added");
+                setTimeout(() => ti.classList.remove("unlocked") || console.log("removed"), /\d/.exec(window.getComputedStyle(ti).animationDuration)[0]* 1000);
             }
         });
         this.levelNumber++;
@@ -401,7 +404,10 @@
                 template.classList.add("locked");
             }
             else
+            {
                 template.querySelector("span[class='unlockInfo']").classList.add("hideme");
+                template.classList.add("initiallyAvailable");
+            }
 
             let btn = template.querySelector("button[name='buybtn']");
             btn.onclick = function(){
@@ -432,7 +438,7 @@
         if (!onlyCancel) {
             this.buyingTower = new PseudoTower(type, cost, () => {
                 let spec = this.towerSpecs.find(s => s.type === type);
-                spec.button.innerText = "Köp";
+                spec.button.innerHTML = this.buyingTower.oldContent;
                 spec.button.title = spec.description;
                 controller.buyingTower = null;
                 this.saveToCookie();
@@ -440,6 +446,7 @@
                 // console.log("Money:", controller.money);
             });
             this.registerObject(this.buyingTower);
+            this.buyingTower.oldContent = originatingButton.innerHTML;
             originatingButton.innerText = "Avbryt";
             originatingButton.title = "Avbryt det pågående köpet";
         }

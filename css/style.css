@@ -53,12 +53,11 @@ div.counter{
     float: left;
 }
 div.towerInfo{
-    position: relative;
-    width: 588px;
-    height: 80px;
+    display: flex;
     padding: 5px;
     border: 1px solid #000;
     margin-bottom: 10px;
+    border-radius: 1em;
 }
 div.towerInfo.template{
     display: none;
@@ -67,40 +66,66 @@ div.towerInfo.locked {
     color: #444;
     background-color: #ddd;
 }
+div.towerInfo.locked img {
+    filter: opacity(50%);
+}
+div.towerInfo.locked strong {
+    text-decoration: line-through;
+}
 div.towerInfo .unlockInfo {
     color: red;
+    font-weight: bold;
 }
 div.towerInfo:not(.locked) .unlockInfo {
     display: none;
 }
-div.towerInfo p{
-    width: 400px;
-    float:left;
-    margin: 0px;
+div.towerInfo div{
     font-size: 9pt;
 }
-div.towerInfo p strong {
+div.towerInfo strong {
     font-size: 11pt;
 }
 div.towerInfo img{
-    max-width:80px;
-    max-height:80px;
-    float:left;
-    margin-right: 10px;
+    max-width: 80px;
+    max-height: 80px;
 }
-div.towerInfo div{
-    vertical-align: middle;
-    text-align: right;
-    float:right;
-    width: 80px;
-    height: 0px;
+div.towerInfo button {
+    border: 1px solid #069080;
+    border-radius: 1em;
+    font-family: 'Nunito', sans-serif;
+    outline: none;
 }
-div.towerInfo button{
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    margin-top: 10px;
+div.towerInfo button:hover {
+    border: 2px solid #069080;
+}
+div.towerInfo button:active {
+    border: 2px solid #069080;
+    background-color: #069080;
+    color: white;
+    outline: none;
+}
+div.towerInfo button:disabled {
+    border: 1px solid #ff52ba;
+    background-color: #ddd;
+    color: #777;
+}
+div.towerInfo:not(.locked) button:disabled span {
+    color: red;
+}
+div.towerInfo > :first-child {
+    flex-shrink: 0;
     width: 80px;
+    text-align: center;
+    margin-right: 7px;
+}
+div.towerInfo > :nth-child(2) {
+    flex-grow: 1;
+}
+div.towerInfo > button:last-child {
+    flex-shrink: 0;
+    width: 80px;
+    text-align: center;
+    margin-left: 7px;
 }
 
 button.controllerButton{
@@ -147,4 +172,24 @@ span.counter{
     color: #ff52ba;
     border-radius: 1ex;
     padding: 1em;
+}
+
+/* Upplåsningsanimation */
+@keyframes flash {
+    0% {
+        background-color: initial;
+        color: initial;
+    }
+    10% {
+        background-color: #069080;
+        color: white;
+    }
+    100% {
+        background-color: initial;
+        color: initial;
+    }
+}
+div.towerInfo.unlocked {
+    animation-name: flash;
+    animation-duration: 2s;
 }
