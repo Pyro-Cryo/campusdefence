@@ -657,7 +657,7 @@ class Envarre extends Gadget {
 
     addTo(tower){
         tower.time += 1500;
-        tower.maxHits += 5
+        tower.maxHits += 2
         super.addTo(tower);
     }
 }
@@ -669,7 +669,7 @@ class Flervarre extends Gadget {
 
     addTo(tower){
         tower.time += 1500;
-        tower.maxHits *= 2;
+        tower.maxHits += 5;
         tower.persistent = true;
         super.addTo(tower);
     }
@@ -681,8 +681,8 @@ class Blackboard extends Gadget {
     static get scale() { return 0.45; }
 
     addTo(tower){
-        tower.maxHits *= 3;
-        tower.splashrange = 1;
+        tower.maxHits += 12;
+        // tower.splashrange = 1;
         super.addTo(tower);
     }
 }
