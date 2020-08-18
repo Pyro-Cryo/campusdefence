@@ -487,7 +487,7 @@ class Axel extends OmniTower {
     static get range() { return 2.5; }
     static get CDtime() { return 3000; }
     static get image() { return axelimg; }
-    static get scale() { return 0.2; }
+    static get scale() { return 0.17; }
     static get cost() { return 600; }
     static get name() { return "Fjädrande Axel"; }
     static get desc() { return "Fackliga Axel älskar två saker: facklor och att festa. Han bjuder gärna alla omkring sig på Molotovcocktails, och när dessa exploderar träffar de alla ninjor inom ett visst område."; }
@@ -553,7 +553,7 @@ class Axel extends OmniTower {
             Promille, 
             "Promilleacceleratorn", 
             "Det ökade alkoholinnehållet gör att cocktailarna kan träffa hur många tätt packade ninjor som helst, istället för bara " + Molotov.maxHits + ".", 
-            150, 
+            500, 
             [], 
             [Promille, Champagne],
             100);
@@ -561,7 +561,7 @@ class Axel extends OmniTower {
             Schroedinger, 
             "Schrödingers", 
             "Man vet aldrig vad man får när man beställer Schrödingers. Det är 50 % chans att ninjorna tar 3x så mycket skada, och 50 % chans att deras hastighet istället tillfälligt halveras.",
-            200, 
+            700, 
             [Promille], 
             [Schroedinger],
             100);
@@ -569,7 +569,7 @@ class Axel extends OmniTower {
             Champagne, 
             "Champagne", 
             "Bjuder man på champagne gäller det att inte spilla! Axel missar knappt längre, utan drinkarna söker nu automatiskt upp ninjor.",
-            600, 
+            1000, 
             [], 
             [Promille, Champagne],
             100);
@@ -577,7 +577,7 @@ class Axel extends OmniTower {
             Dompa, 
             "Dompa", 
             "Axel bjuder varenda ninja på en drink. Dompa åt alla! Mest värt det när du har en överväldigande mängd ninjor att fort hantera.",
-            600,
+            1699,
             [Champagne],
             [],
             300);
@@ -879,7 +879,7 @@ class Becca extends TargetingTower {
         this.addUpgrade(
             Propane,
             "Propangas",
-            "Ren propangas brinner varmare än hårspray, och gör extra skada.",
+            "Ren propangas brinner varmare än hårspray, och gör 50\% extra skada.",
             300,
             [],
             [Propane],
@@ -887,7 +887,7 @@ class Becca extends TargetingTower {
         this.addUpgrade(
             Gasoline,
             "Bensin",
-            "Bensin brinner också bra",
+            "Bensin brinner också bra.",
             500,
             [Propane],
             [Gasoline]

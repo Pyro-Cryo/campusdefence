@@ -60,13 +60,49 @@ function getLevel(number, updateInterval) {
         // Fortsätt introducera föhsare typ var 4-6 nivå, fler föhsspöken
 
         default:
-            return new CreepSequence().send(number * 20, Ninja).over(Math.max(1, 15 - number) * s)
-            .wait(2 * s)
-            .send(1, TF_1).over(0.2 * 2)
-            .send(1, OF_1).over(0.2 * 2)
-            .send(1, SF_1).over(0.2 * 2)
-            .do(() => console.log("All creeps sent"));
+        	return autolevel(number, updateInterval);
+            // return new CreepSequence().send(number * 20, Ninja).over(Math.max(1, 15 - number) * s)
+            // .wait(2 * s)
+            // .send(1, TF_1).over(0.2 * 2)
+            // .send(1, OF_1).over(0.2 * 2)
+            // .send(1, SF_1).over(0.2 * 2)
+            // .do(() => console.log("All creeps sent"));
     }
+}
+
+function autolevel(levelnumber, updateInterval){
+
+	let s = 1000 / updateInterval;
+	let cs = new CreepSequence()
+		.send(30, Pink).over(10 * s)
+		.interleave(new CreepSequence().send(30, Green).over(10 * s))
+		.wait(4 * s)
+		.send(4*levelnumber, Green).over(levelnumber/4 * s)
+		.wait(3 * s)
+		.send(4*levelnumber, Green).over(levelnumber/4 * s)
+		.interleave(new CreepSequence().send(2*levelnumber, Pink).over(8/levelnumber * s))
+		.wait(5 * s);
+
+	if(levelnumber % 4 == 0 || levelnumber % 6 == 0){
+		cs.send(1, TF_1).immediately()
+		.wait(0.2 * s)
+		.send(1, OF_1).immediately()
+		.wait(0.2 * s)
+		.send(1, SF_1).immediately()
+		.wait(2 * s);
+	}
+
+	if(levelnumber > 40){
+		cs.send(2*levelnumber, Orange).over(10 * s);
+	}
+
+	cs.send(100, Blue).over(20 * s)
+		.interleave(new CreepSequence().send(40, Red).over(10 * s).send(40, Pink).over(10 * s))
+		.send(5 * levelnumber, Pink).over(15 * s);
+
+
+	return cs.do(() => console.log("All creeps sent"));
+
 }
 
 // Här kan man koda in specialhändelser efter vissa nivåer också (typ att man får ett gratis maskottorn efter lvl 10 eller nåt)

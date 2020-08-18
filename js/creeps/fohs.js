@@ -17,8 +17,8 @@ for (var i = 0; i < 5; i++) {
 
 class BaseFohs extends BaseCreep {
 
-    constructor(x,y){
-        super(x,y);
+    constructor(distance){
+        super(distance);
         this.despawnTime = doors.length*3;
         this.fudge = 7;
     }
@@ -72,6 +72,14 @@ class TF_1 extends BaseFohs {
     }
 
 }
+
+// class TF_inf extends TF_1 {
+
+//     constructor(distance){
+//         super(distance)
+//     }
+
+// }
 
 class SF_1 extends BaseFohs {
     static get speed() { return 0.65; }
@@ -133,6 +141,7 @@ class OF_1 extends BaseFohs {
     }
 
 }
+
 
 let pbimg = new Image();
 pbimg.src = "img/boom.png";

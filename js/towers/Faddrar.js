@@ -17,7 +17,7 @@ class Fadder extends TargetingTower {
     static get range() { return 2.5; }
     static get CDtime() { return 800; }
     static get image() { return fadderimg; }
-    static get scale() { return 0.18; }
+    static get scale() { return 0.17; }
     static get cost() { return 200; }
     static get name() { return "Fadder"; }
     static get desc() { return "En vanlig fadder som kramar ninjor den ser. Faddern åstadkommer kanske inte så mycket, men i slutändan måste man inte alltid göra det för att vara lycklig här i livet. Det är ändå vännerna man vinner på vägen som räknas."; }
@@ -71,7 +71,6 @@ class Forfadder1 extends TargetingTower {
 
     constructor(x,y){
     	super(x,y);
-
     	this.projectiletype = 1;
     }
 
