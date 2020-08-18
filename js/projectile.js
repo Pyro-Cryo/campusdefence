@@ -90,7 +90,8 @@ class SplashProjectile extends Projectile {
 
 	draw(gameArea) {
 		if (this.despawnTimer >= 0) {
-			this.angle = 2 * Math.PI * Math.random();
+			// this.angle = 2 * Math.PI * Math.random();
+			this.scale = 0.8 * this.scale + 0.2*this.splash_scale;
 		}
 		super.draw(gameArea);
 	}
@@ -118,7 +119,9 @@ class SplashProjectile extends Projectile {
 
 		// Change animation to splash image and don't target anything or move.
 		this.image = this.splash_img;
-		this.scale = this.splash_scale;
+		this.scale = this.splash_scale/5;
+		this.angle = 2 * Math.PI * Math.random();
+
 		this.speed = 0;
 		this.dx = 0;
 		this.dy = 0;
