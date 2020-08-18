@@ -8,6 +8,7 @@
     - Också skicka inte meddelanden via alerts och confirms egentligen egentligen
     - Stylea om contextmeny och towermarket
 - Flytta föhs frammåt i z-buffer (kanske inte går?)
+- Fixa paus/play/hp-ikonerna så de ser ok ut på alla platformar
 
 Fadder:
 	Grundskott:

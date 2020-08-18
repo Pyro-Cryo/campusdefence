@@ -442,7 +442,7 @@
 
     saveToCookie(){
 
-        if(this.levelIterator !== null){
+        if(this.levelIterator !== null || this.levelCleared == false){
             // Spara inte mitt i en level
             return;
         }
