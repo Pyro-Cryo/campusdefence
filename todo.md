@@ -8,6 +8,7 @@
     - Också skicka inte meddelanden via alerts och confirms egentligen egentligen
     - Stylea om contextmeny och towermarket
 - Flytta föhs frammåt i z-buffer (kanske inte går?)
+- Man borde få tillbaka pengarna för uppgraderingarna också när man säljer sitt torn
 
 Fadder:
 	Grundskott:
