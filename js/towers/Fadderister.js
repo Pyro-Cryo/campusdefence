@@ -616,12 +616,13 @@ splashimg.src = "img/papersplash.png";
 class Wolfram extends SplashProjectile {
 	static get damage() { return 0; }
     static get maxHits() { return 3; }
-    constructor(source, target, time, maxhits, persistent) {
+    constructor(source, target, time, maxhits, persistent, damage) {
         super(controller.map, wolframimg, splashimg, source, target.x, target.y, 0.5, 1.5, 1 / controller.updateInterval, 0);
         this.range = 4;
         this.time = time;
         this.maxHits = maxhits;
         this.persistent = persistent;
+        this.damage = damage;
     }
     hitCreep(creep) {
         if(this.persistent)
@@ -643,6 +644,10 @@ let pb2 = new Image();
 pb2.src = "img/pb2.png";
 let blackboard = new Image();
 blackboard.src = "img/blackboard.png";
+let fpaper = new Image();
+fpaper.src = "img/fpaper.png";
+let paperstack = new Image();
+paperstack.src = "img/paperstack.png";
 
 
 class Envarre extends Gadget {
@@ -664,7 +669,8 @@ class Flervarre extends Gadget {
 
     addTo(tower){
         tower.time += 1500;
-        tower.maxHits *= 2;
+        tower.maxHits += 5;
+        tower.persistent = true;
         super.addTo(tower);
     }
 }
@@ -675,20 +681,51 @@ class Blackboard extends Gadget {
     static get scale() { return 0.45; }
 
     addTo(tower){
-        tower.maxHits *= 3;
-        tower.persistent = true;
-        tower.splashrange = 1;
+        tower.maxHits += 12;
+        // tower.splashrange = 1;
         super.addTo(tower);
     }
 }
 
-// class Errors extends Gadget {
+class Errors extends Gadget {
 
-//     static get image() { return ; }
+    static get image() { return fpaper; }
+    static get scale() { return 0.5; }
 
-// }
+    addTo(tower){
+        tower.projectiledamage += 1;
+        tower.projectileimg = fpaper;
+        super.addTo(tower);
+    }
 
-// class 
+}
+
+class FullSolution extends Gadget {
+
+    static get image() { return paperstack; }
+    static get scale() { return 0.5; }
+
+    addTo(tower){
+        tower.projectiledamage += 1;
+        tower.projectileimg = paperstack;
+        super.addTo(tower);
+    }
+}
+
+class Diciplinary extends Gadget {
+
+    static get image() { return null; }
+    static get scale() { return 1; }
+
+    addTo(tower){
+        // gothrough all creeps, and kill them
+        controller.map.path.forEach(pathTile => pathTile.data.forEach(creep => {
+            if(creep instanceof MatryoshkaCreep)
+                creep.innerCreepCount = 0;
+            creep.onDeath();
+        }));
+    }
+}
 
 
 
@@ -707,16 +744,21 @@ class Frida extends TargetingTower {
     constructor(x,y){
         super(x,y);
 
+        this.projectileimg = null;
         this.time = 4000;
         this.maxHits = 3;
         this.persistent = false;
         this.splashrange = 0;
+        this.projectiledamage = 0; 
     }
 
     projectile(target) {
-        let proj = new Wolfram(this, target, this.time, this.maxHits, this.persistent);
+        let proj = new Wolfram(this, target, this.time, this.maxHits, this.persistent, this.projectiledamage);
 
         proj.splash_range = this.splashrange;
+        if(this.projectileimg)
+            proj.image = this.projectileimg;
+
         return proj;
     }
 
@@ -729,6 +771,14 @@ class Frida extends TargetingTower {
 			[], 
 			[TakeAwayCoffee],
 			20);
+        this.addUpgrade(
+            Blackboard,
+            "Svarta tavlan",
+            "Genom att lämna lösningarna på svarta tavlan där alla kan se kan Frida nå nästan alla Ninjor inom synhåll.",
+            600,
+            [],
+            [Blackboard],
+            100);
         this.addUpgrade(
             Envarre,
             "SF1625 Envarre",
@@ -743,15 +793,31 @@ class Frida extends TargetingTower {
             "Genom att skriva lösningar i flera variabler blir lösningarna ännu komplexare, vilket ger Ninjorna huvudvärk. Genom att lämna delar av lösningarna 'som övning till läsaren' tar det Ninjorna ännu längre att dechiffrera Fridas lösningar.",
             400,
             [Envarre],
-            [Flervarre],
+            [Flervarre, FullSolution],
             50);
         this.addUpgrade(
-            Blackboard,
-            "Svarta tavlan",
-            "Genom att lämna lösningarna på svarta tavlan där alla kan se kan Frida nå nästan alla Ninjor inom synhåll.",
-            500,
-            [Envarre, Flervarre],
-            [Blackboard],
+            Errors,
+            "Felaktiga lösningar",
+            "Genom att smyga in små fel i lösningarna kommer de ninjor som tar emot de inte få några bonus till tentan. Vad kunde vara värre?",
+            300,
+            [],
+            [Errors],
+            30);
+        this.addUpgrade(
+            FullSolution,
+            "Lösningshäfte",
+            "Frida skriver ner hela lösningen till inte bara lämnisen, utan alla ex-tentor och ex-ks:ar också. Med så många lösningar tillgängliga lyckas ingen Ninja klara tentan på egen hand.",
+            700,
+            [Errors],
+            [FullSolution, Envarre, Flervarre],
+            50);
+        this.addUpgrade(
+            Diciplinary,
+            "Diciplinnämnden",
+            "Genom ett anonymt tips till diciplinnämnden kan Frida få alla fuskande Ninjor på campus avstängda från KTH!",
+            600,
+            [Errors, FullSolution, Blackboard],
+            [],
             100);
 
     }
@@ -944,7 +1010,7 @@ class Becca extends TargetingTower {
     static get CDtime() { return 250; }
     static get image() { return beccaimg; }
     static get scale() { return 0.2; }
-    static get cost() { return 400; }
+    static get cost() { return 450; }
     static get name() { return "Fjädrande Becca"; }
     static get desc() { return "Flamberande Becca har en eldkastare."; }
 
@@ -994,7 +1060,7 @@ class Becca extends TargetingTower {
             Propane,
             "Propangas",
             "Ren propangas brinner varmare än hårspray, och gör 50\% extra skada.",
-            300,
+            350,
             [],
             [Propane],
             );
@@ -1123,4 +1189,18 @@ class Fnoell extends BaseTower {
         }
         this.currentTarget = target;
     }
+
+    // nearestTower(){
+
+    //     let distance = 100;
+    //     let tower = null;
+        
+    //     for (var i = 0; i < controller.map.towers.length; i++) {
+    //         let dist =  
+    //         if(controller.map.towers[i]){
+
+    //         }
+    //     }
+
+    // }
 }

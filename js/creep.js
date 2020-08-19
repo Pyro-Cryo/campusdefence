@@ -136,8 +136,13 @@ class MatryoshkaCreep extends BaseCreep {
     // Overrides BaseCreep.damage
     static get damage() { return 1 + this.innerCreep.damage * this.innerCreepCount; }
 
+    constructor(distance){
+    	super(distance);
+    	this.innerCreepCount = this.constructor.innerCreepCount;
+    }
+
     onDeath() {
-        for (let i = 0; i < this.constructor.innerCreepCount; i++){
+        for (let i = 0; i < this.innerCreepCount; i++){
             let nc = new this.constructor.innerCreep(
                 Math.min(controller.map.path.length - 1, Math.max(0, this.distance + this.speed * (0.5 + i - this.constructor.innerCreepCount / 2)))
             );

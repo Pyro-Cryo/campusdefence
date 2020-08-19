@@ -24,14 +24,18 @@ class TakeAwayCoffee extends Gadget {
 
 }
 
-let mek1 = new Image();
-let mek2 = new Image();
-mek1.src = "img/mek1.png";
-mek2.src = "img/mek2.png";
+courseimg = [new Image(), new Image(), new Image(), new Image(), new Image(), new Image()];
+
+courseimg[0].src = "img/mek1.png";
+courseimg[1].src = "img/mek2.png";
+courseimg[2].src = "img/regler.png";
+courseimg[3].src = "img/kvant.png";
+courseimg[4].src = "img/hallf.png";
+courseimg[5].src = "img/patch.png";
 
 class Mek1 extends Gadget {
 
-	static get image() { return mek1; }
+	static get image() { return courseimg[0]; }
 	static get scale() { return 0.5; }
 
 	addTo(tower) {
@@ -39,12 +43,11 @@ class Mek1 extends Gadget {
 		tower.inrange = tower.pathInRange();
 		super.addTo(tower);
 	}
-
 }
 
 class Mek2 extends Gadget {
 
-	static get image() { return mek2; }
+	static get image() { return courseimg[1]; }
 	static get scale() { return 0.5; }
 
 	addTo(tower) {
@@ -52,5 +55,49 @@ class Mek2 extends Gadget {
 		tower.inrange = tower.pathInRange();
 		super.addTo(tower);
 	}
+}
 
+class Regler extends Gadget {
+
+	static get image() { return courseimg[2]; }
+	static get scale() { return 0.35; }
+
+	addTo(tower){
+		tower.CDtime = Math.floor(tower.CDtime*0.7);
+		tower.activetargeting = true;
+		super.addTo(tower);
+	}
+}
+
+class Kvant extends Gadget {
+
+	static get image() { return courseimg[3]; }
+	static get scale() { return 0.4; }
+
+	addTo(tower) {
+		tower.projectiletype = 2;
+		super.addTo(tower);
+	}
+}
+
+class Hallf extends Gadget {
+
+	static get image() { return courseimg[4]; }
+	static get scale() { return 0.35; }
+
+	addTo(tower) {
+		tower.maxhits += 1;
+		super.addTo(tower);
+	}
+}
+
+class Markeshets extends Gadget {
+
+	static get image() { return courseimg[5]; }
+	static get scale() { return 0.4; }
+
+	addTo(tower){
+		tower.makemoney = true;
+		super.addTo(tower);
+	}
 }
