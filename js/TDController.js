@@ -41,6 +41,8 @@
         this.map = new TDMap(map_img, path, this.gameArea);
         this.registerObject(this.map, true);
 
+        this.delayedRenderType = BaseFohs;
+
         this.selectedTower = null;
         this.gameArea.canvas.addEventListener('click', this.onClickBoard.bind(this));
         this.contextMenuRefresh = null;
@@ -236,7 +238,10 @@
                 cl.classList.remove("hideme");
                 ti.classList.remove("locked");
                 ti.classList.add("unlocked");
-                setTimeout(() => ti.classList.remove("unlocked"), /\d/.exec(window.getComputedStyle(ti).animationDuration)[0]* 1000);
+                let cb = () => ti.classList.remove("unlocked");
+                ti.addEventListener("webkitAnimationEnd", cb);
+                ti.addEventListener("animationend", cb);
+                ti.addEventListener("oanimationend", cb);
             }
         });
         this.levelNumber++;

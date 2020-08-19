@@ -16,6 +16,10 @@ class Controller {
         this.objects = new LinkedList();
         // The id of the next registered object
         this.idCounter = 0;
+        // Objects which are drawn over all others
+        this.delayedRenderObjects = [];
+        // The type of objects which are inserted into delayedRenderObjects
+        this.delayedRenderType = null;
 
         // Buttons
         this.playbutton = document.querySelector("button.controllerButton#playButton");
@@ -123,6 +127,11 @@ class Controller {
             if (current.obj.update !== undefined)
                 current.obj.update();
         }
+        for (let i = 0; i < this.delayedRenderObjects.length; i++)
+            if (this.delayedRenderObjects[i].id === null) {
+                this.delayedRenderObjects = this.delayedRenderObjects.filter(o => o.id !== null);
+                break;
+            }
     }
     draw() {
 
@@ -133,6 +142,11 @@ class Controller {
             }
             current.obj.draw(this.gameArea);
         }
+
+        for (let i = 0; i < this.delayedRenderObjects.length; i++)
+            if (this.delayedRenderObjects[i].id !== null) {
+                this.delayedRenderObjects[i].draw(this.gameArea);
+            }
     }
     // Register an object to receive update calls.
     // It should have an update method accepting a GameArea and allow for setting an id
@@ -142,6 +156,8 @@ class Controller {
         else
             this.objects.push(object);
         object.id = this.idCounter++;
+        if (this.delayedRenderType && object instanceof this.delayedRenderType)
+            this.delayedRenderObjects.push(object);
     }
     // Make the object stop receiving update calls.
     unregisterObject(object) {
