@@ -100,7 +100,7 @@ class BaseTower extends GameObject {
 
     addGadget(gadget){
         this.gadgets.push(gadget);
-        this.upgrades = this.upgrades.filter(up => gadget.constructor.name !== up.type.name);
+        //this.upgrades = this.upgrades.filter(up => gadget.constructor.name !== up.type.name);
     }
 
     update() {
@@ -130,6 +130,10 @@ class BaseTower extends GameObject {
     destroy() {
         controller.unregisterObject(this);
         this.map.removeTower(this);
+    }
+
+    get value() {
+        return this.constructor.cost + this.gadgets.reduce((sum, g) => sum + this.upgrades.find(u => u.type.name === g.constructor.name).cost, 0);
     }
 }
 

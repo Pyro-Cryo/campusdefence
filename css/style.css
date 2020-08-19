@@ -117,6 +117,7 @@ div.towerInfo > :first-child {
     width: 80px;
     text-align: center;
     margin-right: 7px;
+    align-self: center;
 }
 div.towerInfo > :nth-child(2) {
     flex-grow: 1;
@@ -137,33 +138,136 @@ span.counter{
     display: inline-block;
 }
 .hideme {
-    display: none;
+    display: none !important;
 }
 .menus {
     padding: 15px;
     width: 600px;
 }
 
-.contextMenu .contextOption {
-    /*Jag blir typ illamående av alla hårdkodade pixelavstånd här*/
+.contextMenu h3 {
+    margin-bottom: 0;
+}
+
+.contextMenu .infofield {
+    display: flex;
+    padding: 5px;
+    margin-bottom: 20px;
+}
+.contextMenu .infofield > :first-child {
+    text-align: center;
+    align-self: center;
+    flex-shrink: 0;
+    margin-right: 20px;
+}
+.contextMenu .infofield > :nth-child(2) {
+    flex-shrink: 0;
+}
+.contextMenu .infofield > :last-child {
+    margin-left: 20px;
+}
+.contextMenu .infofield > :last-child img {
     position: relative;
-    width: 588px;
-    min-height: 40px;
+    height: 1em;
+    top: 0.2em;
+}
+
+.contextMenu .infofield img {
+    max-width: 80px;
+    max-height: 80px;
+}
+
+.contextOption {
+    display: flex;
     padding: 5px;
     border: 1px solid #000;
     margin-bottom: 10px;
+    border-radius: 1em;
+    font-size: 9pt;
+}
+.contextOption strong {
+    font-size: 11pt;
 }
 
-.contextMenu .contextOption.template{
+.contextOption.template{
     display: none;
 }
 
-.contextMenu .contextOption button{
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    margin-top: 10px;
+.contextMenu .contextOption img {
+    max-width: 40px;
+    max-height: 40px;
+}
+
+.contextMenu .contextOption > :first-child {
+    flex-shrink: 0;
+    width: 40px;
+    text-align: center;
+    margin-right: 7px;
+    align-self: center;
+}
+
+.contextMenu .contextOption > :nth-last-child(2) {
+    flex-grow: 1;
+}
+.contextMenu .contextOption div[name='incompatibleUpgrades'] {
+    margin-top: 1em;
+}
+.contextMenu .contextOption div[name='incompatibleUpgrades'] img {
+    position: relative;
+    height: 1em;
+    top: 0.2em;
+}
+.contextMenu .contextOption .unlockInfo img {
+    position: relative;
+    height: 1em;
+    top: 0.2em;
+}
+
+.contextOption button {
+    border: 1px solid #069080;
+    border-radius: 1em;
+    font-family: 'Nunito', sans-serif;
+    outline: none;
+    padding: 5px;
+}
+.contextOption button:hover {
+    border: 2px solid #069080;
+}
+.contextOption button:active {
+    border: 2px solid #069080;
+    background-color: #069080;
+    color: white;
+    outline: none;
+}
+.contextOption button:disabled {
+    border: 1px solid #ff52ba;
+    background-color: #ddd;
+    color: #777;
+}
+.contextMenu .contextOption > button:last-child {
+    flex-shrink: 0;
     width: 80px;
+    text-align: center;
+    margin-left: 7px;
+    min-height: 4em;
+}
+
+.contextOption.locked {
+    color: #444;
+    background-color: #ddd;
+}
+.contextOption.locked > :first-child img {
+    filter: opacity(50%);
+}
+.contextOption.locked strong {
+    text-decoration: line-through;
+}
+.contextOption .unlockInfo {
+    color: red;
+    font-weight: bold;
+}
+.contextOption:not(.locked) .unlockInfo {
+    display: none;
 }
 
 #messagebox {
