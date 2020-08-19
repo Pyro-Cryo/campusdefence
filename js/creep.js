@@ -30,6 +30,7 @@ class BaseCreep extends GameObject {
         this.scale = this.constructor.scale;
         this.speed = this.constructor.speed;
         this.health = this.constructor.health;
+        this.initial_health = this.constructor.health;
         this.value = this.constructor.value;
         this.drawHealthBar = this.constructor.drawHealthBar;
 
@@ -121,7 +122,7 @@ class BaseCreep extends GameObject {
 	draw(gameArea){
 		super.draw(gameArea);
 		if (this.drawHealthBar)
-            gameArea.bar(this.x, this.y, 0.5, 0.8, 3, this.health / this.constructor.health);
+            gameArea.bar(this.x, this.y, 0.5, 0.8, 3, this.health / this.initial_health);
 	}
 }
 

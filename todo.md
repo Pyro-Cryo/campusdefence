@@ -1,5 +1,6 @@
 - Gör fler levels (upp till 30, sen repeteras och blir svårare)
 - Balansera lite
+- Uppgraderingar låses inte upp när man har fått tillräckligt med pengar om menyn är öppen
 - Efter lansering, DLC:
 	- slumpgenererade paths / fler kartor
 	- Mobilanpassning

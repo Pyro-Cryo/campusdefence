@@ -150,11 +150,11 @@ function getLevel(number, updateInterval) {
 
         case 24:
             return (new CreepSequence()
-                .send(4, Orange).over(2 * s)
+                .send(5, Orange).over(2 * s)
                 .wait(6 * s)
-                .send(4, Orange).over(2 * s)
+                .send(5, Orange).over(2 * s)
                 .wait(9 * s)
-                .send(12, Orange).over(7 * s)
+                .send(14, Orange).over(7 * s)
                 );
 
         case 25:
@@ -227,6 +227,11 @@ function getLevel(number, updateInterval) {
 function autolevel(levelnumber, updateInterval){
 
 	let s = 1000 / updateInterval;
+
+
+
+
+
 	let cs = new CreepSequence()
 		.send(30, Pink).over(10 * s)
 		.interleave(new CreepSequence().send(30, Green).over(10 * s))
@@ -238,7 +243,7 @@ function autolevel(levelnumber, updateInterval){
 		.wait(4 * s);
 
 	if(levelnumber > 40){
-		cs.send(0.1*levelnumber*levelnumber, Orange).over(levelnumber * s)
+		cs.send(Math.floor(0.1*levelnumber*levelnumber), Orange).over(levelnumber * s)
 		.interleave(new CreepSequence().send(levelnumber, Pink).over(10 * s));
 	}
 

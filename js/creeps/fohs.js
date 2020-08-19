@@ -212,6 +212,7 @@ class TF_inf extends TF_1 {
         super(distance);
         this.speed = 0.5;
         this.health = controller.levelNumber * 3;
+        this.initial_health = this.health;
     }
 }
 
@@ -220,6 +221,7 @@ class SF_inf extends SF_1 {
         super(distance);
         this.speed = 0.5;
         this.health = controller.levelNumber * 9;
+        this.initial_health = this.health;
     }
 }
 
@@ -229,6 +231,7 @@ class OF_inf extends OF_1 {
         this.speed = 0.5;
         this.cooldown *= 50/controller.levelNumber;
         this.health = Math.floor(controller.levelNumber * 2.5);
+        this.initial_health = this.health;
     }
 }
 
