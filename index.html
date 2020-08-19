@@ -84,22 +84,49 @@
         <div class="menus">
             <div class="towerMarket">
                 <div id="towerTemplate" class="towerInfo template">
-                    <img name="image" src="img/helmer1.png">
-                    <p>
-                        <strong name="title">Title</strong> <span class="unlockInfo">Info</span><br>
-                        <span name="desc">Desc. Lorem ipsum dolor sit amet</span>
-                    </p>
                     <div>
-                        💰<span name="cost"></span>
-                        <button name="buybtn">Köp</button>
+                        <img name="image" src="img/map.png" />
                     </div>
+                    <div>
+                        <strong name="title">Title</strong> <span class="unlockInfo">Info</span><br />
+                        <span name="desc">Desc. Lorem ipsum dolor sit amet</span>
+                    </div>
+                    <button name="buybtn">
+                        Köp<br />(💰<span name="cost"></span>)
+                    </button>
                 </div> 
             </div>
             <div class="contextMenu hideme">
+                <h3 name="name">Namn</h3>
+                <div class="infofield">
+                    <div>
+                        <img name="image" src="img/map.png" />
+                    </div>
+                    <div>
+                        Antal träffar<br />
+                        Räckvidd<br />
+                        Tid mellan <span name="shottype">skott</span><br />
+                        Uppgraderingar
+                    </div>
+                    <div>
+                        <span name="hits">X</span><br />
+                        <span name="range">Y</span> rutor<br />
+                        <span name="CDtime">Z</span><br />
+                        <div name="upgrades"></div>
+                    </div>
+                </div>
                 <div id="optionTemplate" class="contextOption template">
-                    <strong name="title">Titel</strong>
-                    <span name="desc">Ev. en beskrivning?</span>
-                    <button name="actionbtn">Handling</button>
+                    <div>
+                        <img name="image" src="img/map.png" />
+                    </div>
+                    <div>
+                        <strong name="title">Titel</strong> <span class="unlockInfo">Info</span><br />
+                        <span name="desc">Ev. en beskrivning?</span>
+                        <div name="incompatibleUpgrades">Denna uppgradering är inkompatibel med: </div>
+                    </div>
+                    <button name="actionbtn">
+                        <span name="action"></span><br />(💰<span name="cost"></span>)
+                    </button>
                 </div>
             </div>
         </div>

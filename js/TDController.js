@@ -43,6 +43,7 @@
 
         this.selectedTower = null;
         this.gameArea.canvas.addEventListener('click', this.onClickBoard.bind(this));
+        this.contextMenuRefresh = null;
 
         this.levelNumber = 1;
         this.levelIterator = null;
@@ -142,14 +143,24 @@
             this.levelCleared = false;
             this.objects = new LinkedList();
             this.registerObject(new SplashScreen());
-            this.setMessage("<b>Game over</b><br /><br />Du nådde till nivå " + this.levelNumber.toString() + ".");
+            this.setMessage("<b>Game over</b><br /><br />Du nådde till nivå " + this.levelNumber.toString() + ".", false);
             this.clearState();
         }
-
     }
 
     draw() {
         super.draw();
+
+        if (this.selectedTower !== null && this.contextMenuRefresh !== null) {
+            if (this.contextMenuRefresh.hits !== this.selectedTower.hits || this.contextMenuRefresh.money !== this.money) {
+                this.contextMenuRefresh.hits = this.selectedTower.hits;
+                this.contextMenuRefresh.money = this.money;
+                this.contextMenuRefresh.hitsspan.innerText = this.selectedTower.hits;
+                this.contextMenuRefresh.contextOptions.forEach(co => {
+                    co.currentState = this.checkContextOption(co.upgrade, co.option, co.currentState, co.blocking, co.existingRequired);
+                });
+            }
+        }
 
         //Hantera pengar
         this.moneycounter.innerText = this.money.toString();
@@ -216,7 +227,7 @@
 
         levelClearReward(this.levelNumber);
         document.querySelectorAll(".towerInfo:not(.template)").forEach((ti, i) => {
-            if (this.towerSpecs[i].unlockLevel && this.levelNumber + 1 >= this.towerSpecs[i].unlockLevel)
+            if (this.towerSpecs[i].unlockLevel && this.levelNumber + 1 === this.towerSpecs[i].unlockLevel)
             {
                 let cl = ti.querySelector("span[class='unlockInfo']");
                 if(!cl){
@@ -224,6 +235,8 @@
                 }
                 cl.classList.remove("hideme");
                 ti.classList.remove("locked");
+                ti.classList.add("unlocked");
+                setTimeout(() => ti.classList.remove("unlocked"), /\d/.exec(window.getComputedStyle(ti).animationDuration)[0]* 1000);
             }
         });
         this.levelNumber++;
@@ -257,6 +270,7 @@
 
         if (this.selectedTower !== null) {
             this.selectedTower = null;
+            this.contextMenuRefresh = null;
             this.destroyContextMenu();
         }
 
@@ -271,16 +285,51 @@
         
         //Tower clicked
         this.selectedTower = tower;
-        this.setupContextMenu();
+        let contextOptions = this.setupContextMenu();
+        this.contextMenuRefresh = {
+            hits: 0, 
+            hitsspan: document.querySelector(".contextMenu .infofield span[name='hits']"),
+            contextOptions: contextOptions,
+            money: this.money
+        };
     }
 
-    contextOption(name, description, buttonLabel, buttonAction) {
+    contextOption(spec) {
         let option = document.getElementById("optionTemplate").cloneNode(true);
-        option.querySelector("strong[name='title']").innerText = name;
-        option.querySelector("span[name='desc']").innerText = description;
+
+        if (spec.imgsrc)
+            option.querySelector("img[name='image']").src = spec.imgsrc;
+        if (spec.title)
+            option.querySelector("strong[name='title']").innerText = spec.title;
+        if (spec.desc)
+            option.querySelector("span[name='desc']").innerText = spec.desc;
+
         let btn = option.querySelector("button[name='actionbtn']");
-        btn.innerText = buttonLabel || name;
-        btn.onclick = buttonAction;
+        if (spec.button && spec.button.onclick)
+        {
+            if (!spec.button.cost)
+                btn.innerText = spec.button.action || "Köp";
+            else
+            {
+                btn.querySelector("span[name='action']").innerText = spec.button.action || "Köp";
+                let costspan = btn.querySelector("span[name='cost']");
+                if (spec.button.cost < 0)
+                {
+                    spec.button.cost = "+" + Math.abs(spec.button.cost);
+                    costspan.style.color = "green";
+                }
+                costspan.innerText = spec.button.cost;
+            }
+            btn.onclick = spec.button.onclick;
+        } else
+            btn.classList.add("hideme");
+
+        let incompatiblediv = option.querySelector("div[name='incompatibleUpgrades']");
+        if (spec.incompatible && spec.incompatible.list && spec.incompatible.list.length
+            && spec.incompatible.namesource && spec.incompatible.namesource.length)
+            this.listUpgrades(spec.incompatible.list, spec.incompatible.namesource, incompatiblediv);
+        else
+            incompatiblediv.classList.add("hideme");
 
         option.classList.remove("template");
         option.removeAttribute("id");
@@ -288,9 +337,40 @@
         return option;
     }
 
+    listGadgets(gadgetList, upgradeList, targetdiv) {
+        for (let i = 0; i < gadgetList.length; i++) {
+            let gadget = gadgetList[i];
+            targetdiv.appendChild(
+                new Text((i ? ", " : "")
+                    + upgradeList.find(u => u.type.name === gadget.constructor.name).name
+                    + "\xa0"
+            ));
+            if (gadget.image && gadget.image.src && gadget.image.src.length)
+            {
+                let img = new Image();
+                img.src = gadget.image.src;
+                targetdiv.appendChild(img);
+            }
+        }
+    }
+
+    listUpgrades(upgradeTypeList, towerUpgradesList, targetdiv) {
+        for (let i = 0; i < upgradeTypeList.length; i++) {
+            let upgrade = upgradeTypeList[i];
+            targetdiv.appendChild(new Text((i ? ", " : "") + towerUpgradesList.find(u => u.type === upgrade).name + "\xa0"));
+            if (upgrade.image && upgrade.image.src && upgrade.image.src.length)
+            {
+                let img = new Image();
+                img.src = upgrade.image.src;
+                targetdiv.appendChild(img);
+            }
+        }
+    }
+
     setupContextMenu() {
         document.querySelector(".towerMarket").classList.add("hideme");
-        document.querySelector(".contextMenu").classList.remove("hideme");
+        let contextMenu = document.querySelector(".contextMenu");
+        contextMenu.classList.remove("hideme");
 
         const scrollAmount = 4; //Valt genom empirisk testning. Mindre än så så cancelleras inte scrollningen.
         if (window.scrollY < scrollAmount) {
@@ -300,84 +380,160 @@
             window.scrollBy(0, -scrollAmount);
             window.scrollBy(0, scrollAmount);
         }
-
-        let dollares = document.getElementById("moneycounter").parentElement.innerText.replace(/[\d ]+/, "");
-
+        
         let spec = this.towerSpecs.find(spec => this.selectedTower instanceof spec.type);
-        if (!spec)
-            this.contextOption(
-                "Skicka hem",
-                "Skicka hem faddern. Du får inte tillbaka några " + dollares + ", men platsen blir ledig för att placera ut en ny.",
-                null, () => {
+        let sameTowers = this.map.towers.filter(t => t.constructor === this.selectedTower.constructor);
+        let name = spec.name + (sameTowers.length > 1 ? " " + (sameTowers.indexOf(this.selectedTower) + 1) : "");
+
+        contextMenu.querySelector("h3[name='name']").innerText = name;
+        contextMenu.querySelector(".infofield img[name='image']").src = this.selectedTower.image.src;
+        contextMenu.querySelector(".infofield span[name='hits']").innerText = this.selectedTower.hits;
+        contextMenu.querySelector(".infofield span[name='range']").innerText = this.selectedTower.range;
+        let cdtime_ms = Math.round(this.selectedTower.CDtime * this.updateInterval);
+        contextMenu.querySelector(".infofield span[name='CDtime']").innerText = cdtime_ms < Math.pow(10, 2.5) ? cdtime_ms + " ms" : (cdtime_ms / 1000) + " s";
+
+        let upgradesdiv = contextMenu.querySelector(".infofield div[name='upgrades']");
+        upgradesdiv.innerText = "";
+
+        this.contextOption({
+            title: "Låna ut arbetskraft",
+            desc: "Skicka faddern att permanent hjälpa en annan sektion. Du får tillbaka " + (this.sellPriceMultiplier * 100) + " % av fadderns värde.",
+            imgsrc: "img/yeet.png",
+            button: {
+                action: "Adjö",
+                cost: -(this.sellPriceMultiplier * this.selectedTower.value),
+                onclick: () => {
+                    this.money += this.sellPriceMultiplier * this.selectedTower.value;
                     this.selectedTower.destroy();
                     this.selectedTower = null;
+                    this.contextMenuRefresh = null;
                     this.destroyContextMenu();
-                }
-            );
-        else {
-            this.contextOption(spec.name, "Träffar: " + this.selectedTower.hits)
-                .querySelector("button[name='actionbtn']").classList.add("hideme");
-            this.contextOption(
-                "Sälj",
-                "Skicka faddern att hjälpa en annan sektion. Du får tillbaka " + (this.sellPriceMultiplier * spec.cost) + " " + dollares,
-                null, () => {
-                    this.selectedTower.destroy();
-                    this.selectedTower = null;
-                    this.destroyContextMenu();
-                    this.money += this.sellPriceMultiplier * spec.cost;
-                }
-            );
-            if (this.selectedTower.upgrades){
-
-                for (var i = 0; i < this.selectedTower.upgrades.length; i++) {
-                    let upgrade = this.selectedTower.upgrades[i];
-
-                    // Check if we have all required previous upgrades
-                    if(!upgrade.requires.every(function(elem){
-                        return this.selectedTower.gadgets.some(function(g){
-                            return g.constructor.name === elem.name;
-                        })
-                    }.bind(this))){
-                        continue;
-                    }
-
-                    // Check that we dont have any upgrades that blockes this one
-                    if(upgrade.blocked.some(function(elem){
-                        return this.selectedTower.gadgets.some(function(g){
-                            return g.constructor.name === elem.name;
-                            // return typeof(g) === elem;
-                        })
-                    }.bind(this))){
-                        continue;
-                    }
-
-                    this.contextOption(
-                        upgrade.name,
-                        "Betala " + upgrade.cost + " " + dollares + " " +
-                        (upgrade.hits && this.selectedTower.hits < upgrade.hits ? "Kräver " + upgrade.hits + " träffar. " : "") +
-                        upgrade.desc,
-                        "Uppgradera",
-                        () => {
-                            // Gör detta elegantare med knappar som är disabled och enablas när man faktiskt har råd
-                            let hitdiff = upgrade.hits - this.selectedTower.hits;
-                            if (this.money < upgrade.cost)
-                                alert("Du har inte råd med det.");
-                            else if (hitdiff > 0)
-                                alert("Faddern måste träna mer - den behöver ytterligare " + hitdiff + " träff" + (hitdiff === 1 ? "" : "ar") + ".");
-                            else {
-                                this.money -= upgrade.cost;
-                                let gadget = new upgrade.type(this.selectedTower);
-
-                                this.saveToCookie();
-                                this.destroyContextMenu();
-                                this.setupContextMenu();
-                            }
-                        }
-                    );
                 }
             }
+        });
+
+        if (this.selectedTower.gadgets && this.selectedTower.gadgets.length)
+        {
+            this.listGadgets(this.selectedTower.gadgets, this.selectedTower.upgrades, upgradesdiv);
+            if (upgradesdiv.style.color)
+                upgradesdiv.style.color = null;
+        }
+        else
+        {
+            upgradesdiv.innerText = "Inga";
+            upgradesdiv.style.color = "gray";
+        }
+
+        let contextOptions = [];
+        if (this.selectedTower.upgrades) {
+            for (var i = 0; i < this.selectedTower.upgrades.length; i++) {
+                let upgrade = this.selectedTower.upgrades[i];
+
+                let option = this.contextOption({
+                    title: upgrade.name,
+                    desc: upgrade.desc,
+                    imgsrc: (upgrade.type.image || this.selectedTower.image).src,
+                    incompatible: {
+                        list: upgrade.blocked.filter(u => u !== upgrade.type),
+                        namesource: this.selectedTower.upgrades
+                    },
+                    button: {
+                        action: "Köp",
+                        cost: upgrade.cost,
+                        onclick: () => {
+                            this.money -= upgrade.cost;
+                            let gadget = new upgrade.type(this.selectedTower);
+
+                            this.saveToCookie();
+                            this.destroyContextMenu();
+                            this.setupContextMenu();
+                        }
+                    }
+                    
+                });
+
+                let res = this.checkContextOption(upgrade, option, null);
+
+                contextOptions.push({
+                    upgrade: upgrade,
+                    option: option,
+                    currentState: res[0],
+                    blocking: res[1],
+                    existingRequired: res[2]
+                });
+            }
+        }
+
+        return contextOptions;
+    }
+
+    checkContextOption(upgrade, option, currentState, blocking, existingRequired) {
+        const gotAllArgs = blocking && existingRequired;
+        blocking = blocking || upgrade.blocked.filter(elem =>
+            this.selectedTower.gadgets.some(g => 
+                g.constructor.name === elem.name
+            )
+        );
+        existingRequired = existingRequired || upgrade.requires.filter(elem => 
+            this.selectedTower.gadgets.some(g =>
+                g.constructor.name === elem.name
+            )
+        );
+        // Check that we dont have any upgrades that block this one
+        if (blocking.length) {
+            if (currentState === "blocked")
+                return gotAllArgs ? currentState : [currentState, blocking, existingRequired];
+            if (this.selectedTower.gadgets.some(g => g.constructor.name == upgrade.type.name))
+                option.classList.add("hideme");
+            else {
+                option.classList.add("locked");
+                option.querySelector("button[name='actionbtn']").disabled = "disabled";
+                let unlockInfo = option.querySelector(".unlockInfo");
+                unlockInfo.innerText = "Inkompatibel med ";
+                this.listUpgrades(blocking, this.selectedTower.upgrades, unlockInfo);
+            }
+            
+            return gotAllArgs ? "blocked" : [currentState, blocking, existingRequired];
+        }
+        // Check if we have all required previous upgrades
+        else if (existingRequired.length !== upgrade.requires.length) {
+            if (currentState === "requires")
+                return gotAllArgs ? currentState : [currentState, blocking, existingRequired];
+            option.classList.add("locked");
+            option.querySelector("button[name='actionbtn']").disabled = "disabled";
+            let unlockInfo = option.querySelector(".unlockInfo");
+            unlockInfo.innerText = "Kräver ";
+            this.listUpgrades(upgrade.requires.filter(u => !existingRequired.find(u)), this.selectedTower.upgrades, unlockInfo);
+            
+            return gotAllArgs ? "requires" : [currentState, blocking, existingRequired];
+        }
+        // Check if we have trained enough
+        else if (this.selectedTower.hits < upgrade.hits) {
+            if (currentState === "untrained")
+                return gotAllArgs ? currentState : [currentState, blocking, existingRequired];
+            option.classList.add("locked");
+            option.querySelector("button[name='actionbtn']").disabled = "disabled";
+            option.querySelector(".unlockInfo").innerText = "Kräver " + upgrade.hits + " träff" + (upgrade.hits !== 1 ? "ar" : "");
+
+            return gotAllArgs ? "untrained" : [currentState, blocking, existingRequired];
+        // Upgrade is available
+        } else {
+            if (currentState !== "unlocked") {
+                option.classList.remove("locked");
+                option.classList.remove("hideme");
+            }
+            if (currentState !== "affordable" && this.money >= upgrade.cost)
+                option.querySelector("button[name='actionbtn']").removeAttribute("disabled");
+            else if (currentState === "affordable" && this.money < upgrade.cost)
+                option.querySelector("button[name='actionbtn']").disabled = "disabled";
+            
+            if (this.money >= upgrade.cost)
+                return gotAllArgs ? "affordable" : [currentState, blocking, existingRequired];
+            else
+                return gotAllArgs ? "unlocked" : [currentState, blocking, existingRequired];
         }
     }
+
     destroyContextMenu() {
         document.querySelector(".towerMarket").classList.remove("hideme");
         document.querySelector(".contextMenu").classList.add("hideme");
@@ -401,7 +557,10 @@
                 template.classList.add("locked");
             }
             else
+            {
                 template.querySelector("span[class='unlockInfo']").classList.add("hideme");
+                template.classList.add("initiallyAvailable");
+            }
 
             let btn = template.querySelector("button[name='buybtn']");
             btn.onclick = function(){
@@ -432,7 +591,7 @@
         if (!onlyCancel) {
             this.buyingTower = new PseudoTower(type, cost, () => {
                 let spec = this.towerSpecs.find(s => s.type === type);
-                spec.button.innerText = "Köp";
+                spec.button.innerHTML = this.buyingTower.oldContent;
                 spec.button.title = spec.description;
                 controller.buyingTower = null;
                 this.saveToCookie();
@@ -440,6 +599,7 @@
                 // console.log("Money:", controller.money);
             });
             this.registerObject(this.buyingTower);
+            this.buyingTower.oldContent = originatingButton.innerHTML;
             originatingButton.innerText = "Avbryt";
             originatingButton.title = "Avbryt det pågående köpet";
         }
