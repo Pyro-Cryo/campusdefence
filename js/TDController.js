@@ -508,7 +508,7 @@
             option.querySelector("button[name='actionbtn']").disabled = "disabled";
             let unlockInfo = option.querySelector(".unlockInfo");
             unlockInfo.innerText = "Kräver ";
-            this.listUpgrades(upgrade.requires.filter(u => !existingRequired.find(u)), this.selectedTower.upgrades, unlockInfo);
+            this.listUpgrades(upgrade.requires.filter(u => existingRequired.indexOf(u) === -1), this.selectedTower.upgrades, unlockInfo);
             
             return gotAllArgs ? "requires" : [currentState, blocking, existingRequired];
         }

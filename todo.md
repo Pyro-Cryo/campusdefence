@@ -1,7 +1,7 @@
 - Gör fler levels (upp till 30, sen repeteras och blir svårare)
-- Balansera lite, pengar får man väldigt fort nu
-- Flytta föhs frammåt i z-buffer genom att ha en separat drawarray med dem i controllern
+- Balansera lite
 - Fixa paus/play/hp-ikonerna så de ser ok ut på alla platformar
+- Efter lansering, DLC: slumpgenererade paths / fler kartor
 
 Fadder:
 	Grundskott:
