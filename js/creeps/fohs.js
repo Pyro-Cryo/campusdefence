@@ -176,6 +176,20 @@ class OF_2 extends OF_1 {
     static get speed(){ return 0.5; }
 }
 
+class TF_3 extends TF_2 {
+    static get health() { return TF_2.health + 8; }
+    static get ninjaType() { return Blue; }
+}
+
+class SF_3 extends SF_2 {
+    static get health() { return Math.floor(SF_2.health*1.4); }
+}
+
+class OF_3 extends OF_2 {
+    static get health() { return OF_1.health + 15; }
+    static get cooldown() { return 850; }
+}
+
 class TF_inf extends TF_1 {
     static get creepCount() { 
         if(controller.levelNumber < 30)
