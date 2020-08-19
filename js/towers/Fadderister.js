@@ -298,7 +298,7 @@ class Nicole extends TargetingTower {
             Pollen,
             "Pollensäsong",
             "Genom att plocka blommorna under pollensäsongen kan Nicole utnyttja att vissa ninjor har pollenallergi.",
-            300,
+            400,
             [],
             [Pollen],
             30);
@@ -306,7 +306,7 @@ class Nicole extends TargetingTower {
             FleshEating,
             "Köttätande växter",
             "Alla blommor är inte fina. Vissa bits också.",
-            450,
+            650,
             [Pollen],
             [FleshEating, MultiFlower, MonoCulture],
             30);
@@ -314,7 +314,7 @@ class Nicole extends TargetingTower {
             GMOEating,
             "Genmodifiering",
             "Genom experimenterande och avancerad genmodifiering har Nicole skapat köttätande väster som klänger sig fast vid sitt offer.",
-            550,
+            950,
             [Pollen, FleshEating],
             [GMOEating, MultiFlower, MonoCulture],
             100);
@@ -322,7 +322,7 @@ class Nicole extends TargetingTower {
             MultiFlower,
             "Blombukett",
             "Genom effektiv paketering kan en hel bunt ninjor träffas av blommor samtidigt, med kraftigt ökad effekt.",
-            350,
+            450,
             [],
             [MultiFlower, FleshEating, GMOEating],
             30);
@@ -330,7 +330,7 @@ class Nicole extends TargetingTower {
             MonoCulture,
             "Monokultur",
             "Genom industriell odling kan tillräckligt många blommor tas fram samtidigt för att ge till alla ninjor av en viss sort inom räckhåll.",
-            500,
+            1100,
             [Nutrient, MultiFlower],
             [MonoCulture, FleshEating, GMOEating],
             50);
@@ -594,12 +594,13 @@ class Distracted extends BaseEffect {
 
     constructor(time) {
         super(time / controller.updateInterval);
+        this.multiplier = 2;
     }
     init(object){
-        object.speed /= 2;
+        object.speed /= this.multiplier;
     }
     apply(object) {
-        object.speed *= 2;
+        object.speed *= this.multiplier;
         this.remove(object);
     }
 }
@@ -894,7 +895,7 @@ class Fire extends BasicProjectile {
 }
 
 class HotFire extends Fire {
-    static get damage() { return 3; }
+    static get damage() { return Fire.damage+1; }
 }
 
 class FireBomb extends SplashProjectile {
@@ -1010,7 +1011,7 @@ class Becca extends TargetingTower {
     static get CDtime() { return 250; }
     static get image() { return beccaimg; }
     static get scale() { return 0.2; }
-    static get cost() { return 450; }
+    static get cost() { return 570; }
     static get name() { return "Fjädrande Becca"; }
     static get desc() { return "Flamberande Becca har en eldkastare."; }
 
@@ -1060,7 +1061,7 @@ class Becca extends TargetingTower {
             Propane,
             "Propangas",
             "Ren propangas brinner varmare än hårspray, och gör 50\% extra skada.",
-            350,
+            450,
             [],
             [Propane],
             );
@@ -1068,7 +1069,7 @@ class Becca extends TargetingTower {
             Gasoline,
             "Bensin",
             "Bensin brinner också bra.",
-            500,
+            600,
             [Propane],
             [Gasoline]
             );
@@ -1076,7 +1077,7 @@ class Becca extends TargetingTower {
             RingOfFire,
             "Ring of fire",
             "Använder man en eldkastare kan vad som helst hända",
-            1000,
+            1100,
             [Propane, Gasoline],
             [RingOfFire, DoubleBarell]
             );
@@ -1084,7 +1085,7 @@ class Becca extends TargetingTower {
             DoubleBarell,
             "Dubbelpipa",
             "Vad kan vara bättre än en eldkastare? Två eldkastare såklart.",
-            700,
+            1200,
             [Propane],
             [DoubleBarell, RingOfFire]
             );

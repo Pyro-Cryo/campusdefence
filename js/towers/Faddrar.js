@@ -108,7 +108,7 @@ class Fadder extends TargetingTower {
             "I mek II kursen får en lära sig om dynamik och rörelse i roterande koordinatsystem. Efter avklarad kurs har faddern väldigt mycket bättre förståelse för rörelser och därför ännu längre räckvidd.",
             400, 
             [Mek1],
-            [], 
+            [Mek2], 
             50);
         this.addUpgrade(
             Regler,

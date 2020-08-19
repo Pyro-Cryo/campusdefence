@@ -31,7 +31,7 @@ function getLevel(number, updateInterval) {
                 .wait(2 * s)
                 .send(40, Red).over(20 * s)
                 .interleave(new CreepSequence()
-                    .wait(15 * s)
+                    .wait(13 * s)
                     .send(10, Blue).over(7 * s)));
         case 7:
             return (new CreepSequence()
@@ -58,22 +58,77 @@ function getLevel(number, updateInterval) {
                 .send(10, Blue).over(4 * s));
 
         case 11:
+            return (new CreepSequence() 
+                .send(1,SF_1).immediately());
+
+        case 12:
             return (new CreepSequence()
-                .send(20, Pink).over(10 * s)
-                .interleave(new CreepSequence().send(20, Blue).over(10 * s))
-                .send(25, Pink).over(5 * s)
-                )
+                .send(50, Blue).over(20 * s)
+                .wait(1 * s)
+                .send(10, Pink).over(10 * s));
+
+        case 13:
+            return (new CreepSequence()
+                .send(20, Pink).over(15 * s)
+                .interleave(new CreepSequence().send(20, Blue).over(15 * s))
+                .send(20, Pink).over(8 * s)
+                );
+
+        case 14:
+            return (new CreepSequence()
+                .send(15, Green).over(15 * s)
+                .wait(1 * s)
+                .send(50, Pink).over(20 * s)
+                .interleave(new CreepSequence().send(50, Blue).over(20 * s)));
+
+        case 15:
+            return (new CreepSequence()
+                .send(1, OF_1).immediately());
+
+        case 16:
+            return (new CreepSequence()
+                .send(1, TF_2).immediately()
+                .wait(1.5 * s)
+                .send(1, OF_2).immediately()
+                .wait(1.5 * s)
+                .send(1, SF_2).immediately());
+
+        case 17:
+            return (new CreepSequence()
+                .send(1, Violet).immediately()
+                .wait(2 * s)
+                .send(30, Green).over(15 * s)
+                .interleave(new CreepSequence().send(50, Pink).over(15 * s))
+                );
+        case 18:
+            return (new CreepSequence()
+                .send(25, Violet).over(14 * s));
+
+        case 19:
+            return (new CreepSequence()
+                .send(1, Orange).immediately()
+                .wait(2 * s)
+                .send(50, Blue).over(12 * s)
+                .send(3, Orange).over(3 * s));
+
+        case 20:
+            return (new CreepSequence()
+                .send(20, Blue).over(10 * s)
+                .send(8, Pink).over(4 * s)
+                .interleave(new CreepSequence()
+                    .wait(10 * s)
+                    .send(1, TF_2).immediately()
+                    .wait(1.4 * s)
+                    .send(1, OF_2).immediately()
+                    .wait(1.4 * s)
+                    .send(1, SF_2).immediately())
+                .send(10, Blue).over(10 * s));
+
 
         // Fortsätt introducera föhsare typ var 4-6 nivå, fler föhsspöken
 
         default:
         	return autolevel(number, updateInterval);
-            // return new CreepSequence().send(number * 20, Ninja).over(Math.max(1, 15 - number) * s)
-            // .wait(2 * s)
-            // .send(1, TF_1).over(0.2 * 2)
-            // .send(1, OF_1).over(0.2 * 2)
-            // .send(1, SF_1).over(0.2 * 2)
-            // .do(() => console.log("All creeps sent"));
     }
 }
 
@@ -90,8 +145,8 @@ function autolevel(levelnumber, updateInterval){
 		.interleave(new CreepSequence().send(2*levelnumber, Pink).over(8/levelnumber * s))
 		.wait(4 * s);
 
-	if(levelnumber > 20){
-		cs.send(2*levelnumber, Orange).over(10 * s)
+	if(levelnumber > 40){
+		cs.send(0.1*levelnumber*levelnumber, Orange).over(levelnumber * s)
 		.interleave(new CreepSequence().send(levelnumber, Pink).over(10 * s));
 	}
 
