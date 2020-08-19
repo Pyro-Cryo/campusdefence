@@ -217,13 +217,12 @@ function getLevel(number, updateInterval) {
                 .send(80, Pink).over(40 * s)
                 );
 
-        // Fortsätt introducera föhsare typ var 4-6 nivå, fler föhsspöken
-
         default:
         	return autolevel(number, updateInterval);
     }
 }
 
+//Basically instant death
 function autolevel(levelnumber, updateInterval){
 
 	let s = 1000 / updateInterval;
@@ -300,7 +299,7 @@ function levelMessage(number) {
         case 8: return "ÖF, $F och TF kräver många kramar innan de ger med sig. De har dessutom olika förmågor som gör dem ännu svårare att besegra!<br /><br /><i>\"Ska det bli bra får man göra det själv. JUBLA, nØLLAN!\"</i>"
 
         default:
-            return "\xa0";
+            return "_";
     }
 }
 
