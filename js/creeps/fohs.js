@@ -36,6 +36,20 @@ class BaseFohs extends BaseCreep {
         super.update();
     }
 
+    onGoal(){
+        controller.hp -= this.health;
+        this.despawn();
+    }
+
+    addEffect(effect) {
+        if(effect instanceof Converted){
+            effect = new Distracted(effect.cooldown*controller.updateInterval*0.8);
+            effect.multiplier = Math.sqrt(effect.multiplier);
+        }
+
+        super.addEffect(effect);
+    }
+
     onDeath(){
         super.onDeath();
         this.scale = 1.0;
@@ -71,8 +85,9 @@ class TF_1 extends BaseFohs {
         const maxdist = controller.map.path.length - 1;
         let low = -Math.floor(this.constructor.creepCount/2);
         let high = Math.ceil(this.constructor.creepCount/2);
-        let type = this.ninjaType();
-    	for (var i = -low; i < high; i++) {
+        let type = this.constructor.ninjaType;
+        console.log(low, high);
+    	for (var i = low; i < high; i++) {
     		new type(Math.max(0, Math.min(maxdist, this.distance+i*this.constructor.spread)));
     	}
     	super.onHit(projectile);
@@ -80,36 +95,12 @@ class TF_1 extends BaseFohs {
 
 }
 
-class TF_inf extends TF_1 {
-    static get creepCount() { 
-        if(controller.levelNumber < 30)
-            return 3;
-        if(controller.levelNumber < 40)
-            return 5;
-        return 7;
-    }
-    static get spread() { return 3/TF_inf.creepCount; }
-    static get ninjaType() { 
-        if(controller.levelNumber < 30)
-            return Pink;
-        if(controller.levelNumber < 40)
-            return Green;
-        if(controller.levelNumber < 50)
-            return Violet;
-        return Orange;
-    }
-    constructor(distance){
-        super(distance);
-        this.speed = 0.5;
-        this.health = controller.levelNumber * 3;
-    }
-}
 
 class SF_1 extends BaseFohs {
-    static get speed() { return 0.65; }
+    static get speed() { return 0.7; }
     static get image() { return sfimg; }
     static get scale() { return 0.2; }
-    static get health() { return 60; }
+    static get health() { return 80; }
     static get drawHealthBar() { return true; }
     static get value() { return 50; }
 
@@ -125,14 +116,6 @@ class SF_1 extends BaseFohs {
     }
 }
 
-class SF_inf extends SF_1 {
-    constructor(distance){
-        super(distance);
-        this.speed = 0.5;
-        this.health = controller.levelNumber * 9;
-    }
-}
-
 class OF_1 extends BaseFohs {
     static get speed() { return 0.5; }
     static get image() { return ofimg; }
@@ -140,10 +123,11 @@ class OF_1 extends BaseFohs {
     static get health() { return 20; }
     static get drawHealthBar() { return true; }
     static get value() { return 75; }
+    static get cooldown() { return 1000; }
 
     constructor(distance) {
     	super(distance);
-    	this.cooldown = 2000 / controller.updateInterval;
+    	this.cooldown = this.constructor.cooldown / controller.updateInterval;
     	this.cdTimer = 0;
     }
 
@@ -172,6 +156,57 @@ class OF_1 extends BaseFohs {
         super.onHit(projectile);
     }
 
+}
+
+class TF_2 extends TF_1 {
+    static get health() { return TF_1.health + 8; }
+    static get speed(){ return 0.5; }
+    static get creepCount() { return TF_1.creepCount+2; }
+    static get ninjaType() { return Red; }
+}
+
+class SF_2 extends SF_1 {
+    static get health() { return Math.floor(SF_1.health*1.4); }
+    static get speed(){ return 0.5; }
+}
+
+class OF_2 extends OF_1 {
+    static get health() { return OF_1.health + 12; }
+    static get cooldown() { return 950; }
+    static get speed(){ return 0.5; }
+}
+
+class TF_inf extends TF_1 {
+    static get creepCount() { 
+        if(controller.levelNumber < 30)
+            return 3;
+        if(controller.levelNumber < 40)
+            return 5;
+        return 7;
+    }
+    static get spread() { return 3/TF_inf.creepCount; }
+    static get ninjaType() { 
+        if(controller.levelNumber < 30)
+            return Pink;
+        if(controller.levelNumber < 40)
+            return Green;
+        if(controller.levelNumber < 50)
+            return Violet;
+        return Orange;
+    }
+    constructor(distance){
+        super(distance);
+        this.speed = 0.5;
+        this.health = controller.levelNumber * 3;
+    }
+}
+
+class SF_inf extends SF_1 {
+    constructor(distance){
+        super(distance);
+        this.speed = 0.5;
+        this.health = controller.levelNumber * 9;
+    }
 }
 
 class OF_inf extends OF_1 {
