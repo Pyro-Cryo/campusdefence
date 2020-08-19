@@ -1193,6 +1193,31 @@ class WolframWrapper extends Wolfram {
         super(source, target, null, null, null, null);
     }
 }
+class FlowerWrapper extends Flower {
+    constructor(_, source, target) {
+        super(source, target, null, null);
+    }
+}
+class FleshEatingWrapper extends FleshEatingFlower {
+    constructor(_, source, target) {
+        super(source, target, null);
+    }
+}
+class GMOWrapper extends GMOFlower {
+    constructor(_, source, target) {
+        super(source, target, null);
+    }
+}
+class CornWrapper extends Corn {
+    constructor(_, source, target) {
+        super(source, target, null);
+    }
+}
+class BoquetWrapper extends Bouquet {
+    constructor(_, source, target) {
+        super(source, target, null, null);
+    }
+}
 
 let fnoellimg = new Image();
 fnoellimg.src = "img/transparent/lillie.png";
@@ -1376,11 +1401,57 @@ class Fnoell extends BaseTower {
                     w.damage = closestTower.projectiledamage;
                     if (closestTower.projectileimg)
                         w.image = closestTower.projectileimg;
-                    console.log(w);
                 }
             }
-            if (closestTower instanceof Nicole)
-                ;
+            if (closestTower instanceof Nicole) {
+                if(closestTower.flesheating){
+                    if(closestTower.upgradeLevel == 2) {
+                        this.currentProjectile = FleshEatingWrapper;
+                        this.currentProjectilePostprocess = f => {
+                            f.time = closestTower.convertedtime;
+                            f.range = this.range;
+                        }
+                    }
+                    if(closestTower.upgradeLevel == 3){
+                        this.currentProjectile = GMOWrapper;
+                        this.currentProjectilePostprocess = f => {
+                            f.time = closestTower.convertedtime;
+                            f.range = this.range;
+                        }
+                    }
+                }
+        
+                if(closestTower.bouquet){
+                    if(closestTower.upgradeLevel == 2){
+                        this.currentProjectile = CornWrapper;
+                        this.currentProjectilePostprocess = f => {
+                            f.time = closestTower.convertedtime;
+                            f.range = this.range;
+                        }
+                    }
+                    else {
+                        this.currentProjectile = BoquetWrapper;
+                        this.currentProjectilePostprocess = f => {
+                            f.time = closestTower.convertedtime;
+                            f.range = this.range;
+                            f.image = bouquet;
+                            f.damage = 0;
+                            if (closestTower.flowerdamage > 0 && Math.random() < 0.3)
+                                f.damage = closestTower.flowerdamage;
+                        }
+                    }
+                }
+                else {
+                    this.currentProjectile = FlowerWrapper;
+                    this.currentProjectilePostprocess = f => {
+                        f.time = closestTower.convertedtime;
+                        f.range = this.range;
+                        f.damage = 0;
+                        if (closestTower.flowerdamage > 0 && Math.random() < 0.3)
+                            f.damage = closestTower.flowerdamage;
+                    }
+                }
+            }
             if (closestTower instanceof Becca)
                 this.currentProjectile = closestTower.projectiletype === 1 ? Fire : HotFire;
             if (closestTower instanceof Axel) {
