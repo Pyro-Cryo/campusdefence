@@ -139,9 +139,6 @@ class Fadder extends TargetingTower {
     }
 }
 
-let forfadder1img = new Image();
-forfadder1img.src = "img/jonas3.png";
-
 let forfadder2img = new Image();
 forfadder2img.src = "img/helmer2.png";
 

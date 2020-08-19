@@ -1,7 +1,10 @@
 - Gör fler levels (upp till 30, sen repeteras och blir svårare)
 - Balansera lite
-- Fixa paus/play/hp-ikonerna så de ser ok ut på alla platformar
-- Efter lansering, DLC: slumpgenererade paths / fler kartor
+- Efter lansering, DLC:
+	- slumpgenererade paths / fler kartor
+	- Mobilanpassning
+	- Visa projektiltyp / damage / etc. i contextmenu
+	- Fixa paus/play/hp-ikonerna så de ser ok ut på alla platformar
 
 Fadder:
 	Grundskott:
@@ -58,5 +61,8 @@ Lillie-Fnöll
 	Grundskott:
 	- Kramspiral
 	Uppgraderingar:
-	- Fjädrande Fnöll (hoppar runt) -> ??? (Hoppar snabbare)
-	- Extra kärlek (Snabbare/tajtare skott)
+	- Spring i Benen (snabbare hopp, kortare CD till hopp) -> Pungdjur i Bushen (hoppar direkt till slutet av banan om det finns creeps där)
+	XOR {
+		- Kärlekens Hus (ökad dps) -> Våga stuffa (spiral åt båda hållen)
+		- Virus och Bakterier (snor ability från närmaste annat torn) -> Ta Mig Tillbaka Nu (hoppar direkt dit hon placerades från början)
+	}

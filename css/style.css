@@ -293,7 +293,7 @@ span.counter{
         color: initial;
     }
 }
-div.towerInfo.unlocked {
+.unlocked {
     animation-name: flash;
     animation-duration: 2s;
 }

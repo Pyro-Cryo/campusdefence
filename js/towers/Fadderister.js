@@ -721,6 +721,8 @@ class Diciplinary extends Gadget {
     addTo(tower){
         // gothrough all creeps, and kill them
         controller.map.path.forEach(pathTile => pathTile.data.forEach(creep => {
+            if (creep instanceof BaseFohs || Math.random() < 1/6) // Finns några ninjor som inte fuskar
+                return;
             if(creep instanceof MatryoshkaCreep)
                 creep.innerCreepCount = 0;
             creep.onDeath();
@@ -776,10 +778,10 @@ class Frida extends TargetingTower {
             Blackboard,
             "Svarta tavlan",
             "Genom att lämna lösningarna på svarta tavlan där alla kan se kan Frida nå nästan alla Ninjor inom synhåll.",
-            600,
+            150,
             [],
             [Blackboard],
-            100);
+            50);
         this.addUpgrade(
             Envarre,
             "SF1625 Envarre",
@@ -816,7 +818,7 @@ class Frida extends TargetingTower {
             Diciplinary,
             "Diciplinnämnden",
             "Genom ett anonymt tips till diciplinnämnden kan Frida få alla fuskande Ninjor på campus avstängda från KTH!",
-            600,
+            1000,
             [Errors, FullSolution, Blackboard],
             [],
             100);
@@ -1075,7 +1077,7 @@ class Becca extends TargetingTower {
             );
         this.addUpgrade(
             RingOfFire,
-            "Ring of fire",
+            "Ring of Fire",
             "Använder man en eldkastare kan vad som helst hända",
             1100,
             [Propane, Gasoline],
@@ -1089,6 +1091,99 @@ class Becca extends TargetingTower {
             [Propane],
             [DoubleBarell, RingOfFire]
             );
+    }
+}
+
+let springimg = new Image();
+springimg.src = "img/spring.png";
+let bushenimg = new Image();
+bushenimg.src = "img/fnoell.png";
+let virusimg = new Image();
+virusimg.src = "img/virus.png";
+let stuffaimg = new Image();
+stuffaimg.src = "img/stuffa.png";
+let kaerlekenimg = new Image();
+kaerlekenimg.src = "img/kaerleken.png";
+let tamigtillbakaimg = new Image();
+tamigtillbakaimg.src = "img/tamigtillbaka.png";
+
+class Spring extends Gadget {
+
+    static get image() { return springimg; }
+    static get scale() { return 0.25; }
+
+    addTo(tower) {
+        tower.JumpCD *= 0.8;
+        tower.TimeBetweenJumps *= 0.5;
+        super.addTo(tower);
+    }
+}
+
+class Pungdjur extends Gadget {
+
+    static get image() { return bushenimg; }
+    static get scale() { return 0.2; }
+
+    addTo(tower) {
+        tower.pungdjurRefreshTime = 500;
+        tower.pungdjurTimer = 0;
+        tower.pungdjurDistance = 7;
+        super.addTo(tower);
+    }
+}
+
+class Kaerleken extends Gadget {
+
+    static get image() { return kaerlekenimg; }
+    static get scale() { return 0.2; }
+
+    addTo(tower) {
+        tower.DPS *= 2;
+        tower.spiralCD /= 2;
+        super.addTo(tower);
+    }
+}
+
+class Stuffa extends Gadget {
+
+    static get image() { return stuffaimg; }
+    static get scale() { return 0.2; }
+
+    addTo(tower) {
+        tower.symmetry = true;
+        super.addTo(tower);
+    }
+}
+
+class Virus extends Gadget {
+
+    static get image() { return virusimg; }
+    static get scale() { return 0.2; }
+
+    addTo(tower) {
+        tower.copy = true;
+        tower.currentProjectile = Hug;
+        super.addTo(tower);
+    }
+}
+class Tillbaka extends Gadget {
+
+    static get image() { return tamigtillbakaimg; }
+    static get scale() { return 0.2; }
+
+    addTo(tower) {
+        for (let dist = 0; dist < Math.max(tower.map.gridInnerWidth, tower.map.gridInnerHeight); dist++) {
+            for (let x = -dist; x <= dist; x++) {
+                for (let y = -dist; y <= dist; y++) {
+                    if ((Math.abs(x) === dist || Math.abs(y) === dist)
+                            && tower.map.visiblePosition(tower.originalX + x, tower.originalY + y)
+                            && tower.map.getGridAt(tower.originalX + x, tower.originalY + y) === null) {
+                        tower.performJump(tower.originalX + x, tower.originalY + y);
+                        return;
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -1118,10 +1213,17 @@ class Fnoell extends BaseTower {
         this.spiralTimer = 0;
         this.timeWithoutTarget = 0;
         this.currentTarget = null;
+        this.JumpCD = this.constructor.JumpCD;
+        this.TimeBetweenJumps = this.constructor.TimeBetweenJumps;
+        this.originalX = x;
+        this.originalY = y;
     }
 
     projectile(target) {
-        return new Hug(this.map, this, target);
+        if (this.copy)
+            return new this.currentProjectile(this.map, this, target);
+        else
+            return new Hug(this.map, this, target);
     }
 
     fire(target) {
@@ -1138,23 +1240,41 @@ class Fnoell extends BaseTower {
             if (this.spiralTimer <= 0)
             {
                 this.spiralTimer += this.spiralCD;
-                controller.registerObject(new Hug(this.map, this, {x: this.x + Math.cos(this.fireangle), y: this.y + Math.sin(this.fireangle)}));
+                controller.registerObject(this.projectile({x: this.x + Math.cos(this.fireangle), y: this.y + Math.sin(this.fireangle)}));
+                if (this.symmetry)
+                    controller.registerObject(this.projectile({x: this.x + Math.cos(-this.fireangle), y: this.y + Math.sin(-this.fireangle)}));
                 this.fireangle = (this.fireangle + 2 * Math.PI / this.DPS) % (2 * Math.PI);
                 this.leftToFire--;
             }
             this.timeWithoutTarget = 0;
-        } else
+        } else if (this.CDtimer <= 0)
             this.timeWithoutTarget += controller.updateInterval;
+        
+        let pungdjurJump = false;
+        if (this.pungdjurRefreshTime) {
+            this.pungdjurTimer -= controller.updateInterval;
+            if (this.pungdjurTimer <= 0) {
+                this.pungdjurTimer += this.pungdjurRefreshTime;
+                for (let i = 0; i < this.pungdjurDistance && i < this.map.path.length; i++) {
+                    if (this.map.path[this.map.path.length - i - 1].hasCreep()) {
+                        pungdjurJump = true;
+                        break;
+                    }
+                }
+            }
+        }
 
-        if (this.timeWithoutTarget >= this.constructor.JumpCD) {
+        if (pungdjurJump)
+            this.jump(true);
+        else if (this.timeWithoutTarget >= this.JumpCD) {
             this.jump();
-            this.timeWithoutTarget -= this.constructor.TimeBetweenJumps;
+            this.timeWithoutTarget -= this.TimeBetweenJumps;
         }
         
         super.update();
     }
 
-    jump() {
+    jump(allTheWay) {
         let bestX = null;
         let bestY = null;
         let best = null;
@@ -1164,44 +1284,126 @@ class Fnoell extends BaseTower {
             if (this.map.path[i].hasCreep())
                 target = this.map.path[i];
 
-        if (target !== null)
-            for (let x = -2; x <= 2; x++)
-                for (let y = -2; y <= 2; y++)
-                    if (Math.abs(x) + Math.abs(y) === 3
-                            && this.map.visiblePosition(this.x + x, this.y + y)
-                            && this.map.getGridAt(this.x + x, this.y + y) === null)
-                    {
-                        let distsqr = Math.pow(this.x + x - target.x, 2) + Math.pow(this.y + y - target.y, 2);
-                        if (!best || distsqr < best)
-                        {
-                            best = distsqr;
-                            bestX = this.x + x;
-                            bestY = this.y + y;
+        if (target !== null) {
+            if (allTheWay) {
+                for (let dist = 1; !best && dist < Math.max(this.map.gridInnerWidth, this.map.gridInnerHeight); dist++) {
+                    for (let x = -dist; !best && x <= dist; x++) {
+                        for (let y = -dist; !best && y <= dist; y++) {
+                            if ((Math.abs(x) === dist || Math.abs(y) === dist)
+                                    && this.map.visiblePosition(target.x + x, target.y + y)) {
+                                let at = this.map.getGridAt(target.x + x, target.y + y);
+                                if (at === this)
+                                    return;
+                                if (at !== null)
+                                    continue;
+                                bestX = target.x + x;
+                                bestY = target.y + y;
+                                best = true;
+                            }
                         }
                     }
+                }
+            }
+            else {
+                for (let x = -2; x <= 2; x++) {
+                    for (let y = -2; y <= 2; y++) {
+                        if (Math.abs(x) + Math.abs(y) === 3
+                                && this.map.visiblePosition(this.x + x, this.y + y)
+                                && this.map.getGridAt(this.x + x, this.y + y) === null)
+                        {
+                            let distsqr = Math.pow(this.x + x - target.x, 2) + Math.pow(this.y + y - target.y, 2);
+                            if (!best || distsqr < best)
+                            {
+                                best = distsqr;
+                                bestX = this.x + x;
+                                bestY = this.y + y;
+                            }
+                        }
+                    }
+                }
+            }
+        }
         
         if (bestX !== null && bestY !== null)
-        {
-            this.map.removeTower(this);
-            this.x = bestX;
-            this.y = bestY;
-            this.map.addTower(this);
-            this.inrange = this.pathInRange();
-        }
+            this.performJump(bestX, bestY);
         this.currentTarget = target;
     }
 
-    // nearestTower(){
-
-    //     let distance = 100;
-    //     let tower = null;
-        
-    //     for (var i = 0; i < controller.map.towers.length; i++) {
-    //         let dist =  
-    //         if(controller.map.towers[i]){
-
-    //         }
-    //     }
-
-    // }
+    performJump(x, y) {
+        this.map.removeTower(this);
+        this.x = x;
+        this.y = y;
+        this.map.addTower(this);
+        this.inrange = this.pathInRange();
+        this.gadgets.forEach(g => {
+            g.x = this.x + 0.5 - this.gadgets.length * 0.25;
+            g.y = this.y + 0.5;
+        });
+        if (this.copy) {
+            let closestTower = this;
+            let minDist = Number.POSITIVE_INFINITY;
+            this.map.towers.forEach(t => {
+                let dist = Math.pow(this.x - t.x, 2) + Math.pow(this.y - t.y, 2);
+                if (t !== this && dist < minDist) {
+                    minDist = dist;
+                    closestTower = t;
+                }
+            });
+            if (closestTower instanceof Fadder || closestTower instanceof Forfadder1 || closestTower instanceof SupportTower)
+                this.currentProjectile = Hug;
+            if (closestTower instanceof Becca)
+                this.currentProjectile = closestTower.projectiletype === 1 ? Fire : HotFire;
+        }
+    }
+    
+    configUpgrades() {
+		this.addUpgrade(
+			Spring, 
+			"Spring i Benen", 
+			"Lillie-Fnöll får skor med extra fjädrar vilket gör att hon hoppar mycket snabbare.", 
+			150, 
+			[], 
+			[Spring],
+            0);
+        this.addUpgrade(
+            Pungdjur, 
+            "Pungdjur i Bushen", 
+            "I krig och kärlek är allting tillåtet. Lillie-Fnöll tränas i avancerad gerillakramföring och hoppar direkt till ninjorna längst fram om de börjar närma sig mål.", 
+            500, 
+            [Spring], 
+            [Pungdjur],
+            100);
+        this.addUpgrade(
+            Kaerleken, 
+            "Kärlekens Hus", 
+            "Lillie-Fnöll blir ännu mer fylld av kärlek och kramar dubbelt så mycket!", 
+            600, 
+            [], 
+            [Kaerleken, Virus, Tillbaka],
+            50);
+        this.addUpgrade(
+            Stuffa, 
+            "Våga Stuffa", 
+            "Vem behöver alkohol när man blir hög av rock-n'-roll? Lillie-Fnöll kramar nu åt två håll samtidigt.", 
+            600, 
+            [Kaerleken], 
+            [Stuffa, Virus, Tillbaka],
+            250);
+        this.addUpgrade(
+            Virus, 
+            "Virus och Bakterier", 
+            "Lillie-Fnöll har så lätt för att smittas av förskylningar och annat som faddrar i närheten har. En konstigt symtom hon får är att hennes projektiler blir av samma typ som faddern hon är närmast.", 
+            700, 
+            [], 
+            [Kaerleken, Stuffa, Virus],
+            250);
+        this.addUpgrade(
+            Tillbaka, 
+            "Ta Mig Tillbaka Nu", 
+            "Lillie-Fnöll fylls av nostalgi och hoppar direkt tillbaka till sin originalposition. Denna förmåga kan användas flera gånger.", 
+            50, 
+            [Virus], 
+            [Kaerleken, Stuffa],
+            250);
+    }
 }

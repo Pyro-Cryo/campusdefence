@@ -498,7 +498,7 @@
                 this.listUpgrades(blocking, this.selectedTower.upgrades, unlockInfo);
             }
             
-            return gotAllArgs ? "blocked" : [currentState, blocking, existingRequired];
+            return gotAllArgs ? "blocked" : ["blocked", blocking, existingRequired];
         }
         // Check if we have all required previous upgrades
         else if (existingRequired.length !== upgrade.requires.length) {
@@ -510,7 +510,7 @@
             unlockInfo.innerText = "Kräver ";
             this.listUpgrades(upgrade.requires.filter(u => existingRequired.indexOf(u) === -1), this.selectedTower.upgrades, unlockInfo);
             
-            return gotAllArgs ? "requires" : [currentState, blocking, existingRequired];
+            return gotAllArgs ? "requires" : ["requires", blocking, existingRequired];
         }
         // Check if we have trained enough
         else if (this.selectedTower.hits < upgrade.hits) {
@@ -520,7 +520,7 @@
             option.querySelector("button[name='actionbtn']").disabled = "disabled";
             option.querySelector(".unlockInfo").innerText = "Kräver " + upgrade.hits + " träff" + (upgrade.hits !== 1 ? "ar" : "");
 
-            return gotAllArgs ? "untrained" : [currentState, blocking, existingRequired];
+            return gotAllArgs ? "untrained" : ["untrained", blocking, existingRequired];
         // Upgrade is available
         } else {
             if (currentState !== "unlocked") {
@@ -529,13 +529,13 @@
             }
             if (currentState !== "affordable" && this.money >= upgrade.cost)
                 option.querySelector("button[name='actionbtn']").removeAttribute("disabled");
-            else if (currentState === "affordable" && this.money < upgrade.cost)
+            else if ((!currentState || currentState === "affordable") && this.money < upgrade.cost)
                 option.querySelector("button[name='actionbtn']").disabled = "disabled";
             
             if (this.money >= upgrade.cost)
-                return gotAllArgs ? "affordable" : [currentState, blocking, existingRequired];
+                return gotAllArgs ? "affordable" : ["affordable", blocking, existingRequired];
             else
-                return gotAllArgs ? "unlocked" : [currentState, blocking, existingRequired];
+                return gotAllArgs ? "unlocked" : ["unlocked", blocking, existingRequired];
         }
     }
 
@@ -630,6 +630,10 @@
                 t.x = current.obj.x;
                 t.y = current.obj.y;
                 t.hits = current.obj.hits;
+                if (current.obj instanceof Fnoell) {
+                    t.originalX = current.obj.originalX;
+                    t.originalY = current.obj.originalY;
+                }
                 t.gadgets = [];
                 for (var i = 0; i < current.obj.gadgets.length; i++) {
                     t.gadgets.push(current.obj.gadgets[i].constructor.name)
@@ -660,6 +664,10 @@
             let type = this.towerSpecs.find(ts => ts.type.name === data.towers[i].type).type;
             let tower = new type(x, y);
             tower.hits = data.towers[i].hits;
+            if (tower instanceof Fnoell) {
+                tower.originalX = data.towers[i].originalX;
+                tower.originalY = data.towers[i].originalY;
+            }
 
             if(data.towers[i].gadgets){
             
