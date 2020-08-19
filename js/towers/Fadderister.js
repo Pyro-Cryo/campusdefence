@@ -1163,6 +1163,7 @@ class Virus extends Gadget {
     addTo(tower) {
         tower.copy = true;
         tower.currentProjectile = Hug;
+        tower.currentProjectilePostprocess = null;
         super.addTo(tower);
     }
 }
@@ -1184,6 +1185,12 @@ class Tillbaka extends Gadget {
                 }
             }
         }
+    }
+}
+
+class WolframWrapper extends Wolfram {
+    constructor(_, source, target) {
+        super(source, target, null, null, null, null);
     }
 }
 
@@ -1240,9 +1247,17 @@ class Fnoell extends BaseTower {
             if (this.spiralTimer <= 0)
             {
                 this.spiralTimer += this.spiralCD;
-                controller.registerObject(this.projectile({x: this.x + Math.cos(this.fireangle), y: this.y + Math.sin(this.fireangle)}));
-                if (this.symmetry)
-                    controller.registerObject(this.projectile({x: this.x + Math.cos(-this.fireangle), y: this.y + Math.sin(-this.fireangle)}));
+                let p = this.projectile({x: this.x + Math.cos(this.fireangle), y: this.y + Math.sin(this.fireangle)});
+                controller.registerObject(p);
+                if (this.currentProjectilePostprocess)
+                    this.currentProjectilePostprocess(p);
+                if (this.symmetry) {
+                    p = this.projectile({x: this.x + Math.cos(-this.fireangle), y: this.y + Math.sin(-this.fireangle)});
+                    controller.registerObject(p);
+                    if (this.currentProjectilePostprocess)
+                        this.currentProjectilePostprocess(p);
+                }
+                    
                 this.fireangle = (this.fireangle + 2 * Math.PI / this.DPS) % (2 * Math.PI);
                 this.leftToFire--;
             }
@@ -1349,10 +1364,42 @@ class Fnoell extends BaseTower {
                     closestTower = t;
                 }
             });
+            this.currentProjectilePostprocess = null;
             if (closestTower instanceof Fadder || closestTower instanceof Forfadder1 || closestTower instanceof SupportTower)
                 this.currentProjectile = Hug;
+            if (closestTower instanceof Frida) {
+                this.currentProjectile = WolframWrapper;
+                this.currentProjectilePostprocess = w => {
+                    w.time = closestTower.time;
+                    w.maxHits = closestTower.maxHits;
+                    w.persistent = closestTower.persistent;
+                    w.damage = closestTower.projectiledamage;
+                    if (closestTower.projectileimg)
+                        w.image = closestTower.projectileimg;
+                    console.log(w);
+                }
+            }
+            if (closestTower instanceof Nicole)
+                ;
             if (closestTower instanceof Becca)
                 this.currentProjectile = closestTower.projectiletype === 1 ? Fire : HotFire;
+            if (closestTower instanceof Axel) {
+                this.currentProjectile = Molotov;
+                if (closestTower.maxHitsOverride !== undefined)
+                    this.currentProjectilePostprocess = m => { m.maxHits = closestTower.maxHitsOverride; };
+                if (closestTower.schroedinger) {
+                    this.currentProjectilePostprocess = m => { 
+                        if (Math.random() < 0.5)
+                            m.damage *= 3;
+                        else {
+                            m.damage = 0;
+                            m.hitCreep = Wolfram.prototype.hitCreep.bind(m);
+                        }
+                    };
+                }
+            }
+            if (closestTower instanceof Fnoell)
+                this.currentProjectile = closestTower.copy ? closestTower.currentProjectile : Hug;
         }
     }
     
