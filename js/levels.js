@@ -124,6 +124,98 @@ function getLevel(number, updateInterval) {
                     .send(1, SF_2).immediately())
                 .send(10, Blue).over(10 * s));
 
+        case 21:
+            return (new CreepSequence()
+                .send(150, Red).over(20 * s)
+                .interleave(new CreepSequence().wait(5 * s)
+                    .send(25, Green).over(15 * s))
+                .send(10, Violet).over(5 * s));
+
+        case 22:
+            return (new CreepSequence()
+                .send(20, Violet).over(20 * s)
+                .send(20, Violet).over(8 * s));
+
+        case 23:
+            return (new CreepSequence()
+                .send(30, Violet).over(25 * s)
+                .interleave(new CreepSequence()
+                    .wait(10 * s)
+                    .send(1, TF_2).immediately()
+                    .wait(1.5 * s)
+                    .send(1, OF_2).immediately()
+                    .wait(1.5 * s)
+                    .send(1, SF_2).immediately())
+                );
+
+        case 24:
+            return (new CreepSequence()
+                .send(4, Orange).over(2 * s)
+                .wait(6 * s)
+                .send(4, Orange).over(2 * s)
+                .wait(9 * s)
+                .send(12, Orange).over(7 * s)
+                );
+
+        case 25:
+            return (new CreepSequence()
+                .send(100, Pink).over(20 * s)
+                .interleave(new CreepSequence()
+                    .send(25, Green).over(10 * s)
+                    .send(15, Violet).over(10 * s))
+                .wait(5 * s)
+                .send(2, Orange).over(2 * s)
+                );
+
+        case 26:
+            return (new CreepSequence()
+                .send(9, Orange).over(2 * s)
+                .wait(6 * s)
+                .send(9, Orange).over(2 * s)
+                .wait(6 * s)
+                .send(12, Orange).over(2.7 * s));
+
+        case 27:
+            return (new CreepSequence()
+                .send(3, Ninja).over(2 * s)
+                .send(5, Red).over(3 * s)
+                .send(7, Blue).over(5 * s)
+                .send(11, Pink).over(7 * s)
+                .send(13, Green).over(11 * s)
+                .send(17, Violet).over(13 * s)
+                .send(23, Orange).over(17 * s));
+
+        case 28:
+            return (new CreepSequence()
+                .send(20, Violet).over(10 * s)
+                .interleave(new CreepSequence()
+                    .send(5, Pink).over(5 * s)
+                    .send(10, Orange).over(5 * s)));
+
+        case 29:
+            return (new CreepSequence()
+                .send(25, Orange).over(7.5 * s)
+                .send(150, Red).over(10 * s));
+
+        case 30:
+            return (new CreepSequence()
+                .send(60, Violet).over(15 * s)
+                .interleave(new CreepSequence().send(25, Pink).over(15 * s))
+                .interleave(new CreepSequence().send(25, Green).over(15 * s))
+                .wait(2 * s)
+                .send(15, Orange).over(5 * s)
+                .send(25, Pink).over(5 * s)
+                .wait(2 * s)
+                .send(50, Ninja).over(10 * s)
+                .interleave(new CreepSequence()
+                    .wait(30 * s)
+                    .send(1, TF_3).immediately()
+                    .wait(1.75 * s)
+                    .send(1, OF_3).immediately()
+                    .wait(1.75 * s)
+                    .send(1, SF_3).immediately())
+                .send(80, Pink).over(40 * s)
+                );
 
         // Fortsätt introducera föhsare typ var 4-6 nivå, fler föhsspöken
 
@@ -139,10 +231,10 @@ function autolevel(levelnumber, updateInterval){
 		.send(30, Pink).over(10 * s)
 		.interleave(new CreepSequence().send(30, Green).over(10 * s))
 		.wait(4 * s)
-		.send(4*levelnumber, Green).over(levelnumber/4 * s)
+		.send(2*levelnumber, Green).over(levelnumber/4 * s)
 		.wait(3 * s)
-		.send(4*levelnumber, Green).over(levelnumber/4 * s)
-		.interleave(new CreepSequence().send(2*levelnumber, Pink).over(8/levelnumber * s))
+		.send(2*levelnumber, Green).over(levelnumber/4 * s)
+		.interleave(new CreepSequence().send(2*levelnumber, Pink).over(12/levelnumber * s))
 		.wait(4 * s);
 
 	if(levelnumber > 40){
