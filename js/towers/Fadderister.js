@@ -278,14 +278,6 @@ class Nicole extends TargetingTower {
     }
 
     configUpgrades() {
-		// this.addUpgrade(
-		// 	TakeAwayCoffee, 
-		// 	"Take away kaffe", 
-		// 	"Ge faddern lite kaffe så jobbar den snabbare.", 
-		// 	150, 
-		// 	[], 
-		// 	[TakeAwayCoffee],
-		// 	20);
         this.addUpgrade(
             Nutrient,
             "Växtnäring",
@@ -297,7 +289,7 @@ class Nicole extends TargetingTower {
         this.addUpgrade(
             Pollen,
             "Pollensäsong",
-            "Genom att plocka blommorna under pollensäsongen kan Nicole utnyttja att vissa ninjor har pollenallergi.",
+            "Genom att plocka blommorna under pollensäsongen kan Nicole utnyttja att vissa ninjor har pollenallergi, så att upp till 30\% av ninjorna skadas istället för att vända hem.",
             400,
             [],
             [Pollen],
@@ -313,15 +305,15 @@ class Nicole extends TargetingTower {
         this.addUpgrade(
             GMOEating,
             "Genmodifiering",
-            "Genom experimenterande och avancerad genmodifiering har Nicole skapat köttätande väster som klänger sig fast vid sitt offer.",
-            950,
+            "Genom experimenterande och avancerad genmodifiering har Nicole skapat köttätande väster som klänger sig fast vid sitt offer och forsätter bita de.",
+            1000,
             [Pollen, FleshEating],
             [GMOEating, MultiFlower, MonoCulture],
             100);
         this.addUpgrade(
             MultiFlower,
             "Blombukett",
-            "Genom effektiv paketering kan en hel bunt ninjor träffas av blommor samtidigt, med kraftigt ökad effekt.",
+            "Nicole samplar ihop blommorna i buketter, och kan på så vis träffa upp till fem ninjor på samma gång.",
             450,
             [],
             [MultiFlower, FleshEating, GMOEating],
@@ -537,7 +529,7 @@ class Axel extends OmniTower {
 			TakeAwayCoffee, 
 			"Hets på I", 
 			"Ge faddern lite koffein så jobbar den snabbare.", 
-			150, 
+			250, 
 			[], 
 			[TakeAwayCoffee],
             20);
@@ -545,7 +537,7 @@ class Axel extends OmniTower {
             Vatten, 
             "Varannan Vatten", 
             "Axel håller sig hydrerad och orkar festa ännu intensivare!", 
-            150, 
+            250, 
             [TakeAwayCoffee], 
             [Vatten],
             50);
@@ -553,7 +545,7 @@ class Axel extends OmniTower {
             Promille, 
             "Promilleacceleratorn", 
             "Det ökade alkoholinnehållet gör att cocktailarna kan träffa hur många tätt packade ninjor som helst, istället för bara " + Molotov.maxHits + ".", 
-            500, 
+            760, 
             [], 
             [Promille, Champagne],
             100);
@@ -561,7 +553,7 @@ class Axel extends OmniTower {
             Schroedinger, 
             "Schrödingers", 
             "Man vet aldrig vad man får när man beställer Schrödingers. Det är 50 % chans att ninjorna tar 3x så mycket skada, och 50 % chans att deras hastighet istället tillfälligt halveras.",
-            700, 
+            1000, 
             [Promille], 
             [Schroedinger],
             100);
@@ -569,7 +561,7 @@ class Axel extends OmniTower {
             Champagne, 
             "Champagne", 
             "Bjuder man på champagne gäller det att inte spilla! Axel missar knappt längre, utan drinkarna söker nu automatiskt upp ninjor.",
-            1000, 
+            1200, 
             [], 
             [Promille, Champagne],
             100);
@@ -1063,23 +1055,23 @@ class Becca extends TargetingTower {
             Propane,
             "Propangas",
             "Ren propangas brinner varmare än hårspray, och gör 50\% extra skada.",
-            450,
+            550,
             [],
             [Propane],
             );
         this.addUpgrade(
             Gasoline,
-            "Bensin",
-            "Bensin brinner också bra.",
-            600,
+            "Bensinbomb",
+            "Bensin brinner också bra, och när ninjorna träffas av den brinnande strålen tar de inte bara skada, utan de börjar också brinna själva, vilket fortsätter att skada de även efter de unkommit Becca.",
+            800,
             [Propane],
             [Gasoline]
             );
         this.addUpgrade(
             RingOfFire,
             "Ring of Fire",
-            "Använder man en eldkastare kan vad som helst hända",
-            1100,
+            "Det är kul att leka med elden, och när Becca extatiskt svingar eldkastaren över huvudet sätter hon eld på alla ninjor i närheten.",
+            2100,
             [Propane, Gasoline],
             [RingOfFire, DoubleBarell]
             );
@@ -1087,7 +1079,7 @@ class Becca extends TargetingTower {
             DoubleBarell,
             "Dubbelpipa",
             "Vad kan vara bättre än en eldkastare? Två eldkastare såklart.",
-            1200,
+            2200,
             [Propane],
             [DoubleBarell, RingOfFire]
             );
@@ -1479,7 +1471,7 @@ class Fnoell extends BaseTower {
 			Spring, 
 			"Spring i Benen", 
 			"Lillie-Fnöll får skor med extra fjädrar vilket gör att hon hoppar mycket snabbare.", 
-			150, 
+			350, 
 			[], 
 			[Spring],
             0);
@@ -1487,7 +1479,7 @@ class Fnoell extends BaseTower {
             Pungdjur, 
             "Pungdjur i Bushen", 
             "I krig och kärlek är allting tillåtet. Lillie-Fnöll tränas i avancerad gerillakramföring och hoppar direkt till ninjorna längst fram om de börjar närma sig mål.", 
-            500, 
+            700, 
             [Spring], 
             [Pungdjur],
             100);
@@ -1495,7 +1487,7 @@ class Fnoell extends BaseTower {
             Kaerleken, 
             "Kärlekens Hus", 
             "Lillie-Fnöll blir ännu mer fylld av kärlek och kramar dubbelt så mycket!", 
-            600, 
+            700, 
             [], 
             [Kaerleken, Virus, Tillbaka],
             50);
@@ -1503,7 +1495,7 @@ class Fnoell extends BaseTower {
             Stuffa, 
             "Våga Stuffa", 
             "Vem behöver alkohol när man blir hög av rock-n'-roll? Lillie-Fnöll kramar nu åt två håll samtidigt.", 
-            600, 
+            850, 
             [Kaerleken], 
             [Stuffa, Virus, Tillbaka],
             250);
@@ -1511,7 +1503,7 @@ class Fnoell extends BaseTower {
             Virus, 
             "Virus och Bakterier", 
             "Lillie-Fnöll har så lätt för att smittas av förskylningar och annat som faddrar i närheten har. En konstigt symtom hon får är att hennes projektiler blir av samma typ som faddern hon är närmast.", 
-            700, 
+            1700, 
             [], 
             [Kaerleken, Stuffa, Virus],
             250);

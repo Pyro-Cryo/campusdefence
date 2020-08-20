@@ -80,7 +80,7 @@ function getLevel(number, updateInterval) {
                 .wait(1 * s)
                 .send(50, Pink).over(20 * s)
                 .interleave(new CreepSequence().send(50, Blue).over(20 * s)));
-
+        
         case 15:
             return (new CreepSequence()
                 .send(1, OF_1).immediately());
@@ -96,9 +96,9 @@ function getLevel(number, updateInterval) {
         case 17:
             return (new CreepSequence()
                 .send(1, Violet).immediately()
-                .wait(2 * s)
+                .wait(3 * s)
                 .send(30, Green).over(15 * s)
-                .interleave(new CreepSequence().send(50, Pink).over(15 * s))
+                .interleave(new CreepSequence().send(45, Pink).over(15 * s))
                 );
         case 18:
             return (new CreepSequence()
@@ -111,6 +111,7 @@ function getLevel(number, updateInterval) {
                 .send(50, Blue).over(12 * s)
                 .send(3, Orange).over(3 * s));
 
+        // Ta bort Föhseriet från denna level så de inte kommer så ofta?
         case 20:
             return (new CreepSequence()
                 .send(20, Blue).over(10 * s)
@@ -227,19 +228,15 @@ function autolevel(levelnumber, updateInterval){
 
 	let s = 1000 / updateInterval;
 
-
-
-
-
 	let cs = new CreepSequence()
 		.send(30, Pink).over(10 * s)
 		.interleave(new CreepSequence().send(30, Green).over(10 * s))
-		.wait(4 * s)
+		.wait(2 * s)
 		.send(2*levelnumber, Green).over(levelnumber/4 * s)
-		.wait(3 * s)
+		.wait(2 * s)
 		.send(2*levelnumber, Green).over(levelnumber/4 * s)
 		.interleave(new CreepSequence().send(2*levelnumber, Pink).over(12/levelnumber * s))
-		.wait(4 * s);
+		.wait(2 * s);
 
 	if(levelnumber > 40){
 		cs.send(Math.floor(0.1*levelnumber*levelnumber), Orange).over(levelnumber * s)
@@ -248,21 +245,20 @@ function autolevel(levelnumber, updateInterval){
 
 	if(levelnumber % 4 == 0 || levelnumber % 6 == 0){
 		cs.send(1, TF_inf).immediately()
-		.wait(0.2 * s)
+		.wait(1.2 * s)
 		.send(1, OF_inf).immediately()
-		.wait(0.2 * s)
+		.wait(1.2 * s)
 		.send(1, SF_inf).immediately()
-		.wait(1 * s);
 	}
 
 	if(levelnumber > 20){
 		cs.send(2*levelnumber, Orange).over(10 * s);
 	}
 
-	cs.send(100, Blue).over(20 * s)
+	cs.send(30, Blue).over(20 * s)
 		.interleave(new CreepSequence().send(40, Red).over(10 * s))
 		.interleave(new CreepSequence().send(40, Pink).over(10 * s))
-		.send(5 * levelnumber, Pink).over(15 * s);
+        .interleave(new CreepSequence().send(levelnumber, Green).over(10 * s));
 
 
 	return cs.do(() => console.log("All creeps sent"));
@@ -273,6 +269,15 @@ function autolevel(levelnumber, updateInterval){
 function levelClearReward(number) {
     let cash = 0;
     switch (number) {
+
+        case 8:
+        case 11:
+        case 15:
+            cash = 300;
+            break;
+        case 16:
+            cash = 500;
+            break;
         default:
             cash = 100;
             break;
@@ -302,6 +307,18 @@ function levelMessage(number) {
         case 7: return "Förhoppningsvis har du redan hittat informationslisten ovanför spelplanen - där kan du pausa, snabbspola och återställa spelet samt se din fikabudget och hur många nØllan som finns kvar. Du kan också se vad nästa nivå har att bjuda på.<br /><br /><i>Föhseriet gör sig redo att ta i med hårdhanskarna.</i>"
 
         case 8: return "ÖF, $F och TF kräver många kramar innan de ger med sig. De har dessutom olika förmågor som gör dem ännu svårare att besegra!<br /><br /><i>\"Ska det bli bra får man göra det själv. JUBLA, nØLLAN!\"</i>"
+
+        case 9: return "Glöm inte att uppgradera dina torn. Ett väl uppgraderat torn är ofta starkare än flera svaga.";
+
+        case 10: return "Några torn har specialattacker som måste aktiveras manuellt. Dessa är ofta väldigt dyra, och varje gång du använder den behöver du betala igen. Men nöden har ingen lag, och ibland kan de vara räddningen från säker förlust.";
+
+        case 11: return "$nålföhs största svaghet är kramar. Hon verkligen avskyr de. Förutom det är det inte mycket som kan få henne att ändra sig när hon väl satt ett mål för sig själv.<br/><br/><i>$nålföhs kramas inte!</i>";
+
+        case 15: return "Överföhs accepterar inte några motgångar, och om någon försöker hindra honom ger han de sin oändliga mördarblick vilket kan få vem som helst att frysa av rädsla.<br/><br/><i>ÖF måste själv se vad för oväsen faddrarna har ställt till med. \"Hälsa på Överföhs, nØllan\"</i>";
+
+        case 16: return "Föhseriets olika förmågor kompletterar varandra och de är som starkast när de är tillsammans. Lycka till!<br /><br /><i>Efter att ÖF själv har sett med vilken beslutsamhet faddrarna försvarar nØllan beslutar föhseriet att göra gemensam sak. \"Nu får det vara nog med larvigheter. JUBLA nØLLAN!\"</i>";
+        
+        case 17: return "<br/><br/><i>Föhseriet drar sig tillbaka och observerar faddrarnas kamp från behörigt avstånd. Deras beslutsamhet är, liksom deras tålamod, oändlig.</i>";
 
         default:
             return "_";

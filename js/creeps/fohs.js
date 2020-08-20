@@ -17,6 +17,8 @@ for (var i = 0; i < 5; i++) {
 
 class BaseFohs extends BaseCreep {
 
+    static get value() { return 100; }
+
     constructor(distance){
         super(distance);
         this.despawnTime = doors.length*3;
@@ -46,7 +48,6 @@ class BaseFohs extends BaseCreep {
             effect = new Distracted(effect.cooldown*controller.updateInterval*0.8);
             effect.multiplier = Math.sqrt(effect.multiplier);
         }
-
         super.addEffect(effect);
     }
 
@@ -57,7 +58,6 @@ class BaseFohs extends BaseCreep {
         this.angle = 0;
         this.despawnTimer = this.despawnTime + this.fudge;
     }
-
 }
 
 class TF_1 extends BaseFohs {
@@ -86,7 +86,6 @@ class TF_1 extends BaseFohs {
         let low = -Math.floor(this.constructor.creepCount/2);
         let high = Math.ceil(this.constructor.creepCount/2);
         let type = this.constructor.ninjaType;
-        console.log(low, high);
     	for (var i = low; i < high; i++) {
     		new type(Math.max(0, Math.min(maxdist, this.distance+i*this.constructor.spread)));
     	}
@@ -112,6 +111,8 @@ class SF_1 extends BaseFohs {
         else{
             projectile.damage = 1;
         }
+        // SF tar skatt
+        controller.money -= 1;
         super.onHit(projectile);
     }
 }
@@ -127,15 +128,8 @@ class OF_1 extends BaseFohs {
 
     constructor(distance) {
     	super(distance);
-    	this.cooldown = this.constructor.cooldown / controller.updateInterval;
+    	this.cooldown = Math.floor(this.constructor.cooldown / controller.updateInterval);
     	this.cdTimer = 0;
-    }
-
-    addEffect(effect) {
-        // ÖF kan inte konverteras
-        if(effect instanceof Converted)
-            return;
-        super.addEffect(effect);
     }
 
     update() {
@@ -147,19 +141,17 @@ class OF_1 extends BaseFohs {
 
     onHit(projectile) {
         // ÖF slår tillbaka! 
-        if(this.cdTimer == 0){
+        if(this.cdTimer <= 0){
 	        let proj = new Payback(this, projectile.sourceTower);
 	        controller.registerObject(proj);
 	        this.cdTimer = this.cooldown;
 	    }
-        
         super.onHit(projectile);
     }
-
 }
 
 class TF_2 extends TF_1 {
-    static get health() { return TF_1.health + 8; }
+    static get health() { return TF_1.health + 10; }
     static get speed(){ return 0.5; }
     static get creepCount() { return TF_1.creepCount+2; }
     static get ninjaType() { return Red; }
@@ -171,7 +163,7 @@ class SF_2 extends SF_1 {
 }
 
 class OF_2 extends OF_1 {
-    static get health() { return OF_1.health + 12; }
+    static get health() { return OF_1.health + 15; }
     static get cooldown() { return 950; }
     static get speed(){ return 0.5; }
 }

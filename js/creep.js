@@ -137,6 +137,8 @@ class MatryoshkaCreep extends BaseCreep {
     // Overrides BaseCreep.damage
     static get damage() { return 1 + this.innerCreep.damage * this.innerCreepCount; }
 
+    // static get value() { return 0; }
+
     constructor(distance){
     	super(distance);
     	this.innerCreepCount = this.constructor.innerCreepCount;

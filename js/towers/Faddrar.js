@@ -28,7 +28,7 @@ class Fadder extends TargetingTower {
     static get CDtime() { return 800; }
     static get image() { return fadderimg; }
     static get scale() { return 0.17; }
-    static get cost() { return 200; }
+    static get cost() { return 180; }
     static get name() { return "Fadder"; }
     static get desc() { return "En vanlig fadder som kramar ninjor den ser. Faddern åstadkommer kanske inte så mycket, men i slutändan måste man inte alltid göra det för att vara lycklig här i livet. Det är ändå vännerna man vinner på vägen som räknas."; }
 
@@ -90,23 +90,23 @@ class Fadder extends TargetingTower {
 			TakeAwayCoffee, 
 			"Take away kaffe", 
 			"Ge faddern lite kaffe så jobbar den snabbare.", 
-			150, 
+			100, 
 			[], 
 			[TakeAwayCoffee],
 			0);
         this.addUpgrade(
             Mek1, 
-            "SG1130 Mekanik gk", 
-            "I mek I kursen får en lära sig om statik och partikeldynamik, vilket ger bättre förståelse för de banrörelser som faddern behöver ta för att nå fram med sina kramar. Efter avslutad kurs har faddern lite längre räckvidd.", 
-            250, 
+            "SG1130 Mek gk", 
+            "I mekanik I kursen får en lära sig om statik och partikeldynamik, vilket ger bättre förståelse för de banrörelser som faddern behöver ta för att nå fram med sina kramar. Efter avslutad kurs har faddern lite längre räckvidd.", 
+            100, 
             [], 
             [Mek1],
             30);
         this.addUpgrade(
             Mek2, 
-            "SG1140 Mekanik fk", 
-            "I mek II kursen får en lära sig om dynamik och rörelse i roterande koordinatsystem. Efter avklarad kurs har faddern väldigt mycket bättre förståelse för rörelser och därför ännu längre räckvidd.",
-            400, 
+            "SG1140 Mek fk", 
+            "I mekanik II kursen får en lära sig om dynamik och rörelse i roterande koordinatsystem. Efter avklarad kurs har faddern väldigt mycket bättre förståelse för rörelser och därför ännu längre räckvidd.",
+            150, 
             [Mek1],
             [Mek2], 
             50);
@@ -114,7 +114,7 @@ class Fadder extends TargetingTower {
             Regler,
             "EL1000 Regler",
             "Genom att noga justera attackvinkeln utifrån ninjornas position och hastighet blir det ännu svårare för ninjorna att undvika faddrarnas kramar.",
-            400,
+            200,
             [Mek1, Mek2],
             [Regler],
             250
@@ -123,7 +123,7 @@ class Fadder extends TargetingTower {
             Hallf,
             "SE1050 Hållf",
             "Genom att öka den strukturella integriteten kan varje kram nu omfamna flera ninjor innan den är förbrukad.",
-            500,
+            250,
             [Mek1, Mek2],
             [Hallf, Kvant],
             150);
@@ -131,7 +131,7 @@ class Fadder extends TargetingTower {
             Kvant,
             "SI1151 Kvant",
             "Genom att försätta sig i en superposition kan faddern krama flera ninjor samtidigt.",
-            700,
+            300,
             [Mek1, Mek2],
             [Kvant, Hallf],
             150
@@ -147,7 +147,7 @@ class Forfadder1 extends Fadder {
     static get CDtime() { return 600; }
     static get image() { return forfadder2img; }
     static get scale() { return 0.2; }
-    static get cost() { return 350; }
+    static get cost() { return 320; }
     static get name() { return "Förfadder"; }
     static get desc() { return "En förfadder är som en fadder, fast med extra mycket kärlek att ge. En förfadder både kramar snabbare och når längre med sina kramar än en vanlig fadder."; }
 
