@@ -99,21 +99,23 @@ class SF_1 extends BaseFohs {
     static get speed() { return 0.7; }
     static get image() { return sfimg; }
     static get scale() { return 0.2; }
-    static get health() { return 80; }
+    static get health() { return 85; }
     static get drawHealthBar() { return true; }
     static get value() { return 50; }
 
     onHit(projectile) {
-        if(projectile instanceof Hug){
+        let original_damage = projectile.damage;
+        if(projectile instanceof Hug && !projectile instanceof Patch){
             // SF kramas inte!
             projectile.damage *= 2;
         }
-        else{
+        else if(projectile.damage >= 1){
             projectile.damage = 1;
         }
         // SF tar skatt
-        controller.money -= 1;
+        // controller.money -= 1;
         super.onHit(projectile);
+        projectile.damage = original_damage;
     }
 }
 
@@ -121,7 +123,7 @@ class OF_1 extends BaseFohs {
     static get speed() { return 0.5; }
     static get image() { return ofimg; }
     static get scale() { return 0.2; }
-    static get health() { return 20; }
+    static get health() { return 22; }
     static get drawHealthBar() { return true; }
     static get value() { return 75; }
     static get cooldown() { return 1000; }
@@ -151,26 +153,27 @@ class OF_1 extends BaseFohs {
 }
 
 class TF_2 extends TF_1 {
-    static get health() { return TF_1.health + 10; }
+    static get health() { return TF_1.health + 8; }
     static get speed(){ return 0.5; }
-    static get creepCount() { return TF_1.creepCount+2; }
+    static get creepCount() { return TF_1.creepCount+1; }
     static get ninjaType() { return Red; }
 }
 
 class SF_2 extends SF_1 {
-    static get health() { return Math.floor(SF_1.health*1.4); }
+    static get health() { return Math.floor(SF_1.health*1.2); }
     static get speed(){ return 0.5; }
 }
 
 class OF_2 extends OF_1 {
-    static get health() { return OF_1.health + 15; }
-    static get cooldown() { return 950; }
+    static get health() { return OF_1.health + 8; }
+    static get cooldown() { return 1050; }
     static get speed(){ return 0.5; }
 }
 
 class TF_3 extends TF_2 {
     static get health() { return TF_2.health + 8; }
     static get ninjaType() { return Blue; }
+    static get creepCount() { return TF_2.creepCount+1; }
 }
 
 class SF_3 extends SF_2 {
@@ -178,8 +181,8 @@ class SF_3 extends SF_2 {
 }
 
 class OF_3 extends OF_2 {
-    static get health() { return OF_1.health + 15; }
-    static get cooldown() { return 850; }
+    static get health() { return OF_2.health + 14; }
+    static get cooldown() { return 650; }
 }
 
 class TF_inf extends TF_1 {
