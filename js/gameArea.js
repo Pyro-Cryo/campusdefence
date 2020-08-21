@@ -19,24 +19,33 @@ class GameArea {
     draw(image, _x, _y, angle, scale) {
         let x = this.gridToCanvasX(_x);
         let y = this.gridToCanvasY(_y);
-        if (!angle)
-            this.context.drawImage(
-                image,
-                0, 0,
-                image.width, image.height,
-                x - image.width * scale / 2, y - image.height * scale / 2,
-                image.width * scale, image.height * scale
-            );
+        if (!angle){
+            if(scale == 1)
+                this.context.drawImage(
+                    image,
+                    x - image.width / 2, y - image.height / 2
+                    );
+            else
+                this.context.drawImage(
+                    image,
+                    x - image.width * scale / 2, y - image.height * scale / 2,
+                    image.width * scale, image.height * scale
+                );
+        }
         else {
             this.context.translate(x, y);
             this.context.rotate(angle);
-            this.context.drawImage(
-                image,
-                0, 0,
-                image.width, image.height,
-                -image.width * scale / 2, -image.height * scale / 2,
-                image.width * scale, image.height * scale
-            );
+            if(scale == 1)
+                this.context.drawImage(
+                    image,
+                    - image.width / 2, - image.height / 2
+                    );
+            else
+                this.context.drawImage(
+                    image,
+                    -image.width * scale / 2, -image.height * scale / 2,
+                    image.width * scale, image.height * scale
+                );
             this.context.rotate(-angle);
             this.context.translate(-x, -y);
         }
