@@ -105,7 +105,7 @@ class SF_1 extends BaseFohs {
 
     onHit(projectile) {
         let original_damage = projectile.damage;
-        if(projectile instanceof Hug && !projectile instanceof Patch){
+        if(projectile instanceof Hug && !(projectile instanceof Patch)){
             // SF kramas inte!
             projectile.damage *= 2;
         }

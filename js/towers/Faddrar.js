@@ -109,16 +109,16 @@ class Fadder extends TargetingTower {
 			0);
         this.addUpgrade(
             Mek1, 
-            "SG1130 Mek gk", 
-            "I mekanik I kursen får en lära sig om statik och partikeldynamik, vilket ger bättre förståelse för de banrörelser som faddern behöver ta för att nå fram med sina kramar. Efter avslutad kurs har faddern lite längre räckvidd.", 
+            "SG1130 Mekanik I", 
+            "I grundkursen i Mekanik får en lära sig om statik och partikeldynamik, vilket ger bättre förståelse för de banrörelser som faddern behöver ta för att nå fram med sina kramar. Efter avslutad kurs har faddern lite längre räckvidd.", 
             80, 
             [], 
             [Mek1],
             30);
         this.addUpgrade(
             Mek2, 
-            "SG1140 Mek fk", 
-            "I mekanik II kursen får en lära sig om dynamik och rörelse i roterande koordinatsystem. Efter avklarad kurs har faddern väldigt mycket bättre förståelse för rörelser och därför ännu längre räckvidd.",
+            "SG1140 Mekanik II", 
+            "I fortsättningskursen i Mekanik får en lära sig om dynamik och rörelse i roterande koordinatsystem. Efter avklarad kurs har faddern väldigt mycket bättre förståelse för rörelser och därför ännu längre räckvidd.",
             120, 
             [Mek1],
             [Mek2], 
@@ -189,19 +189,6 @@ class Forfadder1 extends Fadder {
             );
     }
 }
-
-// class Forfadder2 extends TargetingTower {
-//     static get range() { return 5; }
-//     static get CDtime() { return 800; }
-//     static get image() { return forfadder2img; }
-//     static get scale() { return 0.18; }
-
-//     projectile(target) {
-//         let hug = new Hug(this.map, this, target);
-//         hug.range = this.range;
-//         return hug;
-//     }
-// }
 
 class CaffeinKick extends BaseEffect {
     constructor() {

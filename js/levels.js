@@ -223,7 +223,6 @@ function getLevel(number, updateInterval) {
     }
 }
 
-//Basically instant death
 function autolevel(levelnumber, updateInterval){
 
 	let s = 1000 / updateInterval;
@@ -302,39 +301,39 @@ function levelMessage(number) {
 
         case 5: return "Fadderisterna har lite olika förmågor - testa dig fram och se vilka du föredrar!<br /><br /><i>Att fadderisterna skulle ansluta sig var väntat - Föhseriet står redo att skicka ut de nästlade trojanska ninjorna.</i>";
 
-        case 6: return "Blåa ninjor har två röda ninjor i sig - mycket att hantera men det klirrar dödsskönt i kassakistan. Varje ninja du kramar ger en peng, förutom extrapengarna du får efter varje nivå.<br /><br /><i>Trots ninjornas upprepade anfall finns inte minsta antydan till tvekan hos faddrarna - ingen ninja kommer fram okramad.</i>"
+        case 6: return "Blåa ninjor har två röda ninjor i sig - mycket att hantera men det klirrar dödsskönt i kassakistan. Varje ninja du kramar ger en peng, förutom extrapengarna du får efter varje nivå.<br /><br /><i>Trots ninjornas upprepade anfall finns inte minsta antydan till tvekan hos faddrarna - ingen ninja kommer fram okramad.</i>";
 
-        case 7: return "Förhoppningsvis har du redan hittat informationslisten ovanför spelplanen - där kan du pausa, snabbspola och återställa spelet samt se din fikabudget och hur många nØllan som finns kvar. Du kan också se vad nästa nivå har att bjuda på.<br /><br /><i>Föhseriet gör sig redo att ta i med hårdhanskarna.</i>"
+        case 7: return "Förhoppningsvis har du redan hittat informationslisten ovanför spelplanen - där kan du pausa, snabbspola och återställa spelet samt se din fikabudget och hur många nØllan som finns kvar. Du kan också se vad nästa nivå har att bjuda på.<br /><br /><i>Föhseriet gör sig redo att ta i med hårdhanskarna.</i>";
 
-        case 8: return "ÖF, $F och TF kräver många kramar innan de ger med sig. De har dessutom olika förmågor som gör dem ännu svårare att besegra!<br /><br /><i>\"Ska det bli bra får man göra det själv. JUBLA, nØLLAN!\"</i>"
+        case 8: return "ÖF, $F och TF kräver många kramar innan de ger med sig. De har dessutom olika förmågor som gör dem ännu svårare att besegra!<br /><br /><i>\"Ska det bli bra får man göra det själv. JUBLA, nØLLAN!\"</i>";
 
         case 9: return "Glöm inte att uppgradera dina torn. Ett väl uppgraderat torn är ofta starkare än flera svaga.";
 
         case 10: return "Några torn har specialattacker som måste aktiveras manuellt. Dessa är ofta väldigt dyra, och varje gång du använder den behöver du betala igen. Men nöden har ingen lag, och ibland kan de vara räddningen från säker förlust.";
 
-        case 11: return "$nålföhs största svaghet är kramar. Hon verkligen avskyr de. Förutom det är det inte mycket som kan få henne att ändra sig när hon väl satt ett mål för sig själv.<br/><br/><i>$nålföhs kramas inte!</i>";
+        case 11: return "$nålföhs största svaghet är kramar. Hon verkligen avskyr dem. Förutom det är det inte mycket som kan få henne att ändra sig när hon väl satt ett mål för sig själv.<br/><br/><i>$nålföhs kramas inte!</i>";
 
         // case 12: return "";
 
-        case 15: return "Överföhs accepterar inte några motgångar, och om någon försöker hindra honom ger han de sin oändliga mördarblick vilket kan få vem som helst att frysa av rädsla.<br/><br/><i>ÖF måste själv se vad för oväsen faddrarna har ställt till med. \"Hälsa på Överföhs, nØllan\"</i>";
+        case 15: return "Överföhs accepterar inte några motgångar, och om någon försöker hindra honom höjer han glasögonen och släpper lös sin ljungeldsblick. Den kan få vem som helst att frysa av rädsla.<br/><br/><i>ÖF måste själv se vad för oväsen faddrarna har ställt till med. \"Hälsa på Överföhs, nØllan!\"</i>";
 
-        case 16: return "Föhseriets olika förmågor kompletterar varandra och de är som starkast när de är tillsammans. Lycka till!<br /><br /><i>Efter att ÖF själv har sett med vilken beslutsamhet faddrarna försvarar nØllan beslutar föhseriet att göra gemensam sak. \"Nu får det vara nog med larvigheter. JUBLA nØLLAN!\"</i>";
+        case 16: return "Föhseriets olika förmågor kompletterar varandra och de är som starkast när de är tillsammans. Lycka till!<br /><br /><i>Efter att ÖF själv har sett med vilken beslutsamhet faddrarna försvarar nØllan beslutar föhseriet att göra gemensam sak. \"Nu får det vara nog med daltandet. JUBLA, nØLLAN!\"</i>";
         
-        case 17: return "<br/><br/><i>Föhseriet drar sig tillbaka och observerar faddrarnas kamp från behörigt avstånd. Deras beslutsamhet är, liksom deras tålamod, oändlig.</i>";
+        case 17: return "<br/><br/><i>Föhseriet drar sig tillbaka och observerar faddrarnas kamp från behörigt avstånd. Deras beslutsamhet är, liksom deras tålamod, oändligt.</i>";
 
         case 30: return "<i>Föhseriet har tröttnat på Fadderisternas dumheter, och bestämmer sig för att ta sig förbi deras försvar en gång för alla.</i>";
 
-        case 31: return "Du har lyckats försvara nØllan från Föhseriet förvånansvärt länge, bra gjort. Härifrån kommer nivåerna snabbt bli svårare och tunga för datorn att köra. Ha så kul! <br/><br/> <i>Föhseriet är nedslagna, men långtifrån besegrade. \"Brute Force\" säger TF, \"Vi blir tvugna att överväldiga de\"</i>";
+        case 31: return "Du har lyckats försvara nØllan från Föhseriet förvånansvärt länge, bra gjort. Härifrån kommer nivåerna snabbt bli svårare och tunga för datorn att köra. Ha så kul!<br/><br/><i>Föhseriet är nedslagna, men långtifrån besegrade. \"Brute Force\", säger TF. \"Vi blir tvungna att överväldiga dem.\"</i>";
 
-        case 32: return "Campus Tornförsvar ett spel av Pyro och Cryo.";
+        case 32: return "Campus Defence - ett spel av Pyro och Cryo.";
 
-        case 40: return "Du har inte gett upp än alltså? Låt oss skruva upp svårighetsgraden lite";
+        case 40: return "Du har inte gett upp än alltså? Låt oss skruva upp svårighetsgraden lite...";
 
         case 50: return "Hur mår datorn? Svettigt?";
 
         case 55: return "Det finns ett liv utanför campus också.";
 
-        case 100: return "<i>Psst. På <a href=\"f.kth.se/arcade\">f.kth.se/arcade</a> finns det andra spel att prokrastinera med.</i>"; 
+        case 100: return "<i>Psst. På <a href=\"https://f.kth.se/arcade\">f.kth.se/arcade</a> finns det andra spel att prokrastinera med.</i>"; 
 
         case 420: return "";
 
