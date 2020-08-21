@@ -1,6 +1,8 @@
 
 let hugimg = new Image();
 hugimg.src = "img/kram.png";
+let patchimg = new Image();
+patchimg.src = "img/patch.png";
 
 class Hug extends BasicProjectile {
     constructor(map, source, target) {
@@ -11,6 +13,12 @@ class Hug extends BasicProjectile {
 }
 
 class Patch extends Hug {
+
+    constructor(map, source, target) {
+        super(map, source, target);
+        this.image = patchimg;
+        this.scale = 0.5;
+    }
 
     hitCreep(creep){
         controller.money++;
@@ -51,7 +59,12 @@ class Fadder extends TargetingTower {
         let dist = Math.sqrt(Math.pow(this.x - creep.x, 2) + Math.pow(this.y - creep.y, 2));
         let ticks = dist / 2;
 
-        let pos = controller.map.getPosition(creep.distance + creep.speed*ticks);
+        let distance = creep.distance + creep.speed*ticks;
+        if(distance >= controller.map.path.length - 1){
+            distance = controller.map.path.length -1;
+        }
+
+        let pos = controller.map.getPosition(distance);
         return {x:pos[0], y:pos[1]};
     }
 
@@ -74,8 +87,8 @@ class Fadder extends TargetingTower {
             let da = Math.PI/8;
             let arr = [
                 new type(this.map, this, target),
-                new type(this.map, this, {x: this.x + Math.cos(a+da), y: this.y - Math.sin(a+da)}),
-                new type(this.map, this, {x: this.x + Math.cos(a-da), y: this.y - Math.sin(a-da)})
+                new Hug(this.map, this, {x: this.x + Math.cos(a+da), y: this.y - Math.sin(a+da)}),
+                new Hug(this.map, this, {x: this.x + Math.cos(a-da), y: this.y - Math.sin(a-da)})
                 ];
             arr[0].hitpoints = this.maxhits;
             arr[1].hitpoints = this.maxhits;
@@ -98,7 +111,7 @@ class Fadder extends TargetingTower {
             Mek1, 
             "SG1130 Mek gk", 
             "I mekanik I kursen får en lära sig om statik och partikeldynamik, vilket ger bättre förståelse för de banrörelser som faddern behöver ta för att nå fram med sina kramar. Efter avslutad kurs har faddern lite längre räckvidd.", 
-            100, 
+            80, 
             [], 
             [Mek1],
             30);
@@ -106,7 +119,7 @@ class Fadder extends TargetingTower {
             Mek2, 
             "SG1140 Mek fk", 
             "I mekanik II kursen får en lära sig om dynamik och rörelse i roterande koordinatsystem. Efter avklarad kurs har faddern väldigt mycket bättre förståelse för rörelser och därför ännu längre räckvidd.",
-            150, 
+            120, 
             [Mek1],
             [Mek2], 
             50);
@@ -114,7 +127,7 @@ class Fadder extends TargetingTower {
             Regler,
             "EL1000 Regler",
             "Genom att noga justera attackvinkeln utifrån ninjornas position och hastighet blir det ännu svårare för ninjorna att undvika faddrarnas kramar.",
-            200,
+            250,
             [Mek1, Mek2],
             [Regler],
             250
@@ -131,7 +144,7 @@ class Fadder extends TargetingTower {
             Kvant,
             "SI1151 Kvant",
             "Genom att försätta sig i en superposition kan faddern krama flera ninjor samtidigt.",
-            300,
+            350,
             [Mek1, Mek2],
             [Kvant, Hallf],
             150
@@ -193,15 +206,16 @@ class Forfadder1 extends Fadder {
 class CaffeinKick extends BaseEffect {
     constructor() {
         super(5000 / controller.updateInterval);
+        this.multiplier = 1.41;
     }
     init(object){
-        object.CDtime /= 2;
+        object.CDtime /= this.multiplier;
     }
     apply(object){
         this.remove(object);
     }
     remove(object) {
-        object.CDtime *= 2;
+        object.CDtime *= this.multiplier;
         super.remove(object);
     }
 }
@@ -236,14 +250,22 @@ class CoffeMaker extends SupportTower {
         super(x,y);
         this.CDtimer = this.constructor.CDtime;
         this.apply();
+        this.applied = false;
     }
     apply() {
+        if(this.applied)
+            return;
         this.image = coffeefull;
         this.effectCDtimer = this.effectCDtime;
+        this.applied = true;
         super.apply();
     }
     remove() {
+        this.applied = false;
         this.image = coffeempty;
+        this.gadgets = this.gadgets.filter(function(obj){
+            return obj instanceof CaffeinKick;
+        }.bind(this));
         super.remove();
     }
     applyTo(tower) {
@@ -261,6 +283,7 @@ class MakeCoffe extends Gadget {
 
     addTo(tower){
         tower.apply();
+        super.apply(tower);
     }
 
     draw(gameArea){

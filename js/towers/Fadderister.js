@@ -234,7 +234,7 @@ class Nicole extends TargetingTower {
     static get CDtime() { return 1000; }
     static get image() { return nicoleimg; }
     static get scale() { return 0.2; }
-    static get cost() { return 500; }
+    static get cost() { return 430; }
     static get name() { return "Fjädrande Nicole"; }
     static get desc() { return "Fina Nicole älskar blommor. När en ninja blir träffad av en blomma inser den hur fel den haft, och ger sig av hemåt igen. Insikten varar tyvärr dock bara några sekunder varpå ninjan fortsätter framåt."; }
 
@@ -301,7 +301,7 @@ class Nicole extends TargetingTower {
             650,
             [Pollen],
             [FleshEating, MultiFlower, MonoCulture],
-            30);
+            50);
         this.addUpgrade(
             GMOEating,
             "Genmodifiering",
@@ -309,7 +309,7 @@ class Nicole extends TargetingTower {
             1000,
             [Pollen, FleshEating],
             [GMOEating, MultiFlower, MonoCulture],
-            100);
+            200);
         this.addUpgrade(
             MultiFlower,
             "Blombukett",
@@ -317,15 +317,15 @@ class Nicole extends TargetingTower {
             450,
             [],
             [MultiFlower, FleshEating, GMOEating],
-            30);
+            100);
         this.addUpgrade(
             MonoCulture,
             "Monokultur",
             "Genom industriell odling kan tillräckligt många blommor tas fram samtidigt för att ge till alla ninjor av en viss sort inom räckhåll.",
-            1100,
+            3100,
             [Nutrient, MultiFlower],
             [MonoCulture, FleshEating, GMOEating],
-            50);
+            500);
     }
 }
 
@@ -480,7 +480,7 @@ class Axel extends OmniTower {
     static get CDtime() { return 3000; }
     static get image() { return axelimg; }
     static get scale() { return 0.17; }
-    static get cost() { return 600; }
+    static get cost() { return 520; }
     static get name() { return "Fjädrande Axel"; }
     static get desc() { return "Fackliga Axel älskar två saker: facklor och att festa. Han bjuder gärna alla omkring sig på Molotovcocktails, och när dessa exploderar träffar de alla ninjor inom ett visst område."; }
 
@@ -569,7 +569,7 @@ class Axel extends OmniTower {
             Dompa, 
             "Dompa", 
             "Axel bjuder varenda ninja på en drink. Dompa åt alla! Mest värt det när du har en överväldigande mängd ninjor att fort hantera.",
-            1699,
+            16990,
             [Champagne],
             [],
             300);
@@ -732,7 +732,7 @@ class Frida extends TargetingTower {
     static get CDtime() { return 1500; }
     static get image() { return fridaimg; }
     static get scale() { return 0.2; }
-    static get cost() { return 400; }
+    static get cost() { return 370; }
     static get name() { return "Fjädrande Frida"; }
     static get desc() { return "Fuskande Frida lägger inte ifrån sig sin avstängda mobil på anvisad plats. När hon skickar lösningarna till lämnisarna till en grupp ninjor försöker de läsa och gå samtidigt, men simultanförmåga är en bristvara hos ninjor."; }
 
@@ -781,7 +781,7 @@ class Frida extends TargetingTower {
             200,
             [],
             [Envarre],
-            30);
+            50);
         this.addUpgrade(
             Flervarre,
             "SF1626 Flervarre",
@@ -789,7 +789,7 @@ class Frida extends TargetingTower {
             400,
             [Envarre],
             [Flervarre, FullSolution],
-            50);
+            150);
         this.addUpgrade(
             Errors,
             "Felaktiga lösningar",
@@ -797,7 +797,7 @@ class Frida extends TargetingTower {
             300,
             [],
             [Errors],
-            30);
+            50);
         this.addUpgrade(
             FullSolution,
             "Lösningshäfte",
@@ -805,12 +805,12 @@ class Frida extends TargetingTower {
             700,
             [Errors],
             [FullSolution, Envarre, Flervarre],
-            50);
+            250);
         this.addUpgrade(
             Diciplinary,
             "Diciplinnämnden",
             "Genom ett anonymt tips till diciplinnämnden kan Frida få alla fuskande Ninjor på campus avstängda från KTH!",
-            1000,
+            20000,
             [Errors, FullSolution, Blackboard],
             [],
             100);
@@ -1005,7 +1005,7 @@ class Becca extends TargetingTower {
     static get CDtime() { return 250; }
     static get image() { return beccaimg; }
     static get scale() { return 0.2; }
-    static get cost() { return 570; }
+    static get cost() { return 610; }
     static get name() { return "Fjädrande Becca"; }
     static get desc() { return "Flamberande Becca har en eldkastare."; }
 
@@ -1058,6 +1058,7 @@ class Becca extends TargetingTower {
             550,
             [],
             [Propane],
+            150
             );
         this.addUpgrade(
             Gasoline,
@@ -1065,23 +1066,26 @@ class Becca extends TargetingTower {
             "Bensin brinner också bra, och när ninjorna träffas av den brinnande strålen tar de inte bara skada, utan de börjar också brinna själva, vilket fortsätter att skada de även efter de unkommit Becca.",
             800,
             [Propane],
-            [Gasoline]
+            [Gasoline],
+            250
             );
         this.addUpgrade(
             RingOfFire,
             "Ring of Fire",
             "Det är kul att leka med elden, och när Becca extatiskt svingar eldkastaren över huvudet sätter hon eld på alla ninjor i närheten.",
-            2100,
+            4500,
             [Propane, Gasoline],
-            [RingOfFire, DoubleBarell]
+            [RingOfFire, DoubleBarell],
+            1000
             );
         this.addUpgrade(
             DoubleBarell,
             "Dubbelpipa",
             "Vad kan vara bättre än en eldkastare? Två eldkastare såklart.",
-            2200,
+            1400,
             [Propane],
-            [DoubleBarell, RingOfFire]
+            [DoubleBarell, RingOfFire],
+            400
             );
     }
 }
@@ -1495,7 +1499,7 @@ class Fnoell extends BaseTower {
             Stuffa, 
             "Våga Stuffa", 
             "Vem behöver alkohol när man blir hög av rock-n'-roll? Lillie-Fnöll kramar nu åt två håll samtidigt.", 
-            850, 
+            1450, 
             [Kaerleken], 
             [Stuffa, Virus, Tillbaka],
             250);
@@ -1503,7 +1507,7 @@ class Fnoell extends BaseTower {
             Virus, 
             "Virus och Bakterier", 
             "Lillie-Fnöll har så lätt för att smittas av förskylningar och annat som faddrar i närheten har. En konstigt symtom hon får är att hennes projektiler blir av samma typ som faddern hon är närmast.", 
-            1700, 
+            2700, 
             [], 
             [Kaerleken, Stuffa, Virus],
             250);
