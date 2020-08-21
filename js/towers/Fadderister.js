@@ -1366,8 +1366,8 @@ class Fnoell extends BaseTower {
         this.y = y;
         this.map.addTower(this);
         this.inrange = this.pathInRange();
-        this.gadgets.forEach(g => {
-            g.x = this.x + 0.5 - this.gadgets.length * 0.25;
+        this.gadgets.forEach((g, i) => {
+            g.x = this.x + 0.5 - i * 0.25;
             g.y = this.y + 0.5;
         });
         if (this.copy) {

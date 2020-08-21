@@ -15,8 +15,7 @@
 
 
 - Buggar:
-	- Uppgraderingar låses inte upp när man har fått tillräckligt med pengar om menyn är öppen
-	- Ikonerna för Lill-Fnölls uppgraderingar är off efter att den hoppat iväg
+	- Inga, vi är fan bäst
 
 Torn:
 

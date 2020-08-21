@@ -70,10 +70,10 @@
 
         this.towerSpecs = [
             {
-                type: Fadder,
+                type: Fadder
             },
             {
-                type: Forfadder1,
+                type: Forfadder1
             },
             {
                 type: Frida,
@@ -188,7 +188,7 @@
     onPlay() {
         if(this.levelCleared)
             this.startLevel();
-        if (music.readyState == 4)
+        if (music.readyState === 4)
             music.play();
         super.onPlay();
     }
@@ -451,7 +451,13 @@
 
                             this.saveToCookie();
                             this.destroyContextMenu();
-                            this.setupContextMenu();
+                            let contextOptions = this.setupContextMenu();
+                            this.contextMenuRefresh = {
+                                hits: 0,
+                                hitsspan: document.querySelector(".contextMenu .infofield span[name='hits']"),
+                                contextOptions: contextOptions,
+                                money: this.money
+                            };
                         }
                     }
                     
@@ -542,7 +548,8 @@
     destroyContextMenu() {
         document.querySelector(".towerMarket").classList.remove("hideme");
         document.querySelector(".contextMenu").classList.add("hideme");
-        document.querySelectorAll(".contextOption:not(.template)").forEach(option => option.remove())
+        document.querySelectorAll(".contextOption:not(.template)").forEach(option => option.remove());
+        this.contextMenuRefresh = null;
     }
 
 
