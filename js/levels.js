@@ -98,7 +98,7 @@ function getLevel(number, updateInterval) {
                 .send(1, Violet).immediately()
                 .wait(3 * s)
                 .send(30, Green).over(15 * s)
-                .interleave(new CreepSequence().send(45, Pink).over(15 * s))
+                .interleave(new CreepSequence().send(43, Pink).over(15 * s))
                 );
         case 18:
             return (new CreepSequence()
@@ -107,8 +107,8 @@ function getLevel(number, updateInterval) {
         case 19:
             return (new CreepSequence()
                 .send(1, Orange).immediately()
-                .wait(2 * s)
-                .send(50, Blue).over(12 * s)
+                .wait(1 * s)
+                .send(50, Blue).over(11 * s)
                 .send(3, Orange).over(3 * s));
 
         // Ta bort Föhseriet från denna level så de inte kommer så ofta?
@@ -195,7 +195,7 @@ function getLevel(number, updateInterval) {
 
         case 29:
             return (new CreepSequence()
-                .send(25, Orange).over(7.5 * s)
+                .send(25, Orange).over(7 * s)
                 .send(150, Red).over(10 * s));
 
         case 30:
@@ -207,7 +207,7 @@ function getLevel(number, updateInterval) {
                 .send(15, Orange).over(5 * s)
                 .send(25, Pink).over(5 * s)
                 .wait(2 * s)
-                .send(50, Ninja).over(10 * s)
+                .send(50, Blue).over(10 * s)
                 .interleave(new CreepSequence()
                     .wait(30 * s)
                     .send(1, TF_3).immediately()
@@ -215,7 +215,7 @@ function getLevel(number, updateInterval) {
                     .send(1, OF_3).immediately()
                     .wait(1.75 * s)
                     .send(1, SF_3).immediately())
-                .send(80, Pink).over(40 * s)
+                .send(80, Pink).over(25 * s)
                 );
 
         default:
@@ -232,13 +232,13 @@ function autolevel(levelnumber, updateInterval){
 		.send(30, Pink).over(10 * s)
 		.interleave(new CreepSequence().send(30, Green).over(10 * s))
 		.wait(2 * s)
-		.send(2*levelnumber, Green).over(levelnumber/4 * s)
+		.send(2*levelnumber, Violet).over(levelnumber/4 * s)
 		.wait(2 * s)
 		.send(2*levelnumber, Green).over(levelnumber/4 * s)
 		.interleave(new CreepSequence().send(2*levelnumber, Pink).over(12/levelnumber * s))
 		.wait(2 * s);
 
-	if(levelnumber > 40){
+	if(levelnumber >= 40){
 		cs.send(Math.floor(0.1*levelnumber*levelnumber), Orange).over(levelnumber * s)
 		.interleave(new CreepSequence().send(levelnumber, Pink).over(10 * s));
 	}
@@ -255,8 +255,8 @@ function autolevel(levelnumber, updateInterval){
 		cs.send(2*levelnumber, Orange).over(10 * s);
 	}
 
-	cs.send(30, Blue).over(20 * s)
-		.interleave(new CreepSequence().send(40, Red).over(10 * s))
+	cs.send(levelnumber, Blue).over(10 * s)
+		.interleave(new CreepSequence().send(40, Violet).over(10 * s))
 		.interleave(new CreepSequence().send(40, Pink).over(10 * s))
         .interleave(new CreepSequence().send(levelnumber, Green).over(10 * s));
 
@@ -314,11 +314,31 @@ function levelMessage(number) {
 
         case 11: return "$nålföhs största svaghet är kramar. Hon verkligen avskyr de. Förutom det är det inte mycket som kan få henne att ändra sig när hon väl satt ett mål för sig själv.<br/><br/><i>$nålföhs kramas inte!</i>";
 
+        // case 12: return "";
+
         case 15: return "Överföhs accepterar inte några motgångar, och om någon försöker hindra honom ger han de sin oändliga mördarblick vilket kan få vem som helst att frysa av rädsla.<br/><br/><i>ÖF måste själv se vad för oväsen faddrarna har ställt till med. \"Hälsa på Överföhs, nØllan\"</i>";
 
         case 16: return "Föhseriets olika förmågor kompletterar varandra och de är som starkast när de är tillsammans. Lycka till!<br /><br /><i>Efter att ÖF själv har sett med vilken beslutsamhet faddrarna försvarar nØllan beslutar föhseriet att göra gemensam sak. \"Nu får det vara nog med larvigheter. JUBLA nØLLAN!\"</i>";
         
         case 17: return "<br/><br/><i>Föhseriet drar sig tillbaka och observerar faddrarnas kamp från behörigt avstånd. Deras beslutsamhet är, liksom deras tålamod, oändlig.</i>";
+
+        case 30: return "<i>Föhseriet har tröttnat på Fadderisternas dumheter, och bestämmer sig för att ta sig förbi deras försvar en gång för alla.</i>";
+
+        case 31: return "Du har lyckats försvara nØllan från Föhseriet förvånansvärt länge, bra gjort. Härifrån kommer nivåerna snabbt bli svårare och tunga för datorn att köra. Ha så kul! <br/><br/> <i>Föhseriet är nedslagna, men långtifrån besegrade. \"Brute Force\" säger TF, \"Vi blir tvugna att överväldiga de\"</i>";
+
+        case 32: return "Campus Tornförsvar ett spel av Pyro och Cryo.";
+
+        case 40: return "Du har inte gett upp än alltså? Låt oss skruva upp svårighetsgraden lite";
+
+        case 50: return "Hur mår datorn? Svettigt?";
+
+        case 55: return "Det finns ett liv utanför campus också.";
+
+        case 100: return "<i>Psst. På <a href=\"f.kth.se/arcade\">f.kth.se/arcade</a> finns det andra spel att prokrastinera med.</i>"; 
+
+        case 420: return "";
+
+        case 1337: return "LEET";
 
         default:
             return "_";
