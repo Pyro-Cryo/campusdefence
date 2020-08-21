@@ -1273,7 +1273,7 @@ class Fnoell extends BaseTower {
                 if (this.currentProjectilePostprocess)
                     this.currentProjectilePostprocess(p);
                 if (this.symmetry) {
-                    p = this.projectile({x: this.x + Math.cos(-this.fireangle), y: this.y + Math.sin(-this.fireangle)});
+                    p = this.projectile({x: this.x + Math.cos(this.fireangle + Math.PI), y: this.y + Math.sin(this.fireangle + Math.PI)});
                     controller.registerObject(p);
                     if (this.currentProjectilePostprocess)
                         this.currentProjectilePostprocess(p);
@@ -1386,8 +1386,13 @@ class Fnoell extends BaseTower {
                 }
             });
             this.currentProjectilePostprocess = null;
-            if (closestTower instanceof Fadder || closestTower instanceof Forfadder1 || closestTower instanceof SupportTower)
+            if (closestTower instanceof Fadder || closestTower instanceof Forfadder1 || closestTower instanceof SupportTower) {
                 this.currentProjectile = Hug;
+				if (closestTower.maxhits !== null && closestTower.maxhits !== undefined)
+					this.currentProjectilePostprocess = h => {
+						h.hitpoints = closestTower.maxhits;
+					};
+			}
             if (closestTower instanceof Frida) {
                 this.currentProjectile = WolframWrapper;
                 this.currentProjectilePostprocess = w => {
@@ -1465,8 +1470,12 @@ class Fnoell extends BaseTower {
                     };
                 }
             }
-            if (closestTower instanceof Fnoell)
+            if (closestTower instanceof Fnoell) {
                 this.currentProjectile = closestTower.copy ? closestTower.currentProjectile : Hug;
+				this.currentProjectilePostprocess = closestTower.currentProjectilePostprocess || null;
+				if (this.currentProjectilePostprocess)
+					this.currentProjectilePostprocess = this.currentProjectilePostprocess.bind(this);
+			}
         }
     }
     
