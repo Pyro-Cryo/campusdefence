@@ -15,7 +15,7 @@ class Projectile extends GameObject {
 		this.speed = speed;
 		this.dx = speed * xdist / dist;
 		this.dy = speed * ydist / dist;
-		this.range = 3;
+		this.range = source.range + 1;
 		this.sourceTower = source;
 
 		this.flying = true;
@@ -189,7 +189,7 @@ class InverseProjectile extends GameObject {
 		this.speed = speed;
 		this.dx = speed * xdist / dist;
 		this.dy = speed * ydist / dist;
-		this.range = 3;
+		this.range = 5;
 		this.source = source;
 		this.target = target;
 
