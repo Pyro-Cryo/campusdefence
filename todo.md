@@ -7,8 +7,7 @@
 	- slumpgenererade paths / fler kartor
 	- Mobilanpassning
 	- Visa projektiltyp / damage / etc. i contextmenu
-	- Fixa paus/play/hp-ikonerna så de ser ok ut på alla platformar
-		- En knapp för att mutea/unmutea ljud
+	- En knapp för att mutea/unmutea ljud
 	- Immuna creeps, FEST-utbildning (immun mot eld), Nykterist/STAD-utbildning (immun mot cocktails), Kursnämnd (immun mot fusklappar)
 	- Tankigare creeps, creeps med högre hp och färre innercreeps
 	- Kombination av immuna och tankiga creeps
