@@ -144,6 +144,7 @@
             this.levelIterator = null;
             this.levelCleared = false;
             this.objects = new LinkedList();
+            this.delayedRenderObjects = [];
             this.registerObject(new SplashScreen());
             this.setMessage("<b>Game over</b><br /><br />Du nådde till nivå " + this.levelNumber.toString() + ".", false);
             this.clearState();
@@ -168,7 +169,7 @@
         this.moneycounter.innerText = this.money.toString();
         for (var i = 0; i < this.towerSpecs.length; i++) {
             // om pengar minskar kan köp-knappen disablas medan du köper tornet, men det verkar osannolikt?
-            if (this.towerSpecs[i].cost > this.money || (this.towerSpecs[i].unlockLevel && this.levelNumber < this.towerSpecs[i].unlockLevel)) {
+            if (this.hp <= 0 || this.towerSpecs[i].cost > this.money || (this.towerSpecs[i].unlockLevel && this.levelNumber < this.towerSpecs[i].unlockLevel)) {
                 this.towerSpecs[i].button.disabled = "disabled";
             }
             else if (this.towerSpecs[i].button.hasAttribute("disabled")){
