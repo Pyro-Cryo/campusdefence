@@ -52,6 +52,74 @@ class TDMap {
         }
     }
 
+    static randomPath(width, height, margin, minLength, maxLength, attempts) {
+        margin = Number.isInteger(margin) ? margin : 1;
+        minLength = Number.isInteger(minLength) ? minLength : (width + height) * 1.5;
+        maxLength = Number.isInteger(maxLength) ? maxLength : width * height / 4;
+        attempts = Number.isInteger(attempts) ? attempts : Number.POSITIVE_INFINITY;
+
+        let xInit = Math.floor(Math.random() * width);
+        let yInit = Math.floor(Math.random() * height);
+        let path;
+        if (Math.random() < 0.5) {
+            xInit = Math.random() < 0.5 ? -margin : width - 1 + margin;
+            path = [[xInit, yInit], [xInit - Math.sign(xInit), yInit]];
+        }
+        else {
+            yInit = Math.random() < 0.5 ? -margin : height - 1 + margin;
+            path = [[xInit, yInit], [xInit, yInit - Math.sign(yInit)]];
+        }
+
+        while (true) {
+            const x = path[path.length - 1][0];
+            const y = path[path.length - 1][1];
+
+            if (x === -margin || x === width - 1 + margin
+                || y === -margin || y === height - 1 + margin
+                || path.length > maxLength) {
+                if (path.length < minLength || path.length > maxLength)
+                    return attempts > 1 ? this.randomPath(width, height, margin, minLength, maxLength, attempts - 1) : null;
+                else
+                    return path;
+            }
+
+            let candidates = [];
+            let pos;
+            for (let t = 0; t < 4; t++) {
+                pos = [Math.round(x + Math.cos(Math.PI * t / 2)), Math.round(y + Math.sin(Math.PI * t / 2))];
+                // Kräv lite space runt banan
+                let freePos = [
+                    [Math.round(pos[0] + Math.cos(Math.PI * (t + 1) / 2)), Math.round(pos[1] + Math.sin(Math.PI * (t + 1) / 2))],
+                    [Math.round(pos[0] + Math.cos(Math.PI * (t - 1) / 2)), Math.round(pos[1] + Math.sin(Math.PI * (t - 1) / 2))]
+                ];
+                if (path.some(p => (p[0] === pos[0] && p[1] === pos[1])
+                    || (p[0] === freePos[0][0] && p[1] === freePos[0][1]) || (p[0] === freePos[1][0] && p[1] === freePos[1][1])))
+                    continue;
+                candidates.push(pos);
+            }
+
+            if (candidates.length === 0)
+                return attempts > 1 ? this.randomPath(width, height, margin, minLength, maxLength, attempts - 1) : null;
+            pos = candidates[Math.floor(Math.random() * candidates.length)];
+            path.push(pos);
+        }
+    }
+
+    static fixPath(path) {
+        let res = [];
+        for (let i = 0; i < path.length - 1; i++) {
+            let diff = Math.max(Math.abs(path[i + 1][0] - path[i][0]), Math.abs(path[i + 1][1] - path[i][1]));
+            for (let j = 0; j < diff; j++) {
+                res.push([
+                    Math.round(path[i][0] + (path[i + 1][0] - path[i][0]) * j / diff),
+                    Math.round(path[i][1] + (path[i + 1][1] - path[i][1]) * j / diff)
+                ]);
+            }
+        }
+        res.push(path[path.length - 1]);
+        return res;
+    }
+
     addEventListener(callback){
         this.eventListeners.push(callback);
     }
@@ -147,7 +215,7 @@ class TDMap {
 
     drawPath(gameArea) {
         for (let i = 0; i < this.path.length; i++)
-            gameArea.square(this.path[i].x, this.path[i].y, "rgba(40, 30, 20, 0.6)");
+            gameArea.square(this.path[i].x, this.path[i].y, "rgba(" + i*2 + ", 30, 20, 0.6)");
     }
 }
 

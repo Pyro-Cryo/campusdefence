@@ -34,21 +34,6 @@ class Controller {
         this.messagebox = document.getElementById("messagebox");
     }
 
-    fixPath(path) {
-        let res = [];
-        for (let i = 0; i < path.length - 1; i++) {
-            let diff = Math.max(Math.abs(path[i + 1][0] - path[i][0]), Math.abs(path[i + 1][1] - path[i][1]));
-            for (let j = 0; j < diff; j++) {
-                res.push([
-                    Math.round(path[i][0] + (path[i + 1][0] - path[i][0]) * j / diff),
-                    Math.round(path[i][1] + (path[i + 1][1] - path[i][1]) * j / diff)
-                ]);
-            }
-        }
-        res.push(path[path.length - 1]);
-        return res;
-    }
-
     playpause(){
         if(this.isPaused)
             this.onPlay();

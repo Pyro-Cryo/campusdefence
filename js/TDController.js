@@ -2,7 +2,7 @@
     constructor() {
         super(19, 16);
         controller = this;
-        let path = [
+        let standardPath = [
             [18, 16],
             [18, 13],
             [13, 13],
@@ -35,7 +35,7 @@
             [3, 9],
             [-1, 9]
         ];
-        path = this.fixPath(path);
+        let path = (this.getState() || {}).path || TDMap.randomPath(19, 16) || TDMap.fixPath(standardPath);
         var map_img = new Image();
         map_img.src = "img/map.png";
         this.map = new TDMap(map_img, path, this.gameArea);
@@ -631,6 +631,7 @@
         data.level = this.levelNumber;
         data.health = this.hp;
         data.money = this.money;
+        data.path = this.map.path.map(pt => [pt.x, pt.y]);
         data.towers = [];
 
         for (let current = this.objects.first; current !== null; current = current.next) {
@@ -653,20 +654,23 @@
         }
 
         window.localStorage.setItem("campusdefence_state", JSON.stringify(data));
-
     }
 
-    loadFromCookie(){
-
+    getState() {
         let data = window.localStorage.getItem("campusdefence_state");
+        return data ? JSON.parse(data) : null;
+    }
+
+    loadFromCookie() {
+        let data = this.getState();
         if (!data)
             return;
-        data = JSON.parse(data);
-
 
         this.levelNumber = data.level;
         this.hp = data.health;
         this.money = data.money;
+        // Detta sköts i constructorn istället
+        // this.path = data.path;
 
         for (var i = 0; i < data.towers.length; i++) {
             let x = data.towers[i].x;

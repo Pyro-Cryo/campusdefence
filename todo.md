@@ -4,10 +4,11 @@
 - Optimera så att fpsen inte säckar ihop
 
 - Efter lansering, DLC:
-	- slumpgenererade paths / fler kartor
+	- *bättre* slumpgenererade paths / fler kartor
 	- Mobilanpassning
 	- Visa projektiltyp / damage / etc. i contextmenu
 	- En knapp för att mutea/unmutea ljud
+	- En knapp för slumpgenererade paths
 	- Immuna creeps, FEST-utbildning (immun mot eld), Nykterist/STAD-utbildning (immun mot cocktails), Kursnämnd (immun mot fusklappar)
 	- Tankigare creeps, creeps med högre hp och färre innercreeps
 	- Kombination av immuna och tankiga creeps
