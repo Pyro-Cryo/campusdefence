@@ -94,24 +94,27 @@ div.towerInfo button {
     border-radius: 1em;
     font-family: 'Nunito', sans-serif;
     outline: none;
+    box-shadow: #777 0 2px;
 }
-div.towerInfo button:hover {
-    border: 2px solid #069080;
-}
-div.towerInfo button:active {
-    border: 2px solid #069080;
-    background-color: #069080;
-    color: white;
-    outline: none;
-}
-div.towerInfo button:disabled {
-    border: 1px solid #ff52ba;
-    background-color: #ddd;
-    color: #777;
-}
-div.towerInfo:not(.locked) button:disabled span {
-    color: red;
-}
+    div.towerInfo button:hover {
+        border: 2px solid #069080;
+    }
+    div.towerInfo button:active:not(:disabled) {
+        border: 2px solid #069080;
+        background-color: #069080;
+        color: white;
+        outline: none;
+        box-shadow: none;
+        margin-top: 2px;
+    }
+    div.towerInfo button:disabled {
+        border: 1px solid #ff52ba;
+        background-color: #ddd;
+        color: #777;
+    }
+    div.towerInfo:not(.locked) button:disabled span {
+        color: red;
+    }
 div.towerInfo > :first-child {
     flex-shrink: 0;
     width: 80px;
@@ -132,7 +135,47 @@ div.towerInfo > button:last-child {
 button.controllerButton{
     width: 8ex;
     height: 2em;
+    border: 1px solid #069080;
+    border-radius: 1em;
+    box-shadow: #777 0 2px;
+    font-family: 'Nunito', sans-serif;
+    outline: none;
+    fill: #444;
+    margin-bottom: 2px;
 }
+
+    button.controllerButton:hover:not(.keptPressed) {
+        border: 1px solid #069080;
+        fill: #069080;
+    }
+
+    button.controllerButton.keptPressed {
+        border: 1px solid #069080;
+        background-color: #069080;
+        fill: white;
+    }
+
+    button.controllerButton.keptPressed:hover {
+        border: 1px solid white;
+    }
+
+    button.controllerButton:active:not(:disabled) {
+        border: 1px solid #069080;
+        background-color: #069080;
+        fill: white;
+    }
+
+    button.controllerButton:disabled {
+        border: 1px solid #ff52ba;
+        background-color: #ddd;
+        fill: #777;
+    }
+
+    button.controllerButton svg {
+        height: 2ex;
+        margin-top: 0.6ex;
+    }
+
 span.counter{
     min-width: 3ex;
     display: inline-block;
@@ -229,21 +272,26 @@ span.counter{
     font-family: 'Nunito', sans-serif;
     outline: none;
     padding: 5px;
+    box-shadow: #777 0 2px;
+    margin-bottom: 2px;
 }
-.contextOption button:hover {
-    border: 2px solid #069080;
-}
-.contextOption button:active {
-    border: 2px solid #069080;
-    background-color: #069080;
-    color: white;
-    outline: none;
-}
-.contextOption button:disabled {
-    border: 1px solid #ff52ba;
-    background-color: #ddd;
-    color: #777;
-}
+    .contextOption button:hover {
+        border: 2px solid #069080;
+    }
+    .contextOption button:active:not(:disabled) {
+        border: 2px solid #069080;
+        background-color: #069080;
+        color: white;
+        outline: none;
+        box-shadow: none;
+        margin-top: 2px;
+        margin-bottom: 0;
+    }
+    .contextOption button:disabled {
+        border: 1px solid #ff52ba;
+        background-color: #ddd;
+        color: #777;
+    }
 .contextMenu .contextOption > button:last-child {
     flex-shrink: 0;
     width: 80px;
@@ -282,15 +330,21 @@ span.counter{
 @keyframes flash {
     0% {
         background-color: initial;
+        border-color: initial;
         color: initial;
+        box-shadow: initial;
     }
     10% {
         background-color: #069080;
+        border-color: #069080;
         color: white;
+        box-shadow: #069080 0 0 1em;
     }
     100% {
         background-color: initial;
+        border-color: initial;
         color: initial;
+        box-shadow: initial;
     }
 }
 .unlocked {

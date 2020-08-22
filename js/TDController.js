@@ -205,11 +205,13 @@
         music.pause();
         music_speedy.currentTime = music.currentTime * music_speedy.duration / music.duration;
         music_speedy.play();
+        super.onFF();
     }
     offFF() {
         music_speedy.pause();
         music.currentTime = music_speedy.currentTime * music.duration / music_speedy.duration;
         music.play();
+        super.offFF();
     }
 
     startLevel() {

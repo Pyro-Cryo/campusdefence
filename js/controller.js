@@ -77,7 +77,8 @@ class Controller {
         this.isPaused = false;
         this.mainInterval = setInterval(() => this.update(), this.updateInterval);
 
-        this.playbutton.innerHTML = "⏸";
+        this.playbutton.children[0].classList.add("hideme");
+        this.playbutton.children[1].classList.remove("hideme");
         this.ffbutton.disabled = false;
 
     }
@@ -86,18 +87,20 @@ class Controller {
 
         this.isPaused = true;
         clearInterval(this.mainInterval);
-        this.playbutton.innerHTML = "▶";
+        this.playbutton.children[0].classList.remove("hideme");
+        this.playbutton.children[1].classList.add("hideme");
+        this.ffbutton.classList.remove("keptPressed");
         this.ffbutton.disabled = true;
         this.isFF = false;
 
     }
 
-    onFF(){
-        
+    onFF() {
+        this.ffbutton.classList.add("keptPressed");
     }
 
     offFF() {
-
+        this.ffbutton.classList.remove("keptPressed");
     }
 
     setMessage(message, pureText) {
