@@ -1,3 +1,6 @@
+let DIAGONAL_INCOMING = 1;
+let DIAGONAL_OUTGOING = 2;
+
 class TDMap {
 
     constructor(img, path, gameArea, margin) {
@@ -41,6 +44,15 @@ class TDMap {
             let y = path[i][1];
 
             let p = new PathTile(x, y);
+            if (i < path.length - 1) {
+                let dist = Math.abs(x - path[i + 1][0]) + Math.abs(y - path[i + 1][1]);
+                if (dist > 2)
+                    throw new Error("Path is not connected!");
+                if (dist > 1)
+                    p.diagonality |= DIAGONAL_OUTGOING;
+            }
+            if (i > 0 && (this.path[this.path.length - 1].diagonality & DIAGONAL_OUTGOING))
+                p.diagonality |= DIAGONAL_INCOMING;
 
             this.path.push(p);
             this.setGridAt(Math.floor(x), Math.floor(y), p);
@@ -226,6 +238,7 @@ class PathTile {
         this.prev = null;
         this.next = null;
         this.data = new Set();
+        this.diagonality = 0;
     }
 
     add(obj) {

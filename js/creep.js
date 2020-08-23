@@ -1,3 +1,6 @@
+// DIAGONAL_INCOMING = 1;
+// DIAGONAL_OUTGOING = 2;
+
 let ninjastar = new Image();
 ninjastar.src = "img/star.png";
 
@@ -85,7 +88,11 @@ class BaseCreep extends GameObject {
 		this.lastx = this.x;
 		this.lasty = this.y;
 
-        this.distance = Math.max(0, Math.min(this.pathlength, this.distance + this.speed / controller.updateInterval));
+		if (this.pathtile.diagonality & (this.distance - Math.trunc(this.distance) < 0.5 ? DIAGONAL_OUTGOING : DIAGONAL_INCOMING))
+			this.distance += 0.7071 * this.speed / controller.updateInterval;
+		else
+			this.distance += this.speed / controller.updateInterval;
+        this.distance = Math.max(0, Math.min(this.pathlength, this.distance));
 		let pos = controller.map.getPosition(this.distance);
 		this.x = pos[0];
 		this.y = pos[1];
