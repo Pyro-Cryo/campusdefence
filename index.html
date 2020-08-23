@@ -21,6 +21,7 @@
     <script type="text/javascript" src="js/creep.js"></script>
 
     <!-- Specific classes for campus defence -->
+    <script type="text/javascript" src="js/maps/maps.js"></script>
     <script type="text/javascript" src="js/towers/common.js"></script>
     <script type="text/javascript" src="js/towers/Fadderister.js"></script>
     <script type="text/javascript" src="js/towers/Faddrar.js"></script>
@@ -158,7 +159,13 @@
 
     <script type="text/javascript">
         var controller = new TDController();
-        controller.setupTowerTable();   
+
+        let map = new CampusMap(controller.gameArea);
+        controller.setMap(map);
+        
+        controller.setupTowerTable();
+
+        controller.begin(); 
     </script>
 </body>
 </html>
