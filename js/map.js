@@ -7,6 +7,7 @@ class TDMap {
     	this.img = img;
         this.canvasWidth = gameArea.width;
         this.canvasHeight = gameArea.height;
+        this.name = "Generic Map";
 
         let setScale = (() => {
             this.scale = 1 / Math.min(img.width / gameArea.width, img.height / gameArea.height);
@@ -152,6 +153,16 @@ class TDMap {
             }
         }
     }
+
+    block(tiles) {
+        if(typeof(tiles) == Array && typeof(tiles[0]) == Number)
+            this.setGridAt(tiles[0], tiles[1], -1);
+        if(typeof(tiles) == Array && typeof(tiles[0]) == Array)
+            for (var i = 0; i < tiles.length; i++) 
+                this.setGridAt(tiles[i][0], tiles[i][1], -1);
+            
+    }
+
     removeTower(tower) {
         this.towers = this.towers.filter(t => t !== tower);
         this.setGridAt(tower.x, tower.y, null);
@@ -217,7 +228,7 @@ class TDMap {
         }
     }
 
-    update(gameArea) {
+    update() {
     }
 
     draw(gameArea){

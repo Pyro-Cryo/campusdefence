@@ -2,44 +2,8 @@
     constructor() {
         super(19, 16);
         controller = this;
-        let standardPath = [
-            [18, 16],
-            [18, 13],
-            [13, 13],
-            [13, 12],
-            [10, 12],
-            [10, 11],
-            [8, 11],
-            [8, 10],
-            [7, 10],
-            [7, 8],
-            [9, 8],
-            [9, 6],
-            [12, 6],
-            [12, 4],
-            [11, 4],
-            [11, 3],
-            [10, 3],
-            [10, 2],
-            [8, 2],
-            [8, 1],
-            [5, 1],
-            [5, 3],
-            [4, 3],
-            [4, 5],
-            [3, 5],
-            [3, 7],
-            [5, 7],
-            [5, 10],
-            [3, 10],
-            [3, 9],
-            [-1, 9]
-        ];
-        let path = (this.getState() || {}).path || TDMap.randomPath(19, 16) || TDMap.fixPath(standardPath);
-        var map_img = new Image();
-        map_img.src = "img/map.png";
-        this.map = new TDMap(map_img, path, this.gameArea);
-        this.registerObject(this.map, true);
+
+        this.map = null;
 
         this.delayedRenderType = BaseFohs;
 
@@ -68,51 +32,49 @@
             location.reload();
         }.bind(this);
 
-        this.towerSpecs = [
-            {
-                type: Fadder
-            },
-            {
-                type: Forfadder1
-            },
-            {
-                type: Frida,
-                unlockLevel: 3
-            },
-            {
-                type: Nicole,
-                unlockLevel: 4
-            },
-            {
-                type: Becca,
-                unlockLevel: 5
-            },
-            {
-                type: Axel,
-                unlockLevel: 6
-            },
-            {
-                type: Fnoell,
-                unlockLevel: 7
-            },
-            {
-                type: CoffeMaker,
-                unlockLevel: 8
-            }
-        ];
-
-        for (var i = 0; i < this.towerSpecs.length; i++) {
-            this.towerSpecs[i].cost = this.towerSpecs[i].type.cost;
-            this.towerSpecs[i].name = this.towerSpecs[i].type.name;
-            this.towerSpecs[i].description = this.towerSpecs[i].type.desc;
-            this.towerSpecs[i].button = null;
-        }
+        this.towerSpecs = [];
+        // Det här kan flyttas ut till nån sorts setup-map-funktion och ändras beroende på saker
+        this.addTowerSpec({type: Fadder, unlockLevel: 0});
+        this.addTowerSpec({type: Forfadder1, unlockLevel: 0});
+        this.addTowerSpec({type: Frida, unlockLevel: 3});
+        this.addTowerSpec({type: Nicole, unlockLevel: 4});
+        this.addTowerSpec({type: Becca, unlockLevel: 5});
+        this.addTowerSpec({type: Axel, unlockLevel: 6});
+        this.addTowerSpec({type: Fnoell, unlockLevel: 7});
+        this.addTowerSpec({type: CoffeMaker, unlockLevel: 10});
         
         this.buyingTower = null;
+    }
 
-        this.loadFromCookie();
+    begin(){
+    	this.loadFromCookie();
         this.updateCreepSummary();
         this.setMessage(levelMessage(this.levelNumber), false);
+
+        super.begin();
+    }
+
+    setMap(map) {
+
+    	if(this.map !== null){
+    		throw "Map already set, cannot change map";
+    	}
+    	this.map = map;
+        this.registerObject(this.map, true);
+    }
+
+    addTowerSpec(ts) {
+    	if(ts.type == undefined)
+    		throw "Undefined tower type for towerspec";
+    	
+    	if(ts.cost == undefined)
+	    	ts.cost = ts.type.cost;
+	    if(ts.name == undefined)
+        	ts.name = ts.type.name;
+        if(ts.description == undefined)
+        	ts.description = ts.type.desc;
+        ts.button = null;
+    	this.towerSpecs.push(ts);
     }
 
     update() {

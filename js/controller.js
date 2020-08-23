@@ -7,11 +7,11 @@ class Controller {
         // Essentially the frame rate inverse
         this.updateInterval = 20; //milliseconds
         // Framerate for real
-        this.drawInterval = 25;
+        this.drawInterval = 30;
         // Store the inteval object so that we can abort the main loop
         this.mainInterval = null;
 
-        this.drawInterval = setInterval(() => this.draw(), this.drawInterval);
+        this.drawLoop = null;
         // All objects which receive update calls
         this.objects = new LinkedList();
         // The id of the next registered object
@@ -32,6 +32,10 @@ class Controller {
 
         // Info field
         this.messagebox = document.getElementById("messagebox");
+    }
+
+    begin() {
+        this.drawLoop = setInterval(() => this.draw(), this.drawInterval);
     }
 
     playpause(){
