@@ -7,19 +7,41 @@ a {
     color: #069080;
     text-decoration: none;
 }
-div.header{
+
+.header{
+    display: flex;
+    align-items: center;
     background-color: #069080;
     color: #eee;
     font-size: 32px;
     font-weight: bold;
-    padding: 0.5em 0.8em;
+    padding: 0.5em 0;
     height: 44px;
+    line-height: 1em;
 }
-    div.header .logo {
-        height: 1.5em;
-        margin-right: 1ex;
-        float: left;
+    .header #title {
+        flex-grow: 1;
     }
+    .header .logo {
+        height: 1.5em;
+        margin: 0 1ex;
+    }
+    .header select {
+        margin-right: 2em;
+        margin-left: 0.5em;
+        height: 32px;
+        background-color: #069080;
+        border-radius: 1ex;
+        border: 2px solid white;
+        color: white;
+        font-family: 'Nunito', sans-serif;
+        font-weight: bold;
+        outline: none;
+    }
+    .header > label {
+        font-size: 16px;
+    }
+
 div.footer{
     text-align: right;
     font-size: 0.8em;
@@ -324,10 +346,6 @@ span.counter{
     display: none;
 }
 
-.headerButtons {
-    float: right;
-}
-
 #muteButton {
     width: 44px;
     height: 44px;
@@ -337,6 +355,7 @@ span.counter{
     outline: none;
     fill: #444;
     margin-bottom: 2px;
+    margin-right: 1.5em;
 }
     #muteButton:hover:not(:disabled) {
         fill: #069080;

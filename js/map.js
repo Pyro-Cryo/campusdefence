@@ -2,12 +2,15 @@ let DIAGONAL_INCOMING = 1;
 let DIAGONAL_OUTGOING = 2;
 
 class TDMap {
+    static get mapName() {
+        return "Generisk Karta";
+    }
 
     constructor(img, path, gameArea, margin) {
     	this.img = img;
         this.canvasWidth = gameArea.width;
         this.canvasHeight = gameArea.height;
-        this.name = "Generic Map";
+        this.name = this.constructor.mapName;
 
         let setScale = (() => {
             this.scale = 1 / Math.min(img.width / gameArea.width, img.height / gameArea.height);
@@ -25,8 +28,8 @@ class TDMap {
         this.gridWidth = this.gridInnerWidth + 2 * this.margin;
         this.gridHeight = this.gridInnerHeight + 2 * this.margin;
 
-        //Tror det �r b�ttre att lagra y i f�rsta indexet och x i andra,
-        //s� blir det naturligare om man ex. printar till konsolen
+        //Tror det är bättre att lagra y i första indexet och x i andra,
+        //så blir det naturligare om man ex. printar till konsolen
         this.grid = Array(this.gridHeight).fill(0).map(
             y => Array(this.gridWidth).fill(0).map(
                 x => null
@@ -66,6 +69,8 @@ class TDMap {
     }
 
     static randomPath(width, height, margin, minLength, maxLength, attempts) {
+        if (!width || !height)
+            throw new Error("Give me something to work with here. A " + width + "x" + height + " map? Please.");
         margin = Number.isInteger(margin) ? margin : 1;
         minLength = Number.isInteger(minLength) ? minLength : (width + height) * 1.5;
         maxLength = Number.isInteger(maxLength) ? maxLength : width * height / 4;

@@ -1,6 +1,9 @@
 
 
 class CampusMap extends TDMap {
+    static get mapName() {
+        return "KTH Campus (Originalet)";
+    }
 
 	constructor(gameArea) {
 		let standardPath = [
@@ -47,14 +50,15 @@ class CampusMap extends TDMap {
 
 
 class RandomMap extends TDMap {
+    static get mapName() {
+        return "KTH Campus (Slumpad)";
+    }
 
 	constructor(gameArea, width, height){
-
-		let path = TDMap.randomPath(width, height);
+		let path = controller.getState() === null ? TDMap.randomPath(width, height) : controller.getState().path;
 		var map_img = new Image();
 		map_img.src = "img/map.png";
 
 		super(map_img, path, gameArea);
-		this.name = "KTH Campus";
 	}
 }

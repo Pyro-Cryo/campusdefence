@@ -35,7 +35,7 @@
         this.muteButton = document.getElementById("muteButton");
         this.muteButton.onclick = this.toggleMute.bind(this);
         this.isMuted = false;
-        if (JSON.parse(window.localStorage.getItem("campusdefence_muted")))
+        if (JSON.parse(window.localStorage.getItem("campusdefence_muted") || "0"))
             this.toggleMute();
 
         this.towerSpecs = [];
