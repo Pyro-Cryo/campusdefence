@@ -10,10 +10,16 @@ a {
 div.header{
     background-color: #069080;
     color: #eee;
-    font-size: 2em;
+    font-size: 32px;
     font-weight: bold;
     padding: 0.5em 0.8em;
+    height: 44px;
 }
+    div.header .logo {
+        height: 1.5em;
+        margin-right: 1ex;
+        float: left;
+    }
 div.footer{
     text-align: right;
     font-size: 0.8em;
@@ -317,6 +323,38 @@ span.counter{
 .contextOption:not(.locked) .unlockInfo {
     display: none;
 }
+
+.headerButtons {
+    float: right;
+}
+
+#muteButton {
+    width: 44px;
+    height: 44px;
+    border: 1px solid #069080;
+    border-radius: 1em;
+    box-shadow: #444 0 2px;
+    outline: none;
+    fill: #444;
+    margin-bottom: 2px;
+}
+    #muteButton:hover:not(:disabled) {
+        fill: #069080;
+    }
+    #muteButton:active:not(:disabled) {
+        box-shadow: none;
+        margin-top: 2px;
+        margin-bottom: 0;
+    }
+    #muteButton svg {
+        height: 3ex;
+        margin-top: 0.6ex;
+    }
+    #muteButton svg:first-child {
+        height: 4ex;
+        position: relative;
+        left: 1px;
+    }
 
 #messagebox {
     font-family: 'Courier New', Courier, monospace;

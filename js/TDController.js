@@ -32,6 +32,12 @@
             location.reload();
         }.bind(this);
 
+        this.muteButton = document.getElementById("muteButton");
+        this.muteButton.onclick = this.toggleMute.bind(this);
+        this.isMuted = false;
+        if (JSON.parse(window.localStorage.getItem("campusdefence_muted")))
+            this.toggleMute();
+
         this.towerSpecs = [];
         // Det här kan flyttas ut till nån sorts setup-map-funktion och ändras beroende på saker
         this.addTowerSpec({type: Fadder, unlockLevel: 0});
@@ -175,6 +181,23 @@
         music.currentTime = music_speedy.currentTime * music.duration / music_speedy.duration;
         music.play();
         super.offFF();
+    }
+    toggleMute() {
+        this.isMuted ^= true;
+        window.localStorage.setItem("campusdefence_muted", JSON.stringify(this.isMuted));
+
+        if (this.isMuted) {
+            this.muteButton.children[0].classList.remove("hideme");
+            this.muteButton.children[1].classList.add("hideme");
+            music.volume = 0;
+            music_speedy.volume = 0;
+
+        } else {
+            this.muteButton.children[1].classList.remove("hideme");
+            this.muteButton.children[0].classList.add("hideme");
+            music.volume = volume;
+            music_speedy.volume = volume;
+        }
     }
 
     startLevel() {
