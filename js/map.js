@@ -205,27 +205,8 @@ class TDMap {
 
     // Get the canvas (x, y) from a progress value 0 <= t <= this.path.length - 1.
     getPosition(t) {
-        if (t < 0 || t > this.path.length - 1)
-            throw new Error("t out of bounds [0, " + (this.path.length - 1) + "] with value " + t);
-
-        if (Math.floor(t) === t)
-            return [
-                this.path[Math.floor(t)].x,
-                this.path[Math.floor(t)].y
-            ];
-        else {
-            let prev = this.path[Math.floor(t)];
-            let next = this.path[Math.ceil(t)];
-            let interpol = t - Math.floor(t);
-
-            return [
-                prev.x * (1 - interpol) + next.x * interpol,
-                prev.y * (1 - interpol) + next.y * interpol
-            ];
-        }
+        return Splines.interpolateLinear(t, this.path); //Splines.interpolateLocalBezier(t, this.path, 4, true);
     }
-
-
 
     clear() {
         for (var i = 0; i < this.path.length; i++) {
@@ -243,7 +224,13 @@ class TDMap {
 
     drawPath(gameArea) {
         for (let i = 0; i < this.path.length; i++)
-            gameArea.square(this.path[i].x, this.path[i].y, "rgba(" + i*2 + ", 30, 20, 0.6)");
+            gameArea.square(this.path[i].x, this.path[i].y, "rgba(" + i * 2 + ", 30, 20, 0.6)");
+
+        /*let pos;
+        for (let i = 0; i < 1; i += 0.005) {
+            pos = this.getPosition(i * (this.path.length - 1));
+            gameArea.disc(pos[0], pos[1], 0.05, "red");
+        }*/
     }
 }
 
