@@ -146,10 +146,10 @@
         }
         // Highlighta valt torn
         if (this.selectedTower !== null) {
-            this.gameArea.disc(this.selectedTower.x, this.selectedTower.y, this.selectedTower.range, "rgba(212, 212, 212, 0.4)");
+            this.gameArea.disc(this.selectedTower.x, this.selectedTower.y, this.selectedTower.range, "rgba(50, 50, 50, 0.4)");
             // Highlighta path som är in range
             this.selectedTower.inrange.forEach(pt =>
-                this.gameArea.disc(pt.x, pt.y, 0.3, "rgba(255, 255, 255, 0.7)")
+                this.gameArea.disc(pt.x, pt.y, 0.25, "rgba(255, 255, 255, 0.9)")
             );
         }
     }
@@ -734,7 +734,7 @@ class PseudoTower extends GameObject {
             controller.map.path.filter(pt =>
                 Math.sqrt(Math.pow(this.x - pt.x, 2) + Math.pow(this.y - pt.y, 2)) < this.type.range + 0.1
             ).forEach(pt =>
-                gameArea.disc(pt.x, pt.y, 0.3, "rgba(255, 255, 255, 0.7)")
+                gameArea.disc(pt.x, pt.y, 0.25, "rgba(255, 255, 255, 0.7)")
             );
         super.draw(gameArea);
     }

@@ -30,7 +30,6 @@ class Splines {
 
         return sum;
     }
-    // TODO: fixa konstigt hopp i början av banan
     static interpolateLocalBezier(t, path, n, smooth) {
         this._check(t, path.length);
 
@@ -94,23 +93,52 @@ class Splines {
                 ))
         ];
     }
-    static interpolateLinear(t, path) {
-        this._check(t, path.length);
+    static interpolateLinear(t, path, pathLengthForPiecewise) {
+        this._check(t, pathLengthForPiecewise || path.length);
+        if (pathLengthForPiecewise) {
+            const piecewiseLength = path[0].length;
+            t *= (piecewiseLength - 1) / (pathLengthForPiecewise - 1);
+            
+            if (Math.floor(t) === t)
+                return [
+                    path[0][Math.floor(t)],
+                    path[1][Math.floor(t)]
+                ];
+            else {
+                let interpol = t - Math.floor(t);
 
-        if (Math.floor(t) === t)
-            return [
-                path[Math.floor(t)].x,
-                path[Math.floor(t)].y
-            ];
-        else {
-            let prev = path[Math.floor(t)];
-            let next = path[Math.ceil(t)];
-            let interpol = t - Math.floor(t);
+                return [
+                    path[0][Math.floor(t)] * (1 - interpol) + path[0][Math.ceil(t)] * interpol,
+                    path[1][Math.floor(t)] * (1 - interpol) + path[1][Math.ceil(t)] * interpol
+                ];
+            }
+        } else {
+            if (Math.floor(t) === t)
+                return [
+                    path[Math.floor(t)].x,
+                    path[Math.floor(t)].y
+                ];
+            else {
+                let prev = path[Math.floor(t)];
+                let next = path[Math.ceil(t)];
+                let interpol = t - Math.floor(t);
 
-            return [
-                prev.x * (1 - interpol) + next.x * interpol,
-                prev.y * (1 - interpol) + next.y * interpol
-            ];
+                return [
+                    prev.x * (1 - interpol) + next.x * interpol,
+                    prev.y * (1 - interpol) + next.y * interpol
+                ];
+            }
         }
+    }
+    static piecewise(n, interpolationFunction) {
+        let res = [[], []];
+        let pos;
+        for (let i = 0; i <= n; i++) {
+            pos = interpolationFunction(i / n);
+            res[0].push(pos[0]);
+            res[1].push(pos[1]);
+        }
+
+        return res;
     }
 }

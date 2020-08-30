@@ -66,6 +66,37 @@ class TDMap {
                 this.path[i].prev = this.path[i - 1];
             }
         }
+
+        let interpolationFunction = t => Splines.interpolateLocalBezier((this.path.length - 1) * t, this.path, 4, true);
+        this.linearizedPath = Splines.piecewise(4 * this.path.length, interpolationFunction);
+        
+        let borderCol = [0, 0, 0];
+        let pathCol = [255, 255, 255];
+        this.pathimg = this.createPathImg(gameArea, 2000, interpolationFunction, [
+                [
+                    [...borderCol, 0.1]
+                ], [
+                    borderCol
+                ], [
+                    [...pathCol, 0.1],
+                    [...pathCol, 0.1],
+                    [...pathCol, 0.1],
+                    [...pathCol, 0.1],
+                    [255, 127, 127, 0.1]
+                ],[
+                    pathCol,
+                    pathCol,
+                    pathCol,
+                    pathCol,
+                    [255, 127, 127]
+                ]
+            ], [
+                0.48,
+                0.43,
+                0.38,
+                0.33
+            ]);
+        this.pathAlpha = 0.9;
     }
 
     static randomPath(width, height, margin, minLength, maxLength, attempts) {
@@ -205,7 +236,7 @@ class TDMap {
 
     // Get the canvas (x, y) from a progress value 0 <= t <= this.path.length - 1.
     getPosition(t) {
-        return Splines.interpolateLinear(t, this.path); //Splines.interpolateLocalBezier(t, this.path, 4, true);
+        return Splines.interpolateLinear(t, this.linearizedPath, this.path.length);
     }
 
     clear() {
@@ -219,18 +250,53 @@ class TDMap {
 
     draw(gameArea){
         gameArea.draw(this.img, this.gridInnerWidth/2-1/2, this.gridInnerHeight/2-1/2, 0, this.scale);
-        this.drawPath(gameArea);
+        gameArea.context.globalAlpha = this.pathAlpha;
+        gameArea.context.drawImage(this.pathimg, 0, 0);
+        gameArea.context.globalAlpha = 1;
     }
 
-    drawPath(gameArea) {
-        for (let i = 0; i < this.path.length; i++)
-            gameArea.square(this.path[i].x, this.path[i].y, "rgba(" + i * 2 + ", 30, 20, 0.6)");
+    createPathImg(gameArea, n_points, interpolationFunction, gradients, sizes) {
+        if (gradients.length !== sizes.length)
+            throw new Error("Please match the arrays' lengths.");
 
-        /*let pos;
-        for (let i = 0; i < 1; i += 0.005) {
-            pos = this.getPosition(i * (this.path.length - 1));
-            gameArea.disc(pos[0], pos[1], 0.05, "red");
-        }*/
+        function interpolateGradient(t, grad) {
+            t = t * (grad.length - 1);
+            let col;
+            if (Math.floor(t) === t)
+                col = grad[Math.floor(t)];
+            else {
+                let prev = grad[Math.floor(t)];
+                let next = grad[Math.ceil(t)];
+                let interpol = t - Math.floor(t);
+
+                col = prev.map((v, i) => v * (1 - interpol) + next[i] * interpol);
+            }
+            if (col.length === 4)
+                return "rgba(" + col.join(",") +  ")";
+            else
+                return "rgb(" + col.join(",") +  ")";
+        }
+
+        gameArea.clear();
+        let pos;
+        const ctx = gameArea.context;
+        let fillStyle = ctx.fillStyle;
+        for (let spec_ind = 0; spec_ind < sizes.length; spec_ind++) {
+            for (let i = 0; i < n_points; i++) {
+                pos = interpolationFunction(i / (n_points - 1));
+                pos[0] = gameArea.gridToCanvasX(pos[0]);
+                pos[1] = gameArea.gridToCanvasY(pos[1]);
+                ctx.beginPath();
+                ctx.arc(pos[0], pos[1], sizes[spec_ind] * gameArea._scaleFactor, 0, 2 * Math.PI);
+                ctx.fillStyle = interpolateGradient(i / (n_points - 1), gradients[spec_ind]);
+                ctx.fill();
+            }
+        }
+        ctx.fillStyle = fillStyle;
+        let pathimg = new Image();
+        pathimg.src = gameArea.canvas.toDataURL("image/png");
+        gameArea.clear();
+        return pathimg;
     }
 }
 
