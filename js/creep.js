@@ -106,7 +106,7 @@ class BaseCreep extends GameObject {
 			if (controller.map.validPosition(this.x, this.y)) {
 				let pt = controller.map.getGridAt(Math.round(this.x), Math.round(this.y));
 
-				if (pt !== this.pathtile) {
+                if (pt !== this.pathtile && pt instanceof PathTile) {
 					this.pathtile.remove(this);
 					this.pathtile = pt;
 					this.pathtile.add(this);
