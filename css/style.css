@@ -172,7 +172,7 @@ button.controllerButton{
     margin-bottom: 2px;
 }
 
-    button.controllerButton:hover:not(.keptPressed) {
+    button.controllerButton:hover:not(.keptPressed):not(:disabled) {
         border: 1px solid #069080;
         fill: #069080;
     }
