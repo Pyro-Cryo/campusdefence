@@ -125,6 +125,15 @@
                         <div name="upgrades"></div>
                     </div>
                 </div>
+                <div class="priorityfield">
+                    Målprioritet:
+                    <select name="targeting">
+                        <option value="first">Först</option>
+                        <option value="last">Sist</option>
+                        <option value="strong">Stark</option>
+                        <option value="weak">Svag</option>
+                    </select>
+                </div>
                 <div id="optionTemplate" class="contextOption template">
                     <div>
                         <img name="image" src="img/fadderietslogga.png" />
@@ -149,7 +158,7 @@
     <script type="text/javascript">
         var controller = new TDController();
 
-        let availableMaps = [CampusMap, RandomMap];
+        let availableMaps = [CampusMap, DiagMap, RandomMap];
         let mapclass = window.localStorage.getItem("campusdefence_mapclass") || availableMaps[0].name;
         mapclass = availableMaps.find(m => m.name === mapclass);
         let map = new mapclass(controller.gameArea, 19, 16);

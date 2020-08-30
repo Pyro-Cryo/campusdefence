@@ -17,6 +17,7 @@ class BaseCreep extends GameObject {
     static get scale() {
         throw new Error("Abstract property scale must be overridden by subclass");
     }
+    static get strength() { return 1; }
     // The creep's base hit points
     static get health() { return 1; }
     // The amount of money the player gets when the creep is killed
@@ -25,6 +26,7 @@ class BaseCreep extends GameObject {
     static get damage() { return 1; }
     // Should the creep draw a health bar?
     static get drawHealthBar() { return false; }
+
 
 	constructor(distance) {
 		let pos = controller.map.getPosition(distance || 0);
@@ -144,7 +146,9 @@ class MatryoshkaCreep extends BaseCreep {
     // Overrides BaseCreep.damage
     static get damage() { return 1 + this.innerCreep.damage * this.innerCreepCount; }
 
-    // static get value() { return 0; }
+    static get strength() { 
+    	return this.innerCreep.strength * this.innerCreepCount + this.health; 
+    }
 
     constructor(distance){
     	super(distance);

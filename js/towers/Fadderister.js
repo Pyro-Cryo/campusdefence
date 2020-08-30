@@ -249,9 +249,9 @@ class Nicole extends TargetingTower {
 
     target() {
         let pt = super.target();
-        if (pt)
+        if (pt && pt instanceof PathTile)
             return pt.arbitraryCreep();
-        return null;
+        return pt;
     }
 
     projectile(target) {
