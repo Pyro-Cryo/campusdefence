@@ -1,6 +1,6 @@
 # Campus defence
 ## Hur man spelar
-Öppna index.html, placera ut torn, och titta på när saker skjuter saker på andra saker.
+Öppna [index.html](https://jonasnylund.github.io/campusdefence), placera ut torn, och titta på när saker skjuter saker på andra saker.
 
 ## Lore primer & beskrivning
 Funderat lite och tror att detta är typ det enda sättet det går att göra loren på om man vill ha det i mottagningstema som inte blir psykopatiskt eller inte funkar med befintlig lore.
