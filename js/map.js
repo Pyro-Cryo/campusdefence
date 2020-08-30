@@ -255,18 +255,47 @@ class PathTile {
         this.next = null;
         this.data = new Set();
         this.diagonality = 0;
+
+        this._first = null;
+        this._last = null;
+        this._strong = null;
+        this._weak = null;
     }
 
     add(obj) {
         this.data.add(obj);
+
+        if(this._first === null || obj.distance > this._first.distance)
+            this._first = obj;
+        if(this._last === null || obj.distance < this._last.distance)
+            this._last = obj;
+        if(this._strong === null || obj.strength > this._strong.strength)
+            this._strong = obj;
+        if(this._weak == null || obj.strength < this._weak.strength)
+            this._weak = obj;
     }
 
     remove(obj) {
         this.data.delete(obj);
+
+        if(obj === this._first)
+            this._first = null;
+        if(obj === this._last)
+            this._last = null;
+        if(obj === this._strong)
+            this._strong = null;
+        if(obj === this._weak)
+            this._weak = null;
+
     }
 
     clear() {
         this.data.clear();
+        
+        this._first = null;
+        this._last = null;
+        this._strong = null;
+        this._weak = null;
     }
 
     hasCreep() {
@@ -275,6 +304,38 @@ class PathTile {
 
     arbitraryCreep() {
         return this.hasCreep() ? this.data.values().next().value : null;
+    }
+
+    get first() {
+        if(this._first === null)
+            for (let it = this.data.values(), creep=null; creep=it.next().value; )
+                if(this._first === null || creep.distance > this._first.distance)
+                    this._first = creep;
+        return this._first;
+    }
+    get last() {
+        if(this._last === null)
+            for(let it = this.data.values(), creep=null; creep=it.next().value; )
+                if(this._last === null || creep.distance < this._last.distance)
+                    this._last = creep;
+        return this._last;
+    }
+    get strong() {
+        if(this._strong === null)
+            for(let it = this.data.values(), creep=null; creep=it.next().value; )
+                if(this._strong === null || this._strong.constructor.strength < creep.constructor.strength)
+                    this._strong = creep;
+        return this._strong;
+    }
+    get weak() {
+        if(this._weak === null)
+            for(let it = this.data.values(), creep=null; creep=it.next().value; )
+                if(this._weak === null || this._weak.constructor.strength > creep.constructor.strength)
+                    this._weak = creep;
+        return this._weak;
+    }
+    get any() {
+        return this.arbitraryCreep();
     }
     
 }

@@ -223,29 +223,51 @@ span.counter{
 .contextMenu .infofield {
     display: flex;
     padding: 5px;
-    margin-bottom: 20px;
+    margin-bottom: 5px;
 }
+
+.contextMenu .infofield > div {
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
 .contextMenu .infofield > :first-child {
     text-align: center;
     align-self: center;
     flex-shrink: 0;
-    margin-right: 20px;
+    margin-left: 0px;
 }
 .contextMenu .infofield > :nth-child(2) {
     flex-shrink: 0;
 }
-.contextMenu .infofield > :last-child {
-    margin-left: 20px;
-}
-.contextMenu .infofield > :last-child img {
+
+.contextMenu .infofield > :nth-child(3) img {
     position: relative;
     height: 1em;
     top: 0.2em;
+}
+.contexMenu .infofield > :last-child {
+    margin-right: 0px;
+
 }
 
 .contextMenu .infofield img {
     max-width: 80px;
     max-height: 80px;
+}
+
+.contextMenu .priorityfield {
+    display: block;
+    padding: 5px;
+    margin-bottom: 20px;
+    vertical-align: middle;
+}
+
+.contextMenu .priorityfield > select {
+    margin-right: 2em;
+    margin-left: 0.5em;
+    padding-left: 0.2em;
+    padding-right: 0.2em; 
 }
 
 .contextOption {

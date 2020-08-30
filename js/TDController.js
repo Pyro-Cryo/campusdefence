@@ -388,6 +388,20 @@
         let upgradesdiv = contextMenu.querySelector(".infofield div[name='upgrades']");
         upgradesdiv.innerText = "";
 
+        let prioselect = contextMenu.querySelector(".priorityfield > select[name='targeting']");
+
+        if(this.selectedTower.targeting === BaseTower.TARGET_NONE){
+            prioselect.disabled = true;
+            prioselect.value = null;
+        }
+        else{
+            prioselect.value = BaseTower.targetingValue(this.selectedTower.targeting);
+            prioselect.disabled = false;
+            prioselect.onchange = function(){
+                this.selectedTower.targeting = prioselect.value;
+            }.bind(this);
+        }
+
         this.contextOption({
             title: "Låna ut arbetskraft",
             desc: "Skicka faddern att permanent hjälpa en annan sektion. Du får tillbaka " + (this.sellPriceMultiplier * 100) + " % av fadderns värde.",
@@ -634,6 +648,7 @@
                 for (var i = 0; i < current.obj.gadgets.length; i++) {
                     t.gadgets.push(current.obj.gadgets[i].constructor.name)
                 }
+                t.target = current.obj.targeting;
                 data.towers.push(t);
             }
         }
@@ -663,6 +678,7 @@
             let type = this.towerSpecs.find(ts => ts.type.name === data.towers[i].type).type;
             let tower = new type(x, y);
             tower.hits = data.towers[i].hits;
+            tower.targeting = data.towers[i].target;
             if (tower instanceof Fnoell) {
                 tower.originalX = data.towers[i].originalX;
                 tower.originalY = data.towers[i].originalY;
