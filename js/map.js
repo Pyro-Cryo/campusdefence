@@ -71,7 +71,7 @@ class TDMap {
         this.linearizedPath = Splines.piecewise(4 * this.path.length, interpolationFunction);
         
         let borderCol = [0, 0, 0];
-        let pathCol = [255, 255, 255];
+        let pathCol = [40, 30, 20];
         this.pathimg = this.createPathImg(gameArea, 2000, interpolationFunction, [
                 [
                     [...borderCol, 0.1]
@@ -82,13 +82,13 @@ class TDMap {
                     [...pathCol, 0.1],
                     [...pathCol, 0.1],
                     [...pathCol, 0.1],
-                    [255, 127, 127, 0.1]
+                    [255, 30, 20, 0.1]
                 ],[
                     pathCol,
                     pathCol,
                     pathCol,
                     pathCol,
-                    [255, 127, 127]
+                    [255, 30, 20]
                 ]
             ], [
                 0.48,
