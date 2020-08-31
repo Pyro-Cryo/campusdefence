@@ -48,14 +48,13 @@ class Fadder extends TargetingTower {
     }
 
     target(){
-        let pt = super.target();
-        if(pt === null)
+        let creep = super.target();
+        if(creep === null)
             return null;
 
         if(!this.activetargeting)
-            return pt;
+            return creep;
 
-        let creep = pt.arbitraryCreep();
         let dist = Math.sqrt(Math.pow(this.x - creep.x, 2) + Math.pow(this.y - creep.y, 2));
         let ticks = dist / 2;
 
