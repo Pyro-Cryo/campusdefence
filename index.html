@@ -164,9 +164,8 @@
         let map = new mapclass(controller.gameArea, 19, 16);
         controller.setMap(map);
 
-        controller.setupTowerTable();
-
         controller.begin();
+        controller.setupTowerTable();
 
         let mapSelectElement = document.getElementById("mapSelect");
         availableMaps.forEach(m => {
