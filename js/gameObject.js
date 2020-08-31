@@ -23,6 +23,12 @@ class PrerenderedObject {
 		return this._scale;
 	}
 	set angle(v) {
+		if (Math.abs(v) > Math.PI / 2)
+            v -= Math.sign(v) * Math.PI;
+
+        // 
+        if(Math.abs(this._angle - v) < 5 * Math.PI/180)
+        	return;
 		this._angle = v;
 		this.imageDirty = true;
 	}
@@ -38,16 +44,19 @@ class PrerenderedObject {
 		gameArea.draw(this.imagecache, x, y, 0, 1);
 	}
 	prerender(){
-		this.imagecache = document.createElement("canvas");
-		this.imagecache.height = Math.ceil((this.image.height * Math.cos(this.angle) + this.image.width * Math.abs(Math.sin(this.angle))) * this.scale);
-		this.imagecache.width = Math.ceil((this.image.height * Math.abs(Math.sin(this.angle)) + this.image.width * Math.cos(this.angle)) * this.scale);
-		let context = this.imagecache.getContext("2d");
+		if(this.imagecache === undefined)
+			this.imagecache = document.createElement("canvas");
+		else
+			this.imagecontext.clearRect(0, 0, this.imagecache.width, this.imagecache.height);
 
-		// context.fillRect(0,0,this.imagecache.width,this.imagecache.height);
-		context.translate(this.imagecache.width/2, this.imagecache.height/2);
-		context.rotate(this.angle);
+		this.imagecache.height = Math.ceil((this.image.height * Math.abs(Math.cos(this.angle)) + this.image.width * Math.abs(Math.sin(this.angle))) * this.scale);
+		this.imagecache.width = Math.ceil((this.image.height * Math.abs(Math.sin(this.angle)) + this.image.width * Math.abs(Math.cos(this.angle))) * this.scale);
+		this.imagecontext = this.imagecache.getContext("2d");
 
-		context.drawImage(
+		this.imagecontext.translate(this.imagecache.width/2, this.imagecache.height/2);
+		this.imagecontext.rotate(this.angle);
+
+		this.imagecontext.drawImage(
 			this.image, -this.image.width * this.scale/2, -this.image.height * this.scale/2,
 			this.image.width * this.scale, this.image.height * this.scale
 		);

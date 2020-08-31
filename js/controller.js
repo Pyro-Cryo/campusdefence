@@ -35,7 +35,8 @@ class Controller {
     }
 
     begin() {
-        this.drawLoop = setInterval(() => this.draw(), this.drawInterval);
+        // this.drawLoop = setInterval(() => this.draw(), this.drawInterval);
+        this.drawLoop = window.requestAnimationFrame(this.draw.bind(this));
     }
 
     playpause(){
@@ -139,6 +140,9 @@ class Controller {
             if (this.delayedRenderObjects[i].id !== null) {
                 this.delayedRenderObjects[i].draw(this.gameArea);
             }
+
+        this.drawLoop = window.requestAnimationFrame(this.draw.bind(this));
+
     }
     // Register an object to receive update calls.
     // It should have an update method accepting a GameArea and allow for setting an id

@@ -256,8 +256,8 @@ class TargetingTower extends BaseTower {
 
     fire(target) {
         this.angle = Math.atan2(target.y - this.y, target.x - this.x);
-        if (Math.abs(this.angle) > Math.PI / 2)
-            this.angle -= Math.sign(this.angle) * Math.PI;
+        // if (Math.abs(this.angle) > Math.PI / 2)
+        //     this.angle -= Math.sign(this.angle) * Math.PI;
         super.fire(target);
     }
 }
