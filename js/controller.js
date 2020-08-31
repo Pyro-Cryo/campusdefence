@@ -7,7 +7,7 @@ class Controller {
         // Essentially the frame rate inverse
         this.updateInterval = 20; //milliseconds
         // Framerate for real
-        this.drawInterval = 30;
+        // this.drawInterval = 30;
         // Store the inteval object so that we can abort the main loop
         this.mainInterval = null;
 

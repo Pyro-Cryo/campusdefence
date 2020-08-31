@@ -269,7 +269,6 @@ class MakeCoffe extends Gadget {
 
     addTo(tower){
         tower.apply();
-        super.apply(tower);
     }
 
     draw(gameArea){

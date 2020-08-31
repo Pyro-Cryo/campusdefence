@@ -62,7 +62,7 @@ class BaseCreep extends GameObject {
 	onDeath() {
 		this.despawnTimer = 2;
 		this.image = ninjastar;
-		this.angle = 360 * Math.random();
+		this.angle = Math.PI * Math.random();
 		controller.money += this.value;
 		if(this.pathtile !== null){
 			this.pathtile.remove(this);

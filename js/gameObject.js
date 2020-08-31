@@ -39,11 +39,17 @@ class PrerenderedObject {
 		if(this.imageDirty)
 			this.prerender();
 
+		if(this.imagecache === null)
+			return;
 		if(this.imagecache.width == 0 || this.imagecache.height == 0)
 			return;
 		gameArea.draw(this.imagecache, x, y, 0, 1);
 	}
 	prerender(){
+		if(this.image === null){
+			this.imagecache = null;
+			return;
+		}
 		if(this.imagecache === undefined)
 			this.imagecache = document.createElement("canvas");
 		else
