@@ -1,13 +1,13 @@
 let DIAGONAL_INCOMING = 1;
 let DIAGONAL_OUTGOING = 2;
 
-class TDMap {
+class TDMap extends PrerenderedObject {
     static get mapName() {
         return "Generisk Karta";
     }
 
     constructor(img, path, gameArea, margin) {
-    	this.img = img;
+        super(img, 1, 0);
         this.canvasWidth = gameArea.width;
         this.canvasHeight = gameArea.height;
         this.name = this.constructor.mapName;
@@ -248,11 +248,25 @@ class TDMap {
     update() {
     }
 
-    draw(gameArea){
-        gameArea.draw(this.img, this.gridInnerWidth/2-1/2, this.gridInnerHeight/2-1/2, 0, this.scale);
-        gameArea.context.globalAlpha = this.pathAlpha;
-        gameArea.context.drawImage(this.pathimg, 0, 0);
-        gameArea.context.globalAlpha = 1;
+    draw(gameArea) {
+        super.draw(gameArea, this.gridInnerWidth/2, this.gridInnerHeight/2-1/2);
+    }
+
+    // draw(gameArea){
+    //     gameArea.draw(this.img, this.gridInnerWidth/2-1/2, this.gridInnerHeight/2-1/2, 0, this.scale);
+    //     gameArea.context.globalAlpha = this.pathAlpha;
+    //     gameArea.context.drawImage(this.pathimg, 0, 0);
+    //     gameArea.context.globalAlpha = 1;
+    // }
+
+    prerender(){
+        super.prerender();
+
+        this.imagecontext.translate(-this.imagecache.width/2, -this.imagecache.height/2);
+
+        this.imagecontext.globalAlpha = this.pathAlpha;
+        this.imagecontext.drawImage(this.pathimg, 0, 0);
+        this.imagecontext.globalAlpha = 1;
     }
 
     createPathImg(gameArea, n_points, interpolationFunction, gradients, sizes) {
