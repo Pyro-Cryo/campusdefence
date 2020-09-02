@@ -27,8 +27,8 @@ function getLevel(number, updateInterval) {
                 .send(5, Blue).over(3 * s));
         case 6:
             return (new CreepSequence()
-                .send(1, Blue).immediately()
-                .wait(2 * s)
+                .send(1, ShieldedRed).immediately()
+                .wait(4 * s)
                 .send(40, Red).over(20 * s)
                 .interleave(new CreepSequence()
                     .wait(13 * s)
@@ -87,11 +87,9 @@ function getLevel(number, updateInterval) {
 
         case 16:
             return (new CreepSequence()
-                .send(1, TF_2).immediately()
-                .wait(1.5 * s)
-                .send(1, OF_2).immediately()
-                .wait(1.5 * s)
-                .send(1, SF_2).immediately());
+                .send(30, ShieldedBlue).over(30 * s)
+                .send(10, ShieldedPink).over(6 * s)
+                .send(5, ShieldedGreen).over(3 * s));
 
         case 17:
             return (new CreepSequence()
@@ -102,7 +100,8 @@ function getLevel(number, updateInterval) {
                 );
         case 18:
             return (new CreepSequence()
-                .send(25, Violet).over(14 * s));
+                .send(20, Green).over(20 * s).
+                interleave(new CreepSequence().wait(5 * s).send(20, ShieldedGreen).over(15 * s)));
 
         case 19:
             return (new CreepSequence()

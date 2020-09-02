@@ -52,3 +52,28 @@ class Orange extends ColorNinja {
     static get image() { return colorimgs[5]; }
     static get innerCreep() { return Violet; }
 }
+
+class ShieldedRed extends ShieldedCreep {
+    static get shieldStrength() { return 10; }
+    static get creepType() { return Red; }
+}
+class ShieldedBlue extends ShieldedCreep {
+    static get shieldStrength() { return 12; }
+    static get creepType() { return Blue; }
+}
+class ShieldedPink extends ShieldedCreep {
+    static get shieldStrength() { return 14; }
+    static get creepType() { return Pink; }
+}
+class ShieldedGreen extends ShieldedCreep {
+    static get shieldStrength() { return 16; }
+    static get creepType() { return Green; }
+}
+class ShieldedViolet extends ShieldedCreep {
+    static get shieldStrength() { return 20; }
+    static get creepType() { return Violet; }
+}
+class ShieldedOrange extends ShieldedCreep {
+    static get shieldStrength() { return 25; }
+    static get creepType() { return Orange; }
+}
