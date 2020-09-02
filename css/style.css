@@ -2,6 +2,7 @@ body {
     font-family: 'Nunito', sans-serif;
     margin: 0;
     background-color: #eaeaea;
+    min-width: 620px;
 }
 a {
     color: #069080;
@@ -172,7 +173,7 @@ button.controllerButton{
     margin-bottom: 2px;
 }
 
-    button.controllerButton:hover:not(.keptPressed):not(:disabled) {
+    button.controllerButton:hover:not(.keptPressed):not(:disabled):not(:active) {
         border: 1px solid #069080;
         fill: #069080;
     }
@@ -260,15 +261,20 @@ span.counter{
     display: block;
     padding: 5px;
     margin-bottom: 20px;
-    vertical-align: middle;
 }
 
-.contextMenu .priorityfield > select {
-    margin-right: 2em;
-    margin-left: 0.5em;
-    padding-left: 0.2em;
-    padding-right: 0.2em; 
-}
+    .contextMenu .priorityfield > select {
+        margin-right: 2em;
+        margin-left: 0.5em;
+        padding-left: 0.2em;
+        padding-right: 0.2em;
+        background-color: white;
+        border-radius: 1ex;
+        border: 1px solid #069080;
+        font-family: 'Nunito', sans-serif;
+        font-weight: bold;
+        outline: none;
+    }
 
 .contextOption {
     display: flex;

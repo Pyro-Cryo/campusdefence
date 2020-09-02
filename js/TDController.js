@@ -390,12 +390,14 @@
 
         let prioselect = contextMenu.querySelector(".priorityfield > select[name='targeting']");
 
-        if(this.selectedTower.targeting === BaseTower.TARGET_NONE){
+        if (this.selectedTower.targeting === BaseTower.TARGET_NONE) {
+            prioselect.parentElement.classList.add("hideme");
             prioselect.disabled = true;
             prioselect.value = null;
         }
         else{
             prioselect.value = BaseTower.targetingValue(this.selectedTower.targeting);
+            prioselect.parentElement.classList.remove("hideme");
             prioselect.disabled = false;
             prioselect.onchange = function(){
                 this.selectedTower.targeting = prioselect.value;

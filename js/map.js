@@ -252,20 +252,12 @@ class TDMap extends PrerenderedObject {
         super.draw(gameArea, this.gridInnerWidth/2, this.gridInnerHeight/2-1/2);
     }
 
-    // draw(gameArea){
-    //     gameArea.draw(this.img, this.gridInnerWidth/2-1/2, this.gridInnerHeight/2-1/2, 0, this.scale);
-    //     gameArea.context.globalAlpha = this.pathAlpha;
-    //     gameArea.context.drawImage(this.pathimg, 0, 0);
-    //     gameArea.context.globalAlpha = 1;
-    // }
-
     prerender(){
         super.prerender();
-
         this.imagecontext.translate(-this.imagecache.width/2, -this.imagecache.height/2);
 
         this.imagecontext.globalAlpha = this.pathAlpha;
-        this.imagecontext.drawImage(this.pathimg, 0, 0);
+        this.imagecontext.drawImage(this.pathimg, 4, 0); // magic numbers = yes
         this.imagecontext.globalAlpha = 1;
     }
 

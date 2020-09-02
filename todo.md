@@ -1,14 +1,11 @@
-- Gör fler levels (upp till 50, sen repeteras och blir svårare)
+- Gör fler levels (upp till 50, sen repeteras och blir svårare) (behövs detta?)
 - Balansera lite
 - skala ner mängden pengar man får på högre levels
-- Optimera så att fpsen inte säckar ihop
 
 - Efter lansering, DLC:
-	- *bättre* slumpgenererade paths / fler kartor
-	- Mobilanpassning
+	- fler kartor
+	- Mobilanpassning (close enough nu, det är spelbart på mobil)
 	- Visa projektiltyp / damage / etc. i contextmenu
-	- En knapp för att mutea/unmutea ljud
-	- En knapp för slumpgenererade paths
 	- Immuna creeps, FEST-utbildning (immun mot eld), Nykterist/STAD-utbildning (immun mot cocktails), Kursnämnd (immun mot fusklappar)
 	- Tankigare creeps, creeps med högre hp och färre innercreeps
 	- Kombination av immuna och tankiga creeps
