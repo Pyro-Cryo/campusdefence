@@ -245,6 +245,7 @@ class Nicole extends TargetingTower {
         this.upgradeLevel = 1;
         this.flowerdamage = 0;
         this.convertedtime = 3000;
+        this._targeting = BaseTower.TARGET_STRONG;
     }
 
     target() {
@@ -285,7 +286,7 @@ class Nicole extends TargetingTower {
             200,
             [],
             [Nutrient],
-            20);
+            0);
         this.addUpgrade(
             Pollen,
             "Pollensäsong",
@@ -293,7 +294,7 @@ class Nicole extends TargetingTower {
             400,
             [],
             [Pollen],
-            30);
+            0);
         this.addUpgrade(
             FleshEating,
             "Köttätande växter",
@@ -317,7 +318,7 @@ class Nicole extends TargetingTower {
             450,
             [],
             [MultiFlower, FleshEating, GMOEating],
-            100);
+            30);
         this.addUpgrade(
             MonoCulture,
             "Monokultur",
@@ -780,7 +781,7 @@ class Frida extends TargetingTower {
             "Med djupare förståelse kan Frida skriva komplexare integraler, utveckla fler av uttrycken och skriva 'inses lätt', vilket gör att Ninjorna tar ännu längre på sig att läsa lösningarna.",
             200,
             [],
-            [Envarre],
+            [Envarre, FullSolution],
             50);
         this.addUpgrade(
             Flervarre,
