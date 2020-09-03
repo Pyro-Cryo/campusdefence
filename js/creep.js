@@ -222,7 +222,7 @@ class ShieldedCreep extends MatryoshkaCreep {
 	static get speed() { return this.creepType.speed * 0.75; }
 	static get scale() { return this.creepType.scale; }
 	static get strength() { return this.creepType.strength + this.shieldStrength; }
-	static get health() { return this.creepType.health; }
+	static get health() { return this.creepType.health + 4; }
 	static get value() { return this.creepType.value; }
 	static get drawHealthBar() { return this.creepType.drawHealthBar; }
     static get innerCreep() { return this.creepType.innerCreep; }
