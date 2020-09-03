@@ -3,7 +3,6 @@
 - skala ner mängden pengar man får på högre levels
 
 - Efter lansering, DLC:
-	- fler kartor
 	- Mobilanpassning (close enough nu, det är spelbart på mobil)
 	- Visa projektiltyp / damage / etc. i contextmenu
 	- Immuna creeps, FEST-utbildning (immun mot eld), Nykterist/STAD-utbildning (immun mot cocktails), Kursnämnd (immun mot fusklappar)
