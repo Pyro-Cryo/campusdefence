@@ -376,7 +376,8 @@
             window.scrollBy(0, -scrollAmount);
             window.scrollBy(0, scrollAmount);
         }
-        
+
+        // Setup info field
         let spec = this.towerSpecs.find(spec => this.selectedTower instanceof spec.type);
         let sameTowers = this.map.towers.filter(t => t.constructor === this.selectedTower.constructor);
         let name = spec.name + (sameTowers.length > 1 ? " " + (sameTowers.indexOf(this.selectedTower) + 1) : "");
@@ -391,6 +392,19 @@
         let upgradesdiv = contextMenu.querySelector(".infofield div[name='upgrades']");
         upgradesdiv.innerText = "";
 
+        if (this.selectedTower.gadgets && this.selectedTower.gadgets.length)
+        {
+            this.listGadgets(this.selectedTower.gadgets, this.selectedTower.upgrades, upgradesdiv);
+            if (upgradesdiv.style.color)
+                upgradesdiv.style.color = null;
+        }
+        else
+        {
+            upgradesdiv.innerText = "Inga";
+            upgradesdiv.style.color = "gray";
+        }
+
+        // Setup target priority switch
         let prioselect = contextMenu.querySelector(".priorityfield > select[name='targeting']");
 
         if (this.selectedTower.targeting === BaseTower.TARGET_NONE) {
@@ -407,6 +421,53 @@
             }.bind(this);
         }
 
+        // Setup projectile info field
+        let projectileInfo = this.selectedTower.projectileInfo();
+        let projectilename = contextMenu.querySelector("h4[name='projectilename']");
+        let projectileinfofield = contextMenu.querySelector(".projectilefield");
+        if (!projectileInfo) {
+            projectilename.classList.add("hideme");
+            projectileinfofield.classList.add("hideme");
+        } else {
+            projectilename.classList.remove("hideme");
+            projectileinfofield.classList.remove("hideme");
+            projectilename.innerText = projectileInfo.name;
+            projectileinfofield.querySelector("img[name='projectileimage']").src = projectileInfo.image.src;
+
+            let labeltemplate = projectileinfofield.querySelector("div[name='labels'] .template");
+            let valuetemplate = projectileinfofield.querySelector("div[name='values'] .template");
+            let labels = [];
+            let values = [];
+
+            for (var key of Object.keys(projectileInfo)) {
+                if (key === "name" || key === "image")
+                    continue;
+                let label = labeltemplate.cloneNode();
+                label.innerText = key;
+                labels.push(label);
+                let value = valuetemplate.cloneNode();
+                value.innerText = projectileInfo[key];
+                values.push(value);
+            }
+
+            for (let i = 0; i < labels.length; i++) {
+                labels[i].classList.remove("template");
+                labels[i].classList.remove("hideme");
+                values[i].classList.remove("template");
+                values[i].classList.remove("hideme");
+                if (i > 0) {
+                    labeltemplate.parentElement.appendChild(document.createElement("br"));
+                    valuetemplate.parentElement.appendChild(document.createElement("br"));
+                }
+
+                labeltemplate.parentElement.appendChild(labels[i]);
+                valuetemplate.parentElement.appendChild(values[i]);
+            }
+        }
+
+
+        
+        // Setup available options
         this.contextOption({
             title: "Låna ut arbetskraft",
             desc: "Skicka faddern att permanent hjälpa en annan sektion. Du får tillbaka " + (this.sellPriceMultiplier * 100) + " % av fadderns värde.",
@@ -423,18 +484,6 @@
                 }
             }
         });
-
-        if (this.selectedTower.gadgets && this.selectedTower.gadgets.length)
-        {
-            this.listGadgets(this.selectedTower.gadgets, this.selectedTower.upgrades, upgradesdiv);
-            if (upgradesdiv.style.color)
-                upgradesdiv.style.color = null;
-        }
-        else
-        {
-            upgradesdiv.innerText = "Inga";
-            upgradesdiv.style.color = "gray";
-        }
 
         let contextOptions = [];
         if (this.selectedTower.upgrades) {
@@ -556,6 +605,8 @@
         document.querySelector(".towerMarket").classList.remove("hideme");
         document.querySelector(".contextMenu").classList.add("hideme");
         document.querySelectorAll(".contextOption:not(.template)").forEach(option => option.remove());
+        document.querySelectorAll(".projectilefield span:not(.template)").forEach(span => span.remove());
+        document.querySelectorAll(".projectilefield br").forEach(br => br.remove());
         this.contextMenuRefresh = null;
     }
 

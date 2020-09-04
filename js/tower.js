@@ -191,6 +191,10 @@ class BaseTower extends GameObject {
         return null;
     }
 
+    projectileInfo() {
+        return null;
+    }
+
     addGadget(gadget){
         this.gadgets.push(gadget);
         //this.upgrades = this.upgrades.filter(up => gadget.constructor.name !== up.type.name);

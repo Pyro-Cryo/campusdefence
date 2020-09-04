@@ -1,7 +1,7 @@
 class Projectile extends GameObject {
 
 	static get damage() { return 1; }
-	static get hitpoints() { return 1; }
+    static get hitpoints() { return 1; }
 
 
 	// Speed in grid units per tick
@@ -48,21 +48,20 @@ class Projectile extends GameObject {
 			try {
 				pt = this.map.getGridAt(Math.round(this.x), Math.round(this.y));
 			} catch (e) {
-				//Utanf�r grid
+				//Utanför grid
 				this.despawn();
 				return;
 			}
 			if (pt instanceof PathTile && pt.hasCreep())
 				this.hit(pt);
 
-		}
-		if(this.range < 0)
-			this.despawn()
+        }
 
-
+        if (this.range < 0)
+            this.despawn();
 
 		super.update();
-	}
+    }
 }
 
 class BasicProjectile extends Projectile {

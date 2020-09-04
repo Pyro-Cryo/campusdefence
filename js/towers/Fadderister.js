@@ -525,6 +525,20 @@ class Axel extends OmniTower {
         return m;
     }
 
+    projectileInfo() {
+        let info = {
+            name: "Cocktail",
+            image: molotovimg,
+            "Skada": this.schroedinger ? (Molotov.damage * 3) + " (50%) eller 0 (50%)" : "1",
+            "Skott per salva": 8,
+            "Splashträffar": this.maxHitsOverride === Number.POSITIVE_INFINITY ? "∞" : this.maxHitsOverride || Molotov.maxHits,
+            "Specialeffekt": this.schroedinger ? "Ingen (50%) eller Distrahering (50%)" : "Ingen",
+            "Målsökande skott": this.champagne ? "Ja" : "Nej"
+        };
+
+        return info;
+    }
+
     configUpgrades() {
 		this.addUpgrade(
 			TakeAwayCoffee, 
@@ -756,6 +770,19 @@ class Frida extends TargetingTower {
             proj.image = this.projectileimg;
 
         return proj;
+    }
+
+    projectileInfo() {
+        let info = {
+            name: this.projectileimg === paperstack ? "Felaktigt Lösningshäfte" : this.projectileimg === fpaper ? "Felaktiga Lösningsförslag" : "Lösningsförslag",
+            image: this.projectileimg || wolframimg,
+            "Skada": this.projectiledamage,
+            "Splashträffar": this.maxHits === Number.POSITIVE_INFINITY ? "∞" : this.maxHits,
+            "Specialeffekt": (this.persistent ? "Ihållande distrahering" : "Distrahering") + " i " + (this.time / 1000) + " s",
+            "Distrahering": "50% lägre hastighet på ninjor" + (this.persistent ? " (sitter kvar på inre ninjor)" : "")
+        };
+
+        return info;
     }
 
     configUpgrades() {

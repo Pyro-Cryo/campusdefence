@@ -227,35 +227,65 @@ span.counter{
     margin-bottom: 5px;
 }
 
-.contextMenu .infofield > div {
-    margin-left: 20px;
-    margin-right: 20px;
+    .contextMenu .infofield > div {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    .contextMenu .infofield > :first-child {
+        text-align: center;
+        align-self: center;
+        flex-shrink: 0;
+        margin-left: 0px;
+    }
+    .contextMenu .infofield > :nth-child(2) {
+        flex-shrink: 0;
+    }
+
+    .contextMenu .infofield > :nth-child(3) img {
+        position: relative;
+        height: 1em;
+        top: 0.2em;
+    }
+    .contextMenu .infofield > :last-child {
+        margin-right: 0px;
+    }
+
+    .contextMenu .infofield img {
+        max-width: 80px;
+        max-height: 80px;
+    }
+
+.contextMenu h4 {
+    margin-bottom: 0;
 }
 
-.contextMenu .infofield > :first-child {
-    text-align: center;
-    align-self: center;
-    flex-shrink: 0;
-    margin-left: 0px;
-}
-.contextMenu .infofield > :nth-child(2) {
-    flex-shrink: 0;
+.contextMenu .projectilefield {
+    display: flex;
+    padding: 5px;
+    margin-bottom: 5px;
 }
 
-.contextMenu .infofield > :nth-child(3) img {
-    position: relative;
-    height: 1em;
-    top: 0.2em;
-}
-.contexMenu .infofield > :last-child {
-    margin-right: 0px;
+    .contextMenu .projectilefield img {
+        max-width: 40px;
+        max-height: 40px;
+    }
 
-}
+    .contextMenu .projectilefield > div {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
 
-.contextMenu .infofield img {
-    max-width: 80px;
-    max-height: 80px;
-}
+    .contextMenu .projectilefield > :first-child {
+        text-align: center;
+        align-self: center;
+        flex-shrink: 0;
+        margin-left: 0px;
+    }
+
+    .contextMenu .projectilefield > :nth-child(2) {
+        flex-shrink: 0;
+    }
 
 .contextMenu .priorityfield {
     display: block;

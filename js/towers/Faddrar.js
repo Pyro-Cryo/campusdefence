@@ -71,6 +71,21 @@ class Fadder extends TargetingTower {
         return Hug;
     }
 
+    projectileInfo() {
+        let info = {
+            name: "Kram",
+            image: hugimg,
+            "Skada": 1,
+            "Specialeffekt": "Ingen"
+        };
+        if (this.projectiletype === 2)
+            info["Extra kramar"] = 2;
+        if (this.maxhits !== 1)
+            info["Träffar per skott"] = this.maxhits;
+
+        return info;
+    }
+
     projectile(target) {
 
         let type = this.projectileType();
@@ -172,6 +187,16 @@ class Forfadder1 extends Fadder {
         if(this.makemoney)
             return Patch;
         return Hug;
+    }
+
+    projectileInfo() {
+        let info = super.projectileInfo();
+        if (this.makemoney) {
+            info.name = "Märke";
+            info.image = patchimg;
+            info["Specialeffekt"] = "Få 💰1 per träff";
+        }
+        return info;
     }
 
     configUpgrades() {
