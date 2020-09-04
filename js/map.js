@@ -254,11 +254,13 @@ class TDMap extends PrerenderedObject {
 
     prerender(){
         super.prerender();
-        this.imagecontext.translate(-this.imagecache.width/2, -this.imagecache.height/2);
+        if (this.imagecache) {
+            this.imagecontext.translate(-this.imagecache.width / 2, -this.imagecache.height / 2);
 
-        this.imagecontext.globalAlpha = this.pathAlpha;
-        this.imagecontext.drawImage(this.pathimg, 4, 0); // magic numbers = yes
-        this.imagecontext.globalAlpha = 1;
+            this.imagecontext.globalAlpha = this.pathAlpha;
+            this.imagecontext.drawImage(this.pathimg, 4, 0); // magic numbers = yes
+            this.imagecontext.globalAlpha = 1;
+        }
     }
 
     createPathImg(gameArea, n_points, interpolationFunction, gradients, sizes) {

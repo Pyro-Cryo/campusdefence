@@ -43,14 +43,14 @@ class PrerenderedObject {
 			return;
 		if(this.imagecache.width == 0 || this.imagecache.height == 0)
 			return;
-		gameArea.draw(this.imagecache, x, y, 0, 1);
+        gameArea.draw(this.imagecache, x, y, 0, 1);
 	}
-	prerender(){
-		if(this.image === null){
+    prerender() {
+		if(this.image === null || !this.image.complete){
 			this.imagecache = null;
 			return;
 		}
-		if(this.imagecache === undefined)
+		if(!this.imagecache)
 			this.imagecache = document.createElement("canvas");
 		else
 			this.imagecontext.clearRect(0, 0, this.imagecache.width, this.imagecache.height);
@@ -67,7 +67,7 @@ class PrerenderedObject {
 			this.image.width * this.scale, this.image.height * this.scale
 		);
 
-		this.imageDirty = false;
+        this.imageDirty = false;
 	}
 }
 
