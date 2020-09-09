@@ -80,10 +80,8 @@ class Flower extends SeekingProjectile {
         this.time = time;
     }
     hitCreep(creep) {
-        if(this.damage == 0){
-            let e = new Converted(this.time);
-            creep.addEffect(e);
-        }
+        let e = new Converted(this.time);
+        creep.addEffect(e);
         super.hitCreep(creep);
     }
 }
@@ -130,9 +128,10 @@ class Corn extends Projectile {
 
     static get damage() { return 1; }
 
-    constructor(source, target, time){
+    constructor(source, target, extraDamage, time){
         super(controller.map, corn, source, target.x, target.y, 0.5, 1.5/controller.updateInterval, undefined);
         this.time = time;
+        this.damage = Corn.damage + extraDamage;
     }
 
     hit(pathTile){
@@ -145,11 +144,11 @@ class Corn extends Projectile {
         super.hit(pathTile);
     }
 
-    // hitCreep(creep){
-    //     let e = new FleshEatingConverted(this.time);
-    //     creep.addEffect(e);
-    //     super.hitCreep(creep);
-    // }
+    hitCreep(creep){
+        let e = new Converted(this.time);
+        creep.addEffect(e);
+        super.hitCreep(creep);
+    }
 }
 
 
@@ -246,6 +245,7 @@ class Nicole extends TargetingTower {
         this.flowerdamage = 0;
         this.convertedtime = 3000;
         this._targeting = BaseTower.TARGET_STRONG;
+        this.damageChance = 0.3;
     }
 
     target() {
@@ -265,17 +265,57 @@ class Nicole extends TargetingTower {
         }
 
         let damage = 0;
-        if(this.flowerdamage > 0 && Math.random() < 0.3){
+        if (this.flowerdamage > 0 && Math.random() < this.damageChance) {
             damage = this.flowerdamage;
         }
 
         if(this.bouquet){
             if(this.upgradeLevel == 2)
-                return new Corn(this, target, this.convertedtime);
+                return new Corn(this, target, damage, this.convertedtime);
             return new Bouquet(this, target, damage, this.convertedtime);
         }
 
         return new Flower(this, target, damage, this.convertedtime);
+    }
+
+    projectileInfo() {
+        let info = {};
+        let proj = this.projectile({ x: this.x, y: this.y });
+
+        if (proj instanceof Bouquet)
+            info.name = "Bukett";
+        else if (proj instanceof Corn)
+            info.name = "Majskolv";
+        else if (proj instanceof GMOFlower)
+            info.name = "GMO-blomma";
+        else if (proj instanceof FleshEatingFlower)
+            info.name = "Köttätande Blomma";
+        else
+            info.name = "Blomma";
+        
+        info.image = proj.image;
+        if (proj instanceof Flower) // Bouquet or Flower
+            info["Skada"] = this.flowerdamage > 0 ? `${this.flowerdamage} (${this.damageChance * 100}%) eller 0 (${(1 - this.damageChance) * 100}%)` : "0";
+        else if (proj instanceof Corn)
+            info["Skada"] = this.flowerdamage > 0 ? `${this.flowerdamage + Corn.damage} (${this.damageChance * 100}%) eller ${Corn.damage} (${(1 - this.damageChance) * 100}%)` : Corn.damage;
+        else
+            info["Skada"] = proj.constructor.damage;
+
+        if (proj instanceof Corn)
+            info["Splashträffar"] = "Alla av samma typ";
+        else
+            info["Träffar per skott"] = proj instanceof Bouquet ? Bouquet.hitpoints : 1;
+
+        info["Målsökande skott"] = proj instanceof Corn ? "Nej" : "Ja";
+
+        if (proj instanceof GMOFlower)
+            info["Specialeffekt"] = "Ninjan går åt motsatt håll i " + (proj.time / 1000) + " s, och fortsätter därefter ta 1 skada per " + (proj.time / 1000) + " s (sitter kvar på inre ninjor)";
+        else if (proj instanceof FleshEatingFlower)
+            info["Specialeffekt"] = "Ninjan går åt motsatt håll i " + (proj.time / 1000) + " s, och tar därefter 1 till skada";
+        else
+            info["Specialeffekt"] = "Ninjan går åt motsatt håll i " + (proj.time / 1000) + " s";
+
+        return info;
     }
 
     configUpgrades() {
