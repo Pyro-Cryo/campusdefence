@@ -929,6 +929,9 @@ class Fire extends BasicProjectile {
     static get damage() {
         return 2;
     }
+    static get missChance() {
+        return 0.3;
+    }
 
     constructor(map, source, target) {
         let a = Math.atan2(source.x-target.x, source.y-target.y) + Math.PI/2;
@@ -941,7 +944,7 @@ class Fire extends BasicProjectile {
 
     hit(pathTile) {
         if (pathTile !== this.lastTile)
-            this.ignoreTile = Math.random() < 0.3;
+            this.ignoreTile = Math.random() < this.constructor.missChance;
         this.lastTile = pathTile;
         if (!this.ignoreTile)
             super.hit(pathTile);
@@ -965,7 +968,7 @@ class FireBomb extends SplashProjectile {
     static get damage() {
         return 4;
     }
-    static get maxHits() { return 15; }
+    static get maxHits() { return 10; }
 
     constructor(map, source, target){
         super(map, gasoline, firebomb, source, target.x + Math.random() - 0.5, target.y + Math.random() - 0.5, 0.5, 2, 1 / controller.updateInterval, 1);
@@ -1081,15 +1084,17 @@ class Becca extends TargetingTower {
         super(x,y);
         this.upgradeLevel = 1;
         this.projectiletype = 1;
+        this.firebombChance = 0.2;
+        this.fireringChance = 0.1;
         this.double = false;
     }
 
     projectile(target) {
 
-        if (this.upgradeLevel === 2 && Math.random() < 0.2) {
+        if (this.upgradeLevel === 2 && Math.random() < this.firebombChance) {
             return new FireBomb(this.map, this, target);
         }
-        if (this.upgradeLevel === 3 && Math.random() < 0.1) {
+        if (this.upgradeLevel === 3 && Math.random() < this.fireringChance) {
             this.angle = 0;
             return new FireRing(this.map, this);
         }
@@ -1103,6 +1108,36 @@ class Becca extends TargetingTower {
 
         }
         return new t(this.map, this, target, this.projectiletype);
+    }
+
+    projectileInfo() {
+        let info = {
+            name: this.projectiletype === 1 ? "Eld" : "Varm Eld",
+            image: fireimg,
+            "Träffsäkerhet": (1 - (this.projectiletype === 1 ? Fire : HotFire).missChance) * 100 + "%",
+            "Skada": (this.projectiletype === 1 ? Fire : HotFire).damage,
+            "Extra eldsflammor": this.double ? 1 : 0
+        };
+        if (this.upgradeLevel >= 2) {
+            info.name = info.name + " / Bensinbomb (" + (this.firebombChance * 100) + "%)";
+            info.image = gasoline;
+            info["Skada (eld)"] = info["Skada"];
+            delete info["Skada"];
+            info["Skada (bensinbomb)"] = FireBomb.damage;
+            info["Splashskada (bensinbomb)"] = 1;
+            info["Splashträffar (bensinbomb)"] = FireBomb.maxHits;
+            info["Specialeffekt (bensinbomb)"] = "Ninjorna brinner och tar 3 skada över 6 s (sitter kvar på inre ninjor)";
+        }
+        if (this.upgradeLevel >= 3) {
+            info.name = info.name + " / Eldring (" + Math.round((1 - this.firebombChance) * this.fireringChance * 100) + "%)";
+            info.image = ringofire;
+            info["Skada (eldring)"] = 0;
+            info["Träffar (eldring)"] = "Alla inom tornets räckvidd";
+            info["Specialeffekt (bensinbomb/eldring)"] = info["Specialeffekt (bensinbomb)"];
+            delete info["Specialeffekt (bensinbomb)"];
+        }
+
+        return info;
     }
 
     configUpgrades() {
