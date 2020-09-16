@@ -1507,19 +1507,22 @@ class Fnoell extends BaseTower {
         let closestTower = this;
         let minDist = Number.POSITIVE_INFINITY;
         this.map.towers.forEach(t => {
-            let dist = Math.pow(this.x - t.x, 2) + Math.pow(this.y - t.y, 2);
-            if (t !== this && dist < minDist) {
-                minDist = dist;
-                closestTower = t;
+            if (t !== this && !(t instanceof SupportTower)) {
+                let dist = Math.pow(this.x - t.x, 2) + Math.pow(this.y - t.y, 2);
+                if (dist < minDist) {
+                    minDist = dist;
+                    closestTower = t;
+                }
             }
         });
+        this.currentProjectile = Hug;
         this.currentProjectilePostprocess = null;
 
         this.currentProjectileInfo = {
             "Tid till 1:a hopp": (this.JumpCD / 1000) + " s",
             "Hoppfrekvens": (this.TimeBetweenJumps / 1000) + " s",
             "Skott per spiral": this.DPS,
-            "Kopierar": closestTower.constructor.name
+            "Kopierar": closestTower ? closestTower.constructor.name : "Ingen"
         };
 
         if (closestTower instanceof Fadder || closestTower instanceof Forfadder1 || closestTower instanceof SupportTower) {
@@ -1533,7 +1536,7 @@ class Fnoell extends BaseTower {
             ]);
         }
 
-        if (closestTower instanceof Frida) {
+        else if (closestTower instanceof Frida) {
             this.currentProjectile = WolframWrapper;
             this.currentProjectilePostprocess = w => {
                 w.time = closestTower.time;
@@ -1548,7 +1551,7 @@ class Fnoell extends BaseTower {
             ]);
         }
 
-        if (closestTower instanceof Nicole) {
+        else if (closestTower instanceof Nicole) {
             if (closestTower.flesheating) {
                 if (closestTower.upgradeLevel === 2) {
                     this.currentProjectile = FleshEatingWrapper;
@@ -1604,7 +1607,7 @@ class Fnoell extends BaseTower {
             this.currentProjectileInfo["Målsökande skott"] = "Nej"; //Står ändå med i listan ovanför för att hamna innan specialeffekt när infon enumereras
         }
 
-        if (closestTower instanceof Becca) {
+        else if (closestTower instanceof Becca) {
             this.currentProjectile = closestTower.projectiletype === 1 ? Fire : HotFire;
             let info = closestTower.projectileInfo();
             this.currentProjectileInfo.name = this.currentProjectile === Fire ? "Eld" : "Varm Eld";
@@ -1613,7 +1616,8 @@ class Fnoell extends BaseTower {
             ]);
             this.currentProjectileInfo["Skada"] = info["Skada"] || info["Skada (eld)"];
         }
-        if (closestTower instanceof Axel) {
+
+        else if (closestTower instanceof Axel) {
             this.currentProjectile = Molotov;
             if (closestTower.maxHitsOverride !== undefined)
                 this.currentProjectilePostprocess = m => { m.maxHits = closestTower.maxHitsOverride; };
@@ -1632,18 +1636,37 @@ class Fnoell extends BaseTower {
             ]);
             this.currentProjectileInfo["Målsökande skott"] = "Nej"; //Står ändå med i listan ovanför för att hamna innan specialeffekt när infon enumereras
         }
-        if (closestTower instanceof Fnoell) {
+
+        else if (closestTower instanceof Fnoell) {
             this.currentProjectile = closestTower.copy ? closestTower.currentProjectile : Hug;
             this.currentProjectilePostprocess = closestTower.currentProjectilePostprocess || null;
             if (this.currentProjectilePostprocess)
                 this.currentProjectilePostprocess = this.currentProjectilePostprocess.bind(this);
             if (closestTower.copy)
-                ;
+                Fnoell.copyProjectileInfo(
+                    closestTower.projectileInfo(),
+                    this.currentProjectileInfo,
+                    Object.keys(closestTower.projectileInfo()).filter(v => !this.currentProjectileInfo[v])
+                );
             else
                 Fnoell.copyProjectileInfo(closestTower.projectileInfo(), this.currentProjectileInfo, [
                     "name", "image", "Skada", "Specialeffekt"
                 ]);
+
+            if (closestTower === this) {
+                let info = {
+                    name: "Kram",
+                    image: hugimg,
+                    "Skada": 1,
+                    "Specialeffekt": "Ingen",
+                    "Kopierar": "Ingen"
+                };
+                Fnoell.copyProjectileInfo(info, this.currentProjectileInfo, Object.keys(info));
+            }
         }
+
+        else
+            console.log("Oväntat närmaste torn:", closestTower);
 
         if (controller.selectedTower === this) {
             controller.destroyProjectileInfo();
