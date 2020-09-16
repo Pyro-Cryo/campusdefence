@@ -572,8 +572,8 @@ class Axel extends OmniTower {
             "Skada": this.schroedinger ? (Molotov.damage * 3) + " (50%) eller 0 (50%)" : "1",
             "Skott per salva": 8,
             "Splashträffar": this.maxHitsOverride === Number.POSITIVE_INFINITY ? "∞" : this.maxHitsOverride || Molotov.maxHits,
-            "Specialeffekt": this.schroedinger ? "Ingen (50%) eller Distrahering (50%)" : "Ingen",
-            "Målsökande skott": this.champagne ? "Ja" : "Nej"
+            "Målsökande skott": this.champagne ? "Ja" : "Nej",
+            "Specialeffekt": this.schroedinger ? "Ingen (50%) eller Distrahering (50%)" : "Ingen"
         };
 
         return info;
@@ -1258,6 +1258,7 @@ class Virus extends Gadget {
         tower.copy = true;
         tower.currentProjectile = Hug;
         tower.currentProjectilePostprocess = null;
+        tower.performCopy();
         super.addTo(tower);
     }
 }
@@ -1304,7 +1305,7 @@ class GMOWrapper extends GMOFlower {
 }
 class CornWrapper extends Corn {
     constructor(_, source, target) {
-        super(source, target, null);
+        super(source, target, 0, null);
     }
 }
 class BoquetWrapper extends Bouquet {
@@ -1343,6 +1344,7 @@ class Fnoell extends BaseTower {
         this.TimeBetweenJumps = this.constructor.TimeBetweenJumps;
         this.originalX = x;
         this.originalY = y;
+        this.currentProjectileInfo = null;
     }
 
     projectile(target) {
@@ -1350,6 +1352,30 @@ class Fnoell extends BaseTower {
             return new this.currentProjectile(this.map, this, target);
         else
             return new Hug(this.map, this, target);
+    }
+
+    projectileInfo() {
+        if (this.currentProjectileInfo !== null)
+            return this.currentProjectileInfo;
+        else {
+             let info = {
+                "Tid till 1:a hopp": (this.JumpCD / 1000) + " s",
+                "Hoppfrekvens": (this.TimeBetweenJumps / 1000) + " s",
+                "Skott per spiral": this.DPS,
+                name: "Kram",
+                image: hugimg,
+                "Skada": 1,
+                "Specialeffekt": "Ingen"
+            };
+            if (this.symmetry)
+                info["Kramriktningar"] = 2;
+        }
+    }
+
+    static copyProjectileInfo(source, dest, fields) {
+        for (let i = 0; i < fields.length; i++)
+            if (source[fields[i]] !== null && source[fields[i]] !== undefined)
+                dest[fields[i]] = source[fields[i]];
     }
 
     fire(target) {
@@ -1473,107 +1499,155 @@ class Fnoell extends BaseTower {
             g.x = this.x + 0.5 - i * 0.25;
             g.y = this.y + 0.5;
         });
-        if (this.copy) {
-            let closestTower = this;
-            let minDist = Number.POSITIVE_INFINITY;
-            this.map.towers.forEach(t => {
-                let dist = Math.pow(this.x - t.x, 2) + Math.pow(this.y - t.y, 2);
-                if (t !== this && dist < minDist) {
-                    minDist = dist;
-                    closestTower = t;
-                }
-            });
-            this.currentProjectilePostprocess = null;
-            if (closestTower instanceof Fadder || closestTower instanceof Forfadder1 || closestTower instanceof SupportTower) {
-                this.currentProjectile = closestTower.makemoney ? Patch : Hug;
-				if (closestTower.maxhits !== null && closestTower.maxhits !== undefined)
-					this.currentProjectilePostprocess = h => {
-						h.hitpoints = closestTower.maxhits;
-					};
-			}
-            if (closestTower instanceof Frida) {
-                this.currentProjectile = WolframWrapper;
-                this.currentProjectilePostprocess = w => {
-                    w.time = closestTower.time;
-                    w.maxHits = closestTower.maxHits;
-                    w.persistent = closestTower.persistent;
-                    w.damage = closestTower.projectiledamage;
-                    if (closestTower.projectileimg)
-                        w.image = closestTower.projectileimg;
-                };
+        if (this.copy)
+            this.performCopy();
+    }
+
+    performCopy() {
+        let closestTower = this;
+        let minDist = Number.POSITIVE_INFINITY;
+        this.map.towers.forEach(t => {
+            let dist = Math.pow(this.x - t.x, 2) + Math.pow(this.y - t.y, 2);
+            if (t !== this && dist < minDist) {
+                minDist = dist;
+                closestTower = t;
             }
-            if (closestTower instanceof Nicole) {
-                if(closestTower.flesheating){
-                    if(closestTower.upgradeLevel === 2) {
-                        this.currentProjectile = FleshEatingWrapper;
-                        this.currentProjectilePostprocess = f => {
-                            f.time = closestTower.convertedtime;
-                            f.range = this.range;
-                        };
-                    }
-                    if(closestTower.upgradeLevel === 3){
-                        this.currentProjectile = GMOWrapper;
-                        this.currentProjectilePostprocess = f => {
-                            f.time = closestTower.convertedtime;
-                            f.range = this.range;
-                        };
-                    }
-                }
-        
-                if(closestTower.bouquet){
-                    if(closestTower.upgradeLevel === 2){
-                        this.currentProjectile = CornWrapper;
-                        this.currentProjectilePostprocess = f => {
-                            f.time = closestTower.convertedtime;
-                            f.range = this.range;
-                        };
-                    }
-                    else {
-                        this.currentProjectile = BoquetWrapper;
-                        this.currentProjectilePostprocess = f => {
-                            f.time = closestTower.convertedtime;
-                            f.range = this.range;
-                            f.image = bouquet;
-                            f.damage = 0;
-                            if (closestTower.flowerdamage > 0 && Math.random() < 0.3)
-                                f.damage = closestTower.flowerdamage;
-                        };
-                    }
-                }
-                else {
-                    this.currentProjectile = FlowerWrapper;
+        });
+        this.currentProjectilePostprocess = null;
+
+        this.currentProjectileInfo = {
+            "Tid till 1:a hopp": (this.JumpCD / 1000) + " s",
+            "Hoppfrekvens": (this.TimeBetweenJumps / 1000) + " s",
+            "Skott per spiral": this.DPS,
+            "Kopierar": closestTower.constructor.name
+        };
+
+        if (closestTower instanceof Fadder || closestTower instanceof Forfadder1 || closestTower instanceof SupportTower) {
+            this.currentProjectile = closestTower.makemoney ? Patch : Hug;
+            if (closestTower.maxhits !== null && closestTower.maxhits !== undefined)
+                this.currentProjectilePostprocess = h => {
+                    h.hitpoints = closestTower.maxhits;
+                };
+            Fnoell.copyProjectileInfo(closestTower.projectileInfo(), this.currentProjectileInfo, [
+                "name", "image", "Skada", "Specialeffekt", "Träffar per skott"
+            ]);
+        }
+
+        if (closestTower instanceof Frida) {
+            this.currentProjectile = WolframWrapper;
+            this.currentProjectilePostprocess = w => {
+                w.time = closestTower.time;
+                w.maxHits = closestTower.maxHits;
+                w.persistent = closestTower.persistent;
+                w.damage = closestTower.projectiledamage;
+                if (closestTower.projectileimg)
+                    w.image = closestTower.projectileimg;
+            };
+            Fnoell.copyProjectileInfo(closestTower.projectileInfo(), this.currentProjectileInfo, [
+                "name", "image", "Skada", "Splashträffar", "Specialeffekt", "Distrahering"
+            ]);
+        }
+
+        if (closestTower instanceof Nicole) {
+            if (closestTower.flesheating) {
+                if (closestTower.upgradeLevel === 2) {
+                    this.currentProjectile = FleshEatingWrapper;
                     this.currentProjectilePostprocess = f => {
                         f.time = closestTower.convertedtime;
                         f.range = this.range;
+                    };
+                }
+                if (closestTower.upgradeLevel === 3) {
+                    this.currentProjectile = GMOWrapper;
+                    this.currentProjectilePostprocess = f => {
+                        f.time = closestTower.convertedtime;
+                        f.range = this.range;
+                    };
+                }
+            }
+
+            if (closestTower.bouquet) {
+                if (closestTower.upgradeLevel === 2) {
+                    this.currentProjectile = CornWrapper;
+                    this.currentProjectilePostprocess = f => {
+                        f.time = closestTower.convertedtime;
+                        f.range = this.range;
+                        if (closestTower.flowerdamage > 0 && Math.random() < closestTower.damageChance)
+                            f.damage += closestTower.flowerdamage;
+                    };
+                }
+                else {
+                    this.currentProjectile = BoquetWrapper;
+                    this.currentProjectilePostprocess = f => {
+                        f.time = closestTower.convertedtime;
+                        f.range = this.range;
+                        f.image = bouquet;
                         f.damage = 0;
-                        if (closestTower.flowerdamage > 0 && Math.random() < 0.3)
+                        if (closestTower.flowerdamage > 0 && Math.random() < closestTower.damageChance)
                             f.damage = closestTower.flowerdamage;
                     };
                 }
             }
-            if (closestTower instanceof Becca)
-                this.currentProjectile = closestTower.projectiletype === 1 ? Fire : HotFire;
-            if (closestTower instanceof Axel) {
-                this.currentProjectile = Molotov;
-                if (closestTower.maxHitsOverride !== undefined)
-                    this.currentProjectilePostprocess = m => { m.maxHits = closestTower.maxHitsOverride; };
-                if (closestTower.schroedinger) {
-                    this.currentProjectilePostprocess = m => { 
-                        if (Math.random() < 0.5)
-                            m.damage *= 3;
-                        else {
-                            m.damage = 0;
-                            m.hitCreep = Wolfram.prototype.hitCreep.bind(m);
-                        }
-                    };
-                }
+            else {
+                this.currentProjectile = FlowerWrapper;
+                this.currentProjectilePostprocess = f => {
+                    f.time = closestTower.convertedtime;
+                    f.range = this.range;
+                    f.damage = 0;
+                    if (closestTower.flowerdamage > 0 && Math.random() < closestTower.damageChance)
+                        f.damage = closestTower.flowerdamage;
+                };
             }
-            if (closestTower instanceof Fnoell) {
-                this.currentProjectile = closestTower.copy ? closestTower.currentProjectile : Hug;
-				this.currentProjectilePostprocess = closestTower.currentProjectilePostprocess || null;
-				if (this.currentProjectilePostprocess)
-					this.currentProjectilePostprocess = this.currentProjectilePostprocess.bind(this);
-			}
+            Fnoell.copyProjectileInfo(closestTower.projectileInfo(), this.currentProjectileInfo, [
+                "name", "image", "Skada", "Splashträffar", "Träffar per skott", "Målsökande skott", "Specialeffekt"
+            ]);
+            this.currentProjectileInfo["Målsökande skott"] = "Nej"; //Står ändå med i listan ovanför för att hamna innan specialeffekt när infon enumereras
+        }
+
+        if (closestTower instanceof Becca) {
+            this.currentProjectile = closestTower.projectiletype === 1 ? Fire : HotFire;
+            let info = closestTower.projectileInfo();
+            this.currentProjectileInfo.name = this.currentProjectile === Fire ? "Eld" : "Varm Eld";
+            Fnoell.copyProjectileInfo(info, this.currentProjectileInfo, [
+                "image", "Träffsäkerhet"
+            ]);
+            this.currentProjectileInfo["Skada"] = info["Skada"] || info["Skada (eld)"];
+        }
+        if (closestTower instanceof Axel) {
+            this.currentProjectile = Molotov;
+            if (closestTower.maxHitsOverride !== undefined)
+                this.currentProjectilePostprocess = m => { m.maxHits = closestTower.maxHitsOverride; };
+            if (closestTower.schroedinger) {
+                this.currentProjectilePostprocess = m => {
+                    if (Math.random() < 0.5)
+                        m.damage *= 3;
+                    else {
+                        m.damage = 0;
+                        m.hitCreep = Wolfram.prototype.hitCreep.bind(m);
+                    }
+                };
+            }
+            Fnoell.copyProjectileInfo(closestTower.projectileInfo(), this.currentProjectileInfo, [
+                "name", "image", "Skada", "Splashträffar", "Målsökande skott", "Specialeffekt"
+            ]);
+            this.currentProjectileInfo["Målsökande skott"] = "Nej"; //Står ändå med i listan ovanför för att hamna innan specialeffekt när infon enumereras
+        }
+        if (closestTower instanceof Fnoell) {
+            this.currentProjectile = closestTower.copy ? closestTower.currentProjectile : Hug;
+            this.currentProjectilePostprocess = closestTower.currentProjectilePostprocess || null;
+            if (this.currentProjectilePostprocess)
+                this.currentProjectilePostprocess = this.currentProjectilePostprocess.bind(this);
+            if (closestTower.copy)
+                ;
+            else
+                Fnoell.copyProjectileInfo(closestTower.projectileInfo(), this.currentProjectileInfo, [
+                    "name", "image", "Skada", "Specialeffekt"
+                ]);
+        }
+
+        if (controller.selectedTower === this) {
+            controller.destroyProjectileInfo();
+            controller.setupProjectileInfo(this.projectileInfo());
         }
     }
     

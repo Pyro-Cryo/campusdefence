@@ -423,49 +423,7 @@
 
         // Setup projectile info field
         let projectileInfo = this.selectedTower.projectileInfo();
-        let projectilename = contextMenu.querySelector("h4[name='projectilename']");
-        let projectileinfofield = contextMenu.querySelector(".projectilefield");
-        if (!projectileInfo) {
-            projectilename.classList.add("hideme");
-            projectileinfofield.classList.add("hideme");
-        } else {
-            projectilename.classList.remove("hideme");
-            projectileinfofield.classList.remove("hideme");
-            projectilename.innerText = projectileInfo.name;
-            projectileinfofield.querySelector("img[name='projectileimage']").src = projectileInfo.image.src;
-
-            let labeltemplate = projectileinfofield.querySelector("div[name='labels'] .template");
-            let valuetemplate = projectileinfofield.querySelector("div[name='values'] .template");
-            let labels = [];
-            let values = [];
-
-            for (var key of Object.keys(projectileInfo)) {
-                if (key === "name" || key === "image")
-                    continue;
-                let label = labeltemplate.cloneNode();
-                label.innerText = key;
-                labels.push(label);
-                let value = valuetemplate.cloneNode();
-                value.innerText = projectileInfo[key];
-                values.push(value);
-            }
-
-            for (let i = 0; i < labels.length; i++) {
-                labels[i].classList.remove("template");
-                labels[i].classList.remove("hideme");
-                values[i].classList.remove("template");
-                values[i].classList.remove("hideme");
-                if (i > 0) {
-                    labeltemplate.parentElement.appendChild(document.createElement("br"));
-                    valuetemplate.parentElement.appendChild(document.createElement("br"));
-                }
-
-                labeltemplate.parentElement.appendChild(labels[i]);
-                valuetemplate.parentElement.appendChild(values[i]);
-            }
-        }
-
-
+        this.setupProjectileInfo(projectileInfo, contextMenu);
         
         // Setup available options
         this.contextOption({
@@ -532,6 +490,55 @@
         }
 
         return contextOptions;
+    }
+
+    setupProjectileInfo(projectileInfo, contextMenu) {
+        contextMenu = contextMenu || document.querySelector(".contextMenu");
+
+        let projectilename = contextMenu.querySelector("h4[name='projectilename']");
+        let projectileinfofield = contextMenu.querySelector(".projectilefield");
+        if (!projectileInfo) {
+            projectilename.classList.add("hideme");
+            projectileinfofield.classList.add("hideme");
+        } else {
+            // Set name and image
+            projectilename.classList.remove("hideme");
+            projectileinfofield.classList.remove("hideme");
+            projectilename.innerText = projectileInfo.name;
+            projectileinfofield.querySelector("img[name='projectileimage']").src = projectileInfo.image.src;
+
+            let labeltemplate = projectileinfofield.querySelector("div[name='labels'] .template");
+            let valuetemplate = projectileinfofield.querySelector("div[name='values'] .template");
+            let labels = [];
+            let values = [];
+
+            // Add all info entries
+            for (var key of Object.keys(projectileInfo)) {
+                if (key === "name" || key === "image")
+                    continue;
+                let label = labeltemplate.cloneNode();
+                label.innerText = key;
+                labels.push(label);
+                let value = valuetemplate.cloneNode();
+                value.innerText = projectileInfo[key];
+                values.push(value);
+            }
+
+            // Set the correct classes on elements
+            for (let i = 0; i < labels.length; i++) {
+                labels[i].classList.remove("template");
+                labels[i].classList.remove("hideme");
+                values[i].classList.remove("template");
+                values[i].classList.remove("hideme");
+                if (i > 0) {
+                    labeltemplate.parentElement.appendChild(document.createElement("br"));
+                    valuetemplate.parentElement.appendChild(document.createElement("br"));
+                }
+
+                labeltemplate.parentElement.appendChild(labels[i]);
+                valuetemplate.parentElement.appendChild(values[i]);
+            }
+        }
     }
 
     checkContextOption(upgrade, option, currentState, blocking, existingRequired) {
@@ -605,9 +612,13 @@
         document.querySelector(".towerMarket").classList.remove("hideme");
         document.querySelector(".contextMenu").classList.add("hideme");
         document.querySelectorAll(".contextOption:not(.template)").forEach(option => option.remove());
+        this.destroyProjectileInfo();
+        this.contextMenuRefresh = null;
+    }
+
+    destroyProjectileInfo() {
         document.querySelectorAll(".projectilefield span:not(.template)").forEach(span => span.remove());
         document.querySelectorAll(".projectilefield br").forEach(br => br.remove());
-        this.contextMenuRefresh = null;
     }
 
 
