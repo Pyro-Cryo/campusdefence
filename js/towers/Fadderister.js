@@ -987,30 +987,18 @@ class FireBomb extends SplashProjectile {
     }
 }
 
-class FireRing extends Projectile {
+class FireRing extends OmniProjectile {
+
+    static get hitpoints() { return 50; }
 
     constructor(map, source) {
-        super(map, ringofire, source, 0, 0, 0.2, 0, undefined);
-
-        this.flying = false;
-        this.angle = 0;
-        this.runticks = 800 / controller.updateInterval;
+        super(source, ringofire, 0.2, 800);
         source.CDtimer += parseInt(this.runticks*1.5);
     }
 
     update() {
         this.angle += Math.PI * 2 / this.runticks;
         this.scale = 0.95*this.scale + 0.05;
-
-        if(--this.runticks <= 0){
-            // Träffar alla creeps inom tornets radius
-            for (var i = 0; i < this.sourceTower.inrange.length; i++) {
-                this.sourceTower.inrange[i].data.forEach(function(creep){
-                    this.hitCreep(creep);
-                }.bind(this));
-            }
-            this.despawn();
-        }
         super.update();
     }
 

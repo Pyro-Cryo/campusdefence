@@ -131,7 +131,7 @@ class BaseCreep extends GameObject {
 	draw(gameArea){
 		super.draw(gameArea);
 		if (this.drawHealthBar)
-            gameArea.bar(this.x, this.y, 0.5, 0.8, 3, this.health / this.initial_health);
+			gameArea.bar(this.x, this.y, 0.5, 0.8, 3, this.health / this.initial_health);
 	}
 }
 

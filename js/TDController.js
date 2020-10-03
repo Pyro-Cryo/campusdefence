@@ -25,12 +25,15 @@
         this.moneycounter = document.getElementById("moneycounter");
 
         this.versions = [
-            "1.1.0"
+            "1.1.0",
+            "1.1.1",
+            "1.1.2"
         ];
         if ((window.localStorage.getItem("campusdefence_version") || "1.0") !== this.versions[this.versions.length - 1]) {
             //window.alert("Campus Defence har uppdaterats och ditt sparade spel går tyvärr inte längre att fortsätta på.");
             window.localStorage.setItem("campusdefence_version", this.versions[this.versions.length - 1]);
             this.clearState();
+            window.localStorage.removeItem("campusdefence_mapclass");
             location.reload();
         }
         window.localStorage.setItem("campusdefence_version", this.versions[this.versions.length - 1]);
@@ -54,12 +57,13 @@
         // Det här kan flyttas ut till nån sorts setup-map-funktion och ändras beroende på saker
         this.addTowerSpec({type: Fadder, unlockLevel: 0});
         this.addTowerSpec({type: Forfadder1, unlockLevel: 0});
+        this.addTowerSpec({type: PseudoJellyHeartTower, unlockLevel: 3});
         this.addTowerSpec({type: Frida, unlockLevel: 3});
         this.addTowerSpec({type: Nicole, unlockLevel: 4});
         this.addTowerSpec({type: Becca, unlockLevel: 5});
         this.addTowerSpec({type: Axel, unlockLevel: 6});
         this.addTowerSpec({type: Fnoell, unlockLevel: 7});
-        this.addTowerSpec({type: CoffeMaker, unlockLevel: 10});
+        this.addTowerSpec({type: MediaFadder, unlockLevel: 10});
         
         this.buyingTower = null;
         
@@ -110,9 +114,9 @@
         }
         else if (!this.levelCleared) {
             this.levelCleared = this.map.path.every(pt => !pt.hasCreep());
-            if(this.levelCleared){
+            if (this.levelCleared){
                 for (let current = this.objects.first; current !== null; current = current.next){
-                    if(current.obj instanceof Projectile || current.obj instanceof BaseCreep){
+                    if ((current.obj instanceof Projectile && !current.obj.constructor.persistent) || current.obj instanceof BaseCreep){
                         this.levelCleared = false;
                         break;
                     }
@@ -288,7 +292,7 @@
         this.x = Math.round(controller.gameArea.canvasToGridX(event.clientX - rect.left));
         this.y = Math.round(controller.gameArea.canvasToGridY(event.clientY - rect.top));
         // Avkommentera för hjälp att rita banor
-        //console.log(this.x, this.y);
+        console.log(this.x, this.y);
 
         if (!controller.map.validPosition(this.x, this.y))
             return;
@@ -688,13 +692,19 @@
         // Om man tryckte på ett annat torn än det man först höll på att köpa
         // (eller om man inte höll på att köpa något) påbörjar vi ett köp
         if (!onlyCancel) {
-            this.buyingTower = new PseudoTower(type, cost, () => {
+        	this.buyingTower = new PseudoTower(type, cost, () => {
                 let spec = this.towerSpecs.find(s => s.type === type);
+
                 spec.button.innerHTML = this.buyingTower.oldContent;
                 spec.button.title = spec.description;
                 controller.buyingTower = null;
                 this.saveToCookie();
 
+                if(spec.type === PseudoJellyHeartTower && this.money >= cost){
+			        // Köp fler på en gång
+			        let btn = this.towerSpecs.find(elem => elem.type === PseudoJellyHeartTower).button;
+			        this.buyTower(PseudoJellyHeartTower, PseudoJellyHeartTower.cost, btn);
+                }
                 // console.log("Money:", controller.money);
             });
             this.registerObject(this.buyingTower);
@@ -739,6 +749,20 @@
             }
         }
 
+        data.projectiles = [];
+        for (let current = this.objects.first; current !== null; current = current.next){
+        	if (current.obj instanceof JellyHeart){
+				let p = {};
+				p.type = current.obj.constructor.name;
+				p.hp = current.obj.hitpoints;
+
+				p.x = current.obj.x;
+				p.y = current.obj.y;
+
+				data.projectiles.push(p);
+        	}
+        }
+
         window.localStorage.setItem("campusdefence_state", JSON.stringify(data));
     }
 
@@ -751,6 +775,8 @@
         let data = this.getState();
         if (!data)
             return;
+
+
 
         this.levelNumber = data.level;
         this.hp = data.health;
@@ -783,6 +809,16 @@
                 }
             }
         }
+
+        for (var i = 0; i < data.projectiles.length; i++) {
+
+        	let pt = controller.map.getGridAt(data.projectiles[i].x, data.projectiles[i].y);
+        	let p = new JellyHeart(pt);
+        	p.hitpoints = data.projectiles[i].hp;
+
+        	controller.registerObject(p);
+        }
+
     }
 
     clearState() {
@@ -808,7 +844,11 @@ class PseudoTower extends GameObject {
         let rect = controller.gameArea.canvas.getBoundingClientRect();
         this.x = Math.round(controller.gameArea.canvasToGridX(event.clientX - rect.left));
         this.y = Math.round(controller.gameArea.canvasToGridY(event.clientY - rect.top));
-        this.posOK = controller.map.validPosition(this.x, this.y) && controller.map.getGridAt(this.x, this.y) === null;
+
+        if(this.type === PseudoJellyHeartTower)
+        	this.posOK = controller.map.validPosition(this.x, this.y) && controller.map.getGridAt(this.x, this.y) instanceof PathTile;
+        else
+        	this.posOK = controller.map.validPosition(this.x, this.y) && controller.map.getGridAt(this.x, this.y) === null;
     }
 
     done() {
@@ -841,22 +881,5 @@ class PseudoTower extends GameObject {
             );
         super.draw(gameArea);
     }
-}
-
-
-function getCookie(cname) {
-  var name = cname + "=";
-  var decodedCookie = decodeURIComponent(document.cookie);
-  var ca = decodedCookie.split(';');
-  for(var i = 0; i <ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
 }
 

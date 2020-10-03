@@ -142,6 +142,40 @@ class AlbaMap extends TDMap {
     }
 }
 
+
+class MaskinMap extends TDMap {
+
+    static get mapName() {
+        return "M (Medel)";
+    }
+
+    constructor(gameArea) {
+        let standardPath = [
+            [14, 16],
+            [8, 13],
+            [7, 13],
+            [7, 12],
+            [10, 12],
+            [19, 11],
+            [19, 10],
+            [9, 6],
+            [1, 6],
+            [1, 1],
+            [8, 1],
+            [9, 1],
+            [10,1],
+            [10, -1]
+        ];
+        let path = TDMap.fixPath(standardPath);
+        var map_img = new Image();
+        map_img.src = "img/map_M.png";
+
+        super(map_img, path, gameArea);
+    }
+
+
+}
+
 class FadderietMap extends TDMap {
     static get mapName() {
         return "Fadderiet (Svårare)";

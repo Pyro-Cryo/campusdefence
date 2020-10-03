@@ -26,8 +26,6 @@ class Patch extends Hug {
     }
 }
 
-
-
 let fadderimg = new Image();
 fadderimg.src = "img/gab.png";
 
@@ -297,6 +295,110 @@ class MakeCoffe extends Gadget {
     }
 
     draw(gameArea){
+    }
+
+}
+
+
+let geleimg = new Image();
+geleimg.src = "img/gele.png";
+
+class JellyHeart extends BasicProjectile {
+
+    static get damage() { return 1; }
+    static get hitpoints() { return 20; }
+    static get persistent() { return true; }
+    static get drawHealthBar() { return true; }
+
+    constructor(pathtile){
+        super(controller.map, geleimg, {x:pathtile.x, y:pathtile.y, range:1, hits:0}, 0, 0, 0.75, 0);
+        this.x = pathtile.x;
+        this.y = pathtile.y;
+        this.angle = 0;
+    }
+}
+
+class PseudoJellyHeartTower extends BaseTower {
+        // Range in grid units
+    static get range() { return 0.9; }
+    // The tower's sprite
+    static get image() { return geleimg; }
+    // The tower's sprite's scale
+    static get scale() { return 0.75; }
+    static get cost() { return Math.round(JellyHeart.hitpoints*2); }
+    static get name() { return "Gelehjärtan"; }
+    static get desc() { return "Att få ett gelehjärta är nästan som att få en kram. Men se upp, ninjornas kärlek är dyrköpt. Kommer med 20 gelehallon per ask"; }
+
+    constructor(x,y) {
+        // super() ska inte köras här. Vi använder bara torn-klassen för att kunna köpa våra geleprojektiler
+
+        // När vi "köper tornet" spawnar vi en projektil på pathen och sedan despawnar vi oss själva, dvs lägger inte till oss nånstans.
+        let p = new JellyHeart(controller.map.getGridAt(x,y));
+        controller.registerObject(p);
+
+        // constructors måste returnera nånting om de inte kallar på super()
+        return p;
+    }
+}
+
+
+let flashimg = new Image();
+flashimg.src = "img/flash.png";
+class Stunned extends BaseEffect {
+
+    static get image() { return flashimg; }
+    static get scale() { return 0.05; }
+
+    constructor(time) {
+        super(time / controller.updateInterval);
+    }
+    init(object){
+        this.speed = object.speed;
+        object.speed = 0;
+        super.init(object);
+    }
+    apply(object) {
+        object.speed = this.speed;
+        this.remove(object);
+    }
+}
+
+class Flash extends OmniProjectile {
+
+    static get hitpoints() { return 50; }
+    static get damage() { return 0; }
+
+    constructor(source) {
+        super(source, flashimg, 0.75, 50);
+    }
+    hitCreep(creep){
+        let b = new Stunned(2000);
+        creep.addEffect(b);
+
+        super.hitCreep(creep);
+    }
+}
+
+
+let feliximg = new Image();
+feliximg.src = "img/felix.png";
+class MediaFadder extends TargetingTower {
+
+    static get range() { return 4; }
+    // Cooldown time for projectiles, in ms
+    static get CDtime() { return 1500; }
+    // The tower's sprite
+    static get image() { return feliximg; }
+    // The tower's sprite's scale
+    static get scale() { return 0.2; }
+    static get cost() { return 500; }
+    static get name() { return "MediaFadder"}
+    static get desc() { return "Stunnar Ninjor med sin kamerablixt"; }
+
+
+    projectile(target) {
+        // Create and return a new projectile object, that is targeted at target
+        return new Flash(this);
     }
 
 }
