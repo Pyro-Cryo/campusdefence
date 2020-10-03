@@ -24,6 +24,18 @@
         this.healthcounter = document.getElementById("healthcounter");
         this.moneycounter = document.getElementById("moneycounter");
 
+        this.versions = [
+            "1.1.0"
+        ];
+        if ((window.localStorage.getItem("campusdefence_version") || "1.0") !== this.versions[this.versions.length - 1]) {
+            //window.alert("Campus Defence har uppdaterats och ditt sparade spel går tyvärr inte längre att fortsätta på.");
+            window.localStorage.setItem("campusdefence_version", this.versions[this.versions.length - 1]);
+            this.clearState();
+            location.reload();
+        }
+        window.localStorage.setItem("campusdefence_version", this.versions[this.versions.length - 1]);
+        document.getElementById("version").innerText = this.versions[this.versions.length - 1];
+
         this.resetbutton.onclick = function(){
             if(!window.confirm("Vill du verkligen börja om? Alla framsteg kommer förloras.")){
                 return;

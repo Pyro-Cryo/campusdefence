@@ -84,7 +84,23 @@ Matberedare
 
 
 Boomboxen
-	- Support-torn. Spelar olika skivor och har olika effekter beroende på skiva. 
+	- Support-torn. Spelar olika skivor och har olika effekter beroende på skiva. (Kan endast köpa ett? Får ett gratis vid nån nivå men går inte att köpa?)
+	Låtar:
+		- Rulla in en boll och låt den rulla. Default, ingen effekt?
+		- Liberty Bell March. Ninjorna går konstigt/långsammare?
+		- Porthos visa? Härjavisan? Äldre nollelåtar?
 
 Mediafadder
 	- Stunnar ninjor med sin kamerablixt
+	Uppgraderingar:
+		- Paparazzi (ökad firerate)
+	XOR {
+		- Hänt Extra (creeps hängs ut i media och tar skada)
+		- The Force (minskar creeps HP med 33% temporärt)
+		- Aftonbladet (50 ninjors-gräns per två tiles införs inom tornets range, resterande får köa utanför)
+	}
+
+Någon road spike-motsvarighet?
+	- "Kramkalas" = ett gäng faddrar som ligger i en hög och som ninjorna snubblar på?
+	- Ett paket geléhjärtan?
+	- En grupp nollan från en annan sektion som står ivägen?
