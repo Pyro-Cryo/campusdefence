@@ -1,4 +1,6 @@
 function getLevel(number, updateInterval) {
+    console.log(favoredDamageTypes());
+    
     let s = 1000 / updateInterval;
     switch (number) {
         case 1:
@@ -8,7 +10,7 @@ function getLevel(number, updateInterval) {
             return (new CreepSequence()
                 .send(30, Ninja).over(15 * s)
                 .wait(2 * s)
-                .send(20, Ninja).over(10 * s));
+                .send(20, ImmuneCreep(Ninja, [Hug, Fire], hugimg, 0.1)).over(10 * s));
         case 3:
             return (new CreepSequence()
                 .send(30, Ninja).over(10 * s)
@@ -27,8 +29,8 @@ function getLevel(number, updateInterval) {
                 .send(5, Blue).over(3 * s));
         case 6:
             return (new CreepSequence()
-                .send(1, Blue).immediately()
-                .wait(2 * s)
+                .send(1, ShieldedRed).immediately()
+                .wait(4 * s)
                 .send(40, Red).over(20 * s)
                 .interleave(new CreepSequence()
                     .wait(13 * s)
@@ -87,11 +89,9 @@ function getLevel(number, updateInterval) {
 
         case 16:
             return (new CreepSequence()
-                .send(1, TF_2).immediately()
-                .wait(1.5 * s)
-                .send(1, OF_2).immediately()
-                .wait(1.5 * s)
-                .send(1, SF_2).immediately());
+                .send(30, ShieldedBlue).over(30 * s)
+                .send(10, ShieldedPink).over(6 * s)
+                .send(5, ShieldedGreen).over(3 * s));
 
         case 17:
             return (new CreepSequence()
@@ -102,7 +102,8 @@ function getLevel(number, updateInterval) {
                 );
         case 18:
             return (new CreepSequence()
-                .send(25, Violet).over(14 * s));
+                .send(20, Green).over(20 * s).
+                interleave(new CreepSequence().wait(5 * s).send(20, ShieldedGreen).over(15 * s)));
 
         case 19:
             return (new CreepSequence()
@@ -160,7 +161,7 @@ function getLevel(number, updateInterval) {
 
         case 25:
             return (new CreepSequence()
-                .send(100, Pink).over(20 * s)
+                .send(100, ShieldedRed).over(20 * s)
                 .interleave(new CreepSequence()
                     .send(25, Green).over(10 * s)
                     .send(15, Violet).over(10 * s))
@@ -174,7 +175,8 @@ function getLevel(number, updateInterval) {
                 .wait(6 * s)
                 .send(9, Orange).over(2 * s)
                 .wait(6 * s)
-                .send(12, Orange).over(2.7 * s));
+                .send(6, Orange).over(2.7 * s)
+                .interleave(new CreepSequence().send(6, ShieldedOrange).over(3 * s)));
 
         case 27:
             return (new CreepSequence()
@@ -196,18 +198,18 @@ function getLevel(number, updateInterval) {
         case 29:
             return (new CreepSequence()
                 .send(25, Orange).over(7 * s)
-                .send(150, Red).over(10 * s));
+                .send(100, ShieldedRed).over(10 * s));
 
         case 30:
             return (new CreepSequence()
                 .send(60, Violet).over(15 * s)
-                .interleave(new CreepSequence().send(25, Pink).over(15 * s))
+                .interleave(new CreepSequence().send(25, ShieldedPink).over(15 * s))
                 .interleave(new CreepSequence().send(25, Green).over(15 * s))
                 .wait(2 * s)
-                .send(15, Orange).over(5 * s)
-                .send(25, Pink).over(5 * s)
+                .send(15, ShieldedOrange).over(5 * s)
+                .send(25, ShieldedPink).over(5 * s)
                 .wait(2 * s)
-                .send(50, Blue).over(10 * s)
+                .send(50, ShieldedBlue).over(10 * s)
                 .interleave(new CreepSequence()
                     .wait(30 * s)
                     .send(1, TF_3).immediately()
@@ -215,7 +217,7 @@ function getLevel(number, updateInterval) {
                     .send(1, OF_3).immediately()
                     .wait(1.75 * s)
                     .send(1, SF_3).immediately())
-                .send(80, Pink).over(25 * s)
+                .send(50, ShieldedPink).over(25 * s)
                 );
 
         default:
@@ -231,16 +233,20 @@ function autolevel(levelnumber, updateInterval){
 		.send(30, Pink).over(10 * s)
 		.interleave(new CreepSequence().send(30, Green).over(10 * s))
 		.wait(2 * s)
-		.send(2*levelnumber, Violet).over(levelnumber/4 * s)
-		.wait(2 * s)
-		.send(2*levelnumber, Green).over(levelnumber/4 * s)
-		.interleave(new CreepSequence().send(2*levelnumber, Pink).over(12/levelnumber * s))
+		.send(2*levelnumber, ShieldedGreen).over(levelnumber/4 * s)
+		.interleave(new CreepSequence().send(2*levelnumber, ShieldedPink).over(12/levelnumber * s))
 		.wait(2 * s);
 
 	if(levelnumber >= 40){
-		cs.send(Math.floor(0.1*levelnumber*levelnumber), Orange).over(levelnumber * s)
+		cs.send(Math.floor(0.1*levelnumber*levelnumber), ShieldedOrange).over(levelnumber * s)
 		.interleave(new CreepSequence().send(levelnumber, Pink).over(10 * s));
 	}
+
+    if(levelnumber % 3 == 0)
+        cs.send(Math.floor(levelnumber/5)*10, ShieldedGreen).over(5 * s).wait(1 * s);
+
+    if(levelnumber % 5 == 0)
+        cs.send(Math.floor(levelnumber/10)*20, ShieldedOrange).over(10 * s);
 
 	if(levelnumber % 4 == 0 || levelnumber % 6 == 0){
 		cs.send(1, TF_inf).immediately()
@@ -250,8 +256,8 @@ function autolevel(levelnumber, updateInterval){
 		.send(1, SF_inf).immediately()
 	}
 
-	if(levelnumber > 20){
-		cs.send(2*levelnumber, Orange).over(10 * s);
+	if(levelnumber > 50){
+		cs.send(2*levelnumber, ShieldedOrange).over(10 * s);
 	}
 
 	cs.send(levelnumber, Blue).over(10 * s)
@@ -342,6 +348,36 @@ function levelMessage(number) {
         default:
             return "_";
     }
+}
+
+const damageTypeMap = {};
+damageTypeMap[Fadder.name] = "Hugs";
+damageTypeMap[Forfadder1.name] = "Hugs";
+damageTypeMap[Frida.name] = "Cheats";
+damageTypeMap[Nicole.name] = "Flowers";
+damageTypeMap[Becca.name] = "Fire";
+damageTypeMap[Axel.name] = "Alcohol";
+damageTypeMap[Fnoell.name] = null;
+damageTypeMap[CoffeMaker.name] = null;
+
+
+function favoredDamageTypes() {
+    let hitCount = {
+        "Fire": 0,
+        "Flowers": 0,
+        "Alcohol": 0,
+        "Cheats": 0,
+        "Hugs": 0
+    };
+    controller.map.towers.map(t => [t.constructor.name, t.hits])
+        .concat(Object.entries(controller.hitsFromSoldTowers))
+        .forEach(tup => {
+            let type = damageTypeMap[tup[0]];
+            if (type)
+                hitCount[type] += tup[1];
+        });
+
+    return Object.entries(hitCount).sort((a, b) => b[1] - a[1]);
 }
 
 class CreepSequence {

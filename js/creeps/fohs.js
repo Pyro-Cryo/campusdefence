@@ -236,7 +236,7 @@ pbimg.src = "img/boom.png";
 class Payback extends InverseProjectile {
 
     constructor(source, target){
-        super(pbimg, source, target, 0.5, 1/controller.updateInterval);
+        super(pbimg, source, target, 0.5, 5/controller.updateInterval);
 
     }
     hitTower(tower) {

@@ -4,17 +4,21 @@
     <title>Campus Defence</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Försvara campus från Föhseriets onda lakejer i detta Tower Defence-spel till mottagningen 2020">
+    <meta name="keywords" content="Tower, Defence, Campus, Fysik, Teknisk Fysik, Fysiksektionen, KTH, Defense, TD">
+    <meta name="author" content="Pyro & Cryo">
+    <meta name="theme-color" content="#069080">
 
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="css/style.css">
-    <link rel="icon" type="image/png" href="img/fadderietslogga.png"/>
+    <link rel="icon" type="image/png" href="img/fadderietslogga.png" />
 
     <!-- Basic classes for rendering etc. -->
     <script type="text/javascript" src="js/gameArea.js"></script>
     <script type="text/javascript" src="js/gameObject.js"></script>
     <script type="text/javascript" src="js/controller.js"></script>
     <script type="text/javascript" src="js/splines.js"></script>
-    
+
     <!-- Somewhat generic classes for TD games -->
     <script type="text/javascript" src="js/map.js"></script>
     <script type="text/javascript" src="js/tower.js"></script>
@@ -125,13 +129,25 @@
                         <div name="upgrades"></div>
                     </div>
                 </div>
+                <h4 name="projectilename">Projektilnamn</h4>
+                <div class="projectilefield">
+                    <div>
+                        <img name="projectileimage" src="img/fadderietslogga.png" />
+                    </div>
+                    <div name="labels">
+                        <span class="template hideme">Infofält</span>
+                    </div>
+                    <div name="values">
+                        <span class="template hideme">Värde</span>
+                    </div>
+                </div>
                 <div class="priorityfield">
                     Målprioritet:
                     <select name="targeting">
                         <option value="first">Först</option>
                         <option value="last">Sist</option>
-                        <option value="strong">Stark</option>
-                        <option value="weak">Svag</option>
+                        <option value="strong">Starkast</option>
+                        <option value="weak">Svagast</option>
                     </select>
                 </div>
                 <div id="optionTemplate" class="contextOption template">
@@ -151,22 +167,22 @@
         </div>
     </div>
     <div class="footer">
-        Ett spel av <a href="https://f.kth.se/arcade/kvackman" target="_blank">Pyro</a> & Cryo
+        Campus Defence version <span id="version"></span> - ett spel av <a href="https://github.com/jonasnylund/campusdefence" target="_blank">Pyro & Cryo</a>
         <br /><span style="font-size: 8px">Om du undrar var de fina ikonerna kommer ifrån så är svaret <a href="https://fontawesome.com/" target="_blank">Font Awesome</a></span>
     </div>
 
     <script type="text/javascript">
         var controller = new TDController();
 
-        let availableMaps = [CampusMap, DiagMap, RandomMap];
+        //Tog bort diagonalmappen då den är så lik originalet
+        let availableMaps = [CampusMap, RandomMap, AlbaMap, FadderietMap];
         let mapclass = window.localStorage.getItem("campusdefence_mapclass") || availableMaps[0].name;
         mapclass = availableMaps.find(m => m.name === mapclass);
         let map = new mapclass(controller.gameArea, 19, 16);
         controller.setMap(map);
 
-        controller.setupTowerTable();
-
         controller.begin();
+        controller.setupTowerTable();
 
         let mapSelectElement = document.getElementById("mapSelect");
         availableMaps.forEach(m => {

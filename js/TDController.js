@@ -24,6 +24,18 @@
         this.healthcounter = document.getElementById("healthcounter");
         this.moneycounter = document.getElementById("moneycounter");
 
+        this.versions = [
+            "1.1.0"
+        ];
+        if ((window.localStorage.getItem("campusdefence_version") || "1.0") !== this.versions[this.versions.length - 1]) {
+            //window.alert("Campus Defence har uppdaterats och ditt sparade spel går tyvärr inte längre att fortsätta på.");
+            window.localStorage.setItem("campusdefence_version", this.versions[this.versions.length - 1]);
+            this.clearState();
+            location.reload();
+        }
+        window.localStorage.setItem("campusdefence_version", this.versions[this.versions.length - 1]);
+        document.getElementById("version").innerText = this.versions[this.versions.length - 1];
+
         this.resetbutton.onclick = function(){
             if(!window.confirm("Vill du verkligen börja om? Alla framsteg kommer förloras.")){
                 return;
@@ -50,6 +62,11 @@
         this.addTowerSpec({type: CoffeMaker, unlockLevel: 10});
         
         this.buyingTower = null;
+        
+        this.hitsFromSoldTowers = {};
+        this.towerSpecs.forEach(ts => {
+            this.hitsFromSoldTowers[ts.type.name] = 0;
+        });
     }
 
     begin(){
@@ -270,6 +287,9 @@
         let rect = controller.gameArea.canvas.getBoundingClientRect();
         this.x = Math.round(controller.gameArea.canvasToGridX(event.clientX - rect.left));
         this.y = Math.round(controller.gameArea.canvasToGridY(event.clientY - rect.top));
+        // Avkommentera för hjälp att rita banor
+        //console.log(this.x, this.y);
+
         if (!controller.map.validPosition(this.x, this.y))
             return;
         let tower = controller.map.getGridAt(this.x, this.y);
@@ -373,8 +393,9 @@
             window.scrollBy(0, -scrollAmount);
             window.scrollBy(0, scrollAmount);
         }
-        
-        let spec = this.towerSpecs.find(spec => this.selectedTower instanceof spec.type);
+
+        // Setup info field
+        let spec = this.towerSpecs.find(spec => this.selectedTower.constructor.name === spec.type.name);
         let sameTowers = this.map.towers.filter(t => t.constructor === this.selectedTower.constructor);
         let name = spec.name + (sameTowers.length > 1 ? " " + (sameTowers.indexOf(this.selectedTower) + 1) : "");
 
@@ -388,37 +409,6 @@
         let upgradesdiv = contextMenu.querySelector(".infofield div[name='upgrades']");
         upgradesdiv.innerText = "";
 
-        let prioselect = contextMenu.querySelector(".priorityfield > select[name='targeting']");
-
-        if(this.selectedTower.targeting === BaseTower.TARGET_NONE){
-            prioselect.disabled = true;
-            prioselect.value = null;
-        }
-        else{
-            prioselect.value = BaseTower.targetingValue(this.selectedTower.targeting);
-            prioselect.disabled = false;
-            prioselect.onchange = function(){
-                this.selectedTower.targeting = prioselect.value;
-            }.bind(this);
-        }
-
-        this.contextOption({
-            title: "Låna ut arbetskraft",
-            desc: "Skicka faddern att permanent hjälpa en annan sektion. Du får tillbaka " + (this.sellPriceMultiplier * 100) + " % av fadderns värde.",
-            imgsrc: "img/yeet.png",
-            button: {
-                action: "Adjö",
-                cost: -(this.sellPriceMultiplier * this.selectedTower.value),
-                onclick: () => {
-                    this.money += this.sellPriceMultiplier * this.selectedTower.value;
-                    this.selectedTower.destroy();
-                    this.selectedTower = null;
-                    this.contextMenuRefresh = null;
-                    this.destroyContextMenu();
-                }
-            }
-        });
-
         if (this.selectedTower.gadgets && this.selectedTower.gadgets.length)
         {
             this.listGadgets(this.selectedTower.gadgets, this.selectedTower.upgrades, upgradesdiv);
@@ -430,6 +420,46 @@
             upgradesdiv.innerText = "Inga";
             upgradesdiv.style.color = "gray";
         }
+
+        // Setup target priority switch
+        let prioselect = contextMenu.querySelector(".priorityfield > select[name='targeting']");
+
+        if (this.selectedTower.targeting === BaseTower.TARGET_NONE) {
+            prioselect.parentElement.classList.add("hideme");
+            prioselect.disabled = true;
+            prioselect.value = null;
+        }
+        else{
+            prioselect.value = BaseTower.targetingValue(this.selectedTower.targeting);
+            prioselect.parentElement.classList.remove("hideme");
+            prioselect.disabled = false;
+            prioselect.onchange = function(){
+                this.selectedTower.targeting = prioselect.value;
+            }.bind(this);
+        }
+
+        // Setup projectile info field
+        let projectileInfo = this.selectedTower.projectileInfo();
+        this.setupProjectileInfo(projectileInfo, contextMenu);
+        
+        // Setup available options
+        this.contextOption({
+            title: "Låna ut arbetskraft",
+            desc: "Skicka faddern att permanent hjälpa en annan sektion. Du får tillbaka " + (this.sellPriceMultiplier * 100) + " % av fadderns värde.",
+            imgsrc: "img/yeet.png",
+            button: {
+                action: "Adjö",
+                cost: -(this.sellPriceMultiplier * this.selectedTower.value),
+                onclick: () => {
+                    this.money += this.sellPriceMultiplier * this.selectedTower.value;
+                    this.hitsFromSoldTowers[this.selectedTower.constructor.name] += this.selectedTower.hits;
+                    this.selectedTower.destroy();
+                    this.selectedTower = null;
+                    this.contextMenuRefresh = null;
+                    this.destroyContextMenu();
+                }
+            }
+        });
 
         let contextOptions = [];
         if (this.selectedTower.upgrades) {
@@ -478,6 +508,55 @@
         }
 
         return contextOptions;
+    }
+
+    setupProjectileInfo(projectileInfo, contextMenu) {
+        contextMenu = contextMenu || document.querySelector(".contextMenu");
+
+        let projectilename = contextMenu.querySelector("h4[name='projectilename']");
+        let projectileinfofield = contextMenu.querySelector(".projectilefield");
+        if (!projectileInfo) {
+            projectilename.classList.add("hideme");
+            projectileinfofield.classList.add("hideme");
+        } else {
+            // Set name and image
+            projectilename.classList.remove("hideme");
+            projectileinfofield.classList.remove("hideme");
+            projectilename.innerText = projectileInfo.name;
+            projectileinfofield.querySelector("img[name='projectileimage']").src = projectileInfo.image.src;
+
+            let labeltemplate = projectileinfofield.querySelector("div[name='labels'] .template");
+            let valuetemplate = projectileinfofield.querySelector("div[name='values'] .template");
+            let labels = [];
+            let values = [];
+
+            // Add all info entries
+            for (var key of Object.keys(projectileInfo)) {
+                if (key === "name" || key === "image")
+                    continue;
+                let label = labeltemplate.cloneNode();
+                label.innerText = key;
+                labels.push(label);
+                let value = valuetemplate.cloneNode();
+                value.innerText = projectileInfo[key];
+                values.push(value);
+            }
+
+            // Set the correct classes on elements
+            for (let i = 0; i < labels.length; i++) {
+                labels[i].classList.remove("template");
+                labels[i].classList.remove("hideme");
+                values[i].classList.remove("template");
+                values[i].classList.remove("hideme");
+                if (i > 0) {
+                    labeltemplate.parentElement.appendChild(document.createElement("br"));
+                    valuetemplate.parentElement.appendChild(document.createElement("br"));
+                }
+
+                labeltemplate.parentElement.appendChild(labels[i]);
+                valuetemplate.parentElement.appendChild(values[i]);
+            }
+        }
     }
 
     checkContextOption(upgrade, option, currentState, blocking, existingRequired) {
@@ -551,7 +630,13 @@
         document.querySelector(".towerMarket").classList.remove("hideme");
         document.querySelector(".contextMenu").classList.add("hideme");
         document.querySelectorAll(".contextOption:not(.template)").forEach(option => option.remove());
+        this.destroyProjectileInfo();
         this.contextMenuRefresh = null;
+    }
+
+    destroyProjectileInfo() {
+        document.querySelectorAll(".projectilefield span:not(.template)").forEach(span => span.remove());
+        document.querySelectorAll(".projectilefield br").forEach(br => br.remove());
     }
 
 
@@ -630,6 +715,7 @@
         data.level = this.levelNumber;
         data.health = this.hp;
         data.money = this.money;
+        data.hitsFromSoldTowers = this.hitsFromSoldTowers;
         data.path = this.map.path.map(pt => [pt.x, pt.y]);
         data.towers = [];
 
@@ -669,6 +755,7 @@
         this.levelNumber = data.level;
         this.hp = data.health;
         this.money = data.money;
+        this.hitsFromSoldTowers = data.hitsFromSoldTowers;
         // Detta sköts i constructorn istället
         // this.path = data.path;
 

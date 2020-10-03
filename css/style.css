@@ -2,6 +2,7 @@ body {
     font-family: 'Nunito', sans-serif;
     margin: 0;
     background-color: #eaeaea;
+    min-width: 620px;
 }
 a {
     color: #069080;
@@ -172,7 +173,7 @@ button.controllerButton{
     margin-bottom: 2px;
 }
 
-    button.controllerButton:hover:not(.keptPressed):not(:disabled) {
+    button.controllerButton:hover:not(.keptPressed):not(:disabled):not(:active) {
         border: 1px solid #069080;
         fill: #069080;
     }
@@ -226,49 +227,84 @@ span.counter{
     margin-bottom: 5px;
 }
 
-.contextMenu .infofield > div {
-    margin-left: 20px;
-    margin-right: 20px;
+    .contextMenu .infofield > div {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+
+    .contextMenu .infofield > :first-child {
+        text-align: center;
+        align-self: center;
+        flex-shrink: 0;
+        margin-left: 0px;
+    }
+    .contextMenu .infofield > :nth-child(2) {
+        flex-shrink: 0;
+    }
+
+    .contextMenu .infofield > :nth-child(3) img {
+        position: relative;
+        height: 1em;
+        top: 0.2em;
+    }
+    .contextMenu .infofield > :last-child {
+        margin-right: 0px;
+    }
+
+    .contextMenu .infofield img {
+        max-width: 80px;
+        max-height: 80px;
+    }
+
+.contextMenu h4 {
+    margin-bottom: 0;
 }
 
-.contextMenu .infofield > :first-child {
-    text-align: center;
-    align-self: center;
-    flex-shrink: 0;
-    margin-left: 0px;
-}
-.contextMenu .infofield > :nth-child(2) {
-    flex-shrink: 0;
+.contextMenu .projectilefield {
+    display: flex;
+    padding: 5px;
+    margin-bottom: 5px;
 }
 
-.contextMenu .infofield > :nth-child(3) img {
-    position: relative;
-    height: 1em;
-    top: 0.2em;
-}
-.contexMenu .infofield > :last-child {
-    margin-right: 0px;
+    .contextMenu .projectilefield img {
+        max-width: 40px;
+        max-height: 40px;
+    }
 
-}
+    .contextMenu .projectilefield > div {
+        margin-left: 20px;
+        margin-right: 20px;
+    }
 
-.contextMenu .infofield img {
-    max-width: 80px;
-    max-height: 80px;
-}
+    .contextMenu .projectilefield > :first-child {
+        text-align: center;
+        align-self: center;
+        flex-shrink: 0;
+        margin-left: 0px;
+    }
+
+    .contextMenu .projectilefield > :nth-child(2) {
+        flex-shrink: 0;
+    }
 
 .contextMenu .priorityfield {
     display: block;
     padding: 5px;
     margin-bottom: 20px;
-    vertical-align: middle;
 }
 
-.contextMenu .priorityfield > select {
-    margin-right: 2em;
-    margin-left: 0.5em;
-    padding-left: 0.2em;
-    padding-right: 0.2em; 
-}
+    .contextMenu .priorityfield > select {
+        margin-right: 2em;
+        margin-left: 0.5em;
+        padding-left: 0.2em;
+        padding-right: 0.2em;
+        background-color: white;
+        border-radius: 1ex;
+        border: 1px solid #069080;
+        font-family: 'Nunito', sans-serif;
+        font-weight: bold;
+        outline: none;
+    }
 
 .contextOption {
     display: flex;
