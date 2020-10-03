@@ -175,7 +175,7 @@
         var controller = new TDController();
 
         //Tog bort diagonalmappen då den är så lik originalet
-        let availableMaps = [CampusMap, RandomMap, AlbaMap, FadderietMap];
+        let availableMaps = [CampusMap, AlbaMap, MaskinMap, FadderietMap, RandomMap];
         let mapclass = window.localStorage.getItem("campusdefence_mapclass") || availableMaps[0].name;
         mapclass = availableMaps.find(m => m.name === mapclass);
         let map = new mapclass(controller.gameArea, 19, 16);
