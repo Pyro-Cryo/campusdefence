@@ -2,6 +2,8 @@ class Projectile extends GameObject {
 
 	static get damage() { return 1; }
     static get hitpoints() { return 1; }
+    static get persistent() { return false; }
+    static get drawHealthBar() { return false; }
 
 
 	// Speed in grid units per tick
@@ -22,7 +24,9 @@ class Projectile extends GameObject {
 		this.onHitCreep = onHitCreep || null;
 
 		this.hitpoints = this.constructor.hitpoints;
+		this.initialHealth = this.constructor.hitpoints;
 		this.damage = this.constructor.damage;
+		this.drawHealthBar = this.constructor.drawHealthBar;
 	}
 
 	hit(pathTile) {
@@ -62,6 +66,12 @@ class Projectile extends GameObject {
 
 		super.update();
     }
+
+    draw(gameArea){
+		super.draw(gameArea);
+		if (this.drawHealthBar)
+            gameArea.bar(this.x, this.y, 0.5, 0.8, 3, this.hitpoints / this.initialHealth);
+	}
 }
 
 class BasicProjectile extends Projectile {
@@ -171,8 +181,6 @@ class SeekingProjectile extends Projectile{
 		}
 		super.hit(pathTile);
 	}
-
-
 
 } 
 

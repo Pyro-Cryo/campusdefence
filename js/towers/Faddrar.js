@@ -26,8 +26,6 @@ class Patch extends Hug {
     }
 }
 
-
-
 let fadderimg = new Image();
 fadderimg.src = "img/gab.png";
 
@@ -299,4 +297,46 @@ class MakeCoffe extends Gadget {
     draw(gameArea){
     }
 
+}
+
+
+let geleimg = new Image();
+geleimg.src = "img/gele.png";
+
+class JellyHeart extends BasicProjectile {
+
+    static get damage() { return 1; }
+    static get hitpoints() { return 20; }
+    static get persistent() { return true; }
+    static get drawHealthBar() { return true; }
+
+    constructor(pathtile){
+        super(controller.map, geleimg, {x:pathtile.x, y:pathtile.y, range:1, hits:0}, 0, 0, 0.75, 0);
+        this.x = pathtile.x;
+        this.y = pathtile.y;
+        this.angle = 0;
+    }
+}
+
+class PseudoJellyHeartTower extends BaseTower {
+        // Range in grid units
+    static get range() { return 0.9; }
+    // The tower's sprite
+    static get image() { return geleimg; }
+    // The tower's sprite's scale
+    static get scale() { return 0.75; }
+    static get cost() { return Math.round(JellyHeart.hitpoints*2); }
+    static get name() { return "Gelehjärtan"; }
+    static get desc() { return "Att få ett gelehjärta är nästan som att få en kram. Men se upp, ninjornas kärlek är dyrköpt. Kommer med 20 gelehallon per ask"; }
+
+    constructor(x,y) {
+        // super() ska inte köras här. Vi använder bara torn-klassen för att kunna köpa våra geleprojektiler
+
+        // När vi "köper tornet" spawnar vi en projektil på pathen och sedan despawnar vi oss själva, dvs lägger inte till oss nånstans.
+        let p = new JellyHeart(controller.map.getGridAt(x,y));
+        controller.registerObject(p);
+
+        // constructors måste returnera nånting om de inte kallar på super()
+        return p;
+    }
 }
