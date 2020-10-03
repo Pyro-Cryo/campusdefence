@@ -63,7 +63,7 @@
         this.addTowerSpec({type: Becca, unlockLevel: 5});
         this.addTowerSpec({type: Axel, unlockLevel: 6});
         this.addTowerSpec({type: Fnoell, unlockLevel: 7});
-        this.addTowerSpec({type: CoffeMaker, unlockLevel: 10});
+        this.addTowerSpec({type: MediaFadder, unlockLevel: 10});
         
         this.buyingTower = null;
     }
@@ -287,7 +287,7 @@
         this.x = Math.round(controller.gameArea.canvasToGridX(event.clientX - rect.left));
         this.y = Math.round(controller.gameArea.canvasToGridY(event.clientY - rect.top));
         // Avkommentera för hjälp att rita banor
-        //console.log(this.x, this.y);
+        console.log(this.x, this.y);
 
         if (!controller.map.validPosition(this.x, this.y))
             return;

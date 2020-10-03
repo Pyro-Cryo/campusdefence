@@ -1,9 +1,9 @@
 class Projectile extends GameObject {
 
 	static get damage() { return 1; }
-    static get hitpoints() { return 1; }
-    static get persistent() { return false; }
-    static get drawHealthBar() { return false; }
+	static get hitpoints() { return 1; }
+	static get persistent() { return false; }
+	static get drawHealthBar() { return false; }
 
 
 	// Speed in grid units per tick
@@ -59,18 +59,18 @@ class Projectile extends GameObject {
 			if (pt instanceof PathTile && pt.hasCreep())
 				this.hit(pt);
 
-        }
+		}
 
-        if (this.range < 0)
-            this.despawn();
+		if (this.range < 0)
+			this.despawn();
 
 		super.update();
-    }
+	}
 
-    draw(gameArea){
+	draw(gameArea){
 		super.draw(gameArea);
 		if (this.drawHealthBar)
-            gameArea.bar(this.x, this.y, 0.5, 0.8, 3, this.hitpoints / this.initialHealth);
+			gameArea.bar(this.x, this.y, 0.5, 0.8, 3, this.hitpoints / this.initialHealth);
 	}
 }
 
@@ -184,6 +184,31 @@ class SeekingProjectile extends Projectile{
 
 } 
 
+
+class OmniProjectile extends Projectile {
+
+	constructor(source, image, scale, delay) {
+		super(controller.map, image, source, 0, 0, scale, 0, undefined);
+
+		this.flying = false;
+		this.angle = 0;
+		this.runticks = delay / controller.updateInterval;
+	}
+
+	update() {
+		if(--this.runticks <= 0){
+			// Träffar alla creeps inom tornets radius
+			for (var i = 0; i < this.sourceTower.inrange.length; i++) {
+				this.sourceTower.inrange[i].data.forEach(function(creep){
+					if(this.hitpoints-- > 0)
+						this.hitCreep(creep);
+				}.bind(this));
+			}
+			this.despawn();
+		}
+		super.update();
+	}
+}
 
 class InverseProjectile extends GameObject {
 	// Speed in grid units per tick

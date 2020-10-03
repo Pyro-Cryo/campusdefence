@@ -340,3 +340,65 @@ class PseudoJellyHeartTower extends BaseTower {
         return p;
     }
 }
+
+
+let flashimg = new Image();
+flashimg.src = "img/flash.png";
+class Stunned extends BaseEffect {
+
+    static get image() { return flashimg; }
+    static get scale() { return 0.05; }
+
+    constructor(time) {
+        super(time / controller.updateInterval);
+    }
+    init(object){
+        this.speed = object.speed;
+        object.speed = 0;
+        super.init(object);
+    }
+    apply(object) {
+        object.speed = this.speed;
+        this.remove(object);
+    }
+}
+
+class Flash extends OmniProjectile {
+
+    static get hitpoints() { return 50; }
+    static get damage() { return 0; }
+
+    constructor(source) {
+        super(source, flashimg, 0.75, 50);
+    }
+    hitCreep(creep){
+        let b = new Stunned(2000);
+        creep.addEffect(b);
+
+        super.hitCreep(creep);
+    }
+}
+
+
+let feliximg = new Image();
+feliximg.src = "img/felix.png";
+class MediaFadder extends TargetingTower {
+
+    static get range() { return 4; }
+    // Cooldown time for projectiles, in ms
+    static get CDtime() { return 1500; }
+    // The tower's sprite
+    static get image() { return feliximg; }
+    // The tower's sprite's scale
+    static get scale() { return 0.2; }
+    static get cost() { return 500; }
+    static get name() { return "MediaFadder"}
+    static get desc() { return "Stunnar Ninjor med sin kamerablixt"; }
+
+
+    projectile(target) {
+        // Create and return a new projectile object, that is targeted at target
+        return new Flash(this);
+    }
+
+}
