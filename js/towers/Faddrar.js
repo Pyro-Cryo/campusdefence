@@ -48,14 +48,13 @@ class Fadder extends TargetingTower {
     }
 
     target(){
-        let pt = super.target();
-        if(pt === null)
+        let creep = super.target();
+        if(creep === null)
             return null;
 
         if(!this.activetargeting)
-            return pt;
+            return creep;
 
-        let creep = pt.arbitraryCreep();
         let dist = Math.sqrt(Math.pow(this.x - creep.x, 2) + Math.pow(this.y - creep.y, 2));
         let ticks = dist / 2;
 
@@ -70,6 +69,21 @@ class Fadder extends TargetingTower {
 
     projectileType(){
         return Hug;
+    }
+
+    projectileInfo() {
+        let info = {
+            name: "Kram",
+            image: hugimg,
+            "Skada": 1,
+            "Specialeffekt": "Ingen"
+        };
+        if (this.projectiletype === 2)
+            info["Extra kramar"] = 2;
+        if (this.maxhits !== 1)
+            info["Träffar per skott"] = this.maxhits;
+
+        return info;
     }
 
     projectile(target) {
@@ -175,6 +189,16 @@ class Forfadder1 extends Fadder {
         return Hug;
     }
 
+    projectileInfo() {
+        let info = super.projectileInfo();
+        if (this.makemoney) {
+            info.name = "Märke";
+            info.image = patchimg;
+            info["Specialeffekt"] = "Få 💰1 per träff";
+        }
+        return info;
+    }
+
     configUpgrades() {
         super.configUpgrades();
 
@@ -270,7 +294,6 @@ class MakeCoffe extends Gadget {
 
     addTo(tower){
         tower.apply();
-        super.apply(tower);
     }
 
     draw(gameArea){

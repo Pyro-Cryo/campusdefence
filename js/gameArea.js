@@ -23,28 +23,28 @@ class GameArea {
             if(scale == 1)
                 this.context.drawImage(
                     image,
-                    x - image.width / 2, y - image.height / 2
+                    Math.floor(x - image.width / 2), Math.floor(y - image.height / 2)
                     );
             else
                 this.context.drawImage(
                     image,
-                    x - image.width * scale / 2, y - image.height * scale / 2,
-                    image.width * scale, image.height * scale
+                    Math.floor(x - image.width * scale / 2), Math.floor(y - image.height * scale / 2),
+                    Math.floor(image.width * scale), Math.floor(image.height * scale)
                 );
         }
         else {
-            this.context.translate(x, y);
+            this.context.translate(Math.floor(x), Math.floor(y));
             this.context.rotate(angle);
             if(scale == 1)
                 this.context.drawImage(
                     image,
-                    - image.width / 2, - image.height / 2
+                    - Math.floor(image.width / 2), - Math.floor(image.height / 2)
                     );
             else
                 this.context.drawImage(
                     image,
-                    -image.width * scale / 2, -image.height * scale / 2,
-                    image.width * scale, image.height * scale
+                    -Math.floor(image.width * scale / 2), -Math.floor(image.height * scale / 2),
+                    Math.floor(image.width * scale), Math.floor(image.height * scale)
                 );
             this.context.rotate(-angle);
             this.context.translate(-x, -y);

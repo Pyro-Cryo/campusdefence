@@ -62,7 +62,7 @@ class BaseCreep extends GameObject {
 	onDeath() {
 		this.despawnTimer = 2;
 		this.image = ninjastar;
-		this.angle = 360 * Math.random();
+		this.angle = Math.PI * Math.random();
 		controller.money += this.value;
 		if(this.pathtile !== null){
 			this.pathtile.remove(this);
@@ -180,4 +180,89 @@ class MatryoshkaCreep extends BaseCreep {
         }
         super.onDeath();
     }
+}
+
+
+let shields = [new Image(), new Image(), new Image()];
+shields[0].src = "img/shield0.png";
+shields[1].src = "img/shield1.png";
+shields[2].src = "img/shield2.png";
+
+class Shield extends GameObject {
+
+	constructor(parent, health){
+		super(shields[0], parent.x, parent.y, 0, 0.5);
+		this.parent = parent;
+		this.health = health;
+		this.initial_health = this.health;
+	}
+
+	update(){
+		this.x = this.parent.x;
+		this.y = this.parent.y + 0.2;
+
+		if(this.health / this.initial_health < 0.5){
+			this.image = shields[2];
+		}
+		else if(this.health / this.initial_health < 0.8){
+			this.image = shields[1];
+		}
+	}
+}
+
+class ShieldedCreep extends MatryoshkaCreep {
+
+	static get shieldStrength() { return 10; }
+	static get creepType() { 
+		throw new Error("Abstract property creepType must be overridden by subclass");
+	}
+
+	// kopiera egenskaper från underliggande creep
+	static get image() { return this.creepType.image; }
+	static get speed() { return this.creepType.speed * 0.75; }
+	static get scale() { return this.creepType.scale; }
+	static get strength() { return this.creepType.strength + this.shieldStrength; }
+	static get health() { return this.creepType.health + 4; }
+	static get value() { return this.creepType.value; }
+	static get drawHealthBar() { return this.creepType.drawHealthBar; }
+    static get innerCreep() { return this.creepType.innerCreep; }
+    static get innerCreepCount() { return this.creepType.innerCreepCount; }
+    static get damage() { return this.creepType.damage; }
+
+
+	constructor(x,y){
+		super(x,y);
+		this.shield = new Shield(this, this.constructor.shieldStrength);
+	}
+
+	onHit(projectile) {
+		if(this.shield === null){
+			super.onHit(projectile);
+			return;
+		}
+
+		this.shield.health -= projectile.damage;
+
+		if(this.shield.health <= 0){
+			// Om skölden har negativ hälsa tar vi skada motsvarande skillnaden till noll
+			this.health += this.shield.health;
+			this.shield = null;
+		}
+
+		if(this.health <= 0){
+			this.onDeath();
+		}
+	}
+
+	update() {
+		super.update();
+		if(this.shield !== null)
+			this.shield.update();
+	}
+
+	draw(gameArea) {
+		super.draw(gameArea);
+		if(this.shield !== null)
+			this.shield.draw(gameArea);
+	}
 }
