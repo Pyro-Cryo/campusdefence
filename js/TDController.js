@@ -292,7 +292,7 @@
         this.x = Math.round(controller.gameArea.canvasToGridX(event.clientX - rect.left));
         this.y = Math.round(controller.gameArea.canvasToGridY(event.clientY - rect.top));
         // Avkommentera för hjälp att rita banor
-        console.log(this.x, this.y);
+        //console.log(this.x, this.y);
 
         if (!controller.map.validPosition(this.x, this.y))
             return;

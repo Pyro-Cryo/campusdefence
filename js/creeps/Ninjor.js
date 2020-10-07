@@ -29,6 +29,9 @@ class Red extends ColorNinja {
 }
 class Blue extends ColorNinja {
     static get speed() { return 0.6; }
+    static get health() { return 4; }
+    static get drawHealthBar() { return true; }
+    static get innerCreepCount() { return 1; }
     static get image() { return colorimgs[1]; }
     static get innerCreep() { return Red; }
 }

@@ -1,6 +1,6 @@
 function getLevel(number, updateInterval) {
     console.log(favoredDamageTypes());
-    
+
     let s = 1000 / updateInterval;
     switch (number) {
         case 1:
@@ -10,7 +10,7 @@ function getLevel(number, updateInterval) {
             return (new CreepSequence()
                 .send(30, Ninja).over(15 * s)
                 .wait(2 * s)
-                .send(20, ImmuneCreep(Ninja, [Hug, Fire], hugimg, 0.1)).over(10 * s));
+                .send(20, Ninja/*ImmuneCreep(Ninja, [Hug, Fire], hugimg, 0.1)*/).over(10 * s));
         case 3:
             return (new CreepSequence()
                 .send(30, Ninja).over(10 * s)
