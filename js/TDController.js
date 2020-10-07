@@ -682,17 +682,18 @@
 
     buyTower(type, cost, originatingButton) {
         let onlyCancel = this.buyingTower !== null && this.buyingTower.type === type;
+        console.log(type, originatingButton);
 
         // Avbryt ett eventuellt pågående köp om sånt finns
         if (this.buyingTower !== null) {
-            this.buyingTower.done();
+            this.buyingTower.done(false);
             this.buyingTower = null;
         }
 
         // Om man tryckte på ett annat torn än det man först höll på att köpa
         // (eller om man inte höll på att köpa något) påbörjar vi ett köp
         if (!onlyCancel) {
-        	this.buyingTower = new PseudoTower(type, cost, () => {
+        	this.buyingTower = new PseudoTower(type, cost, (didBuy) => {
                 let spec = this.towerSpecs.find(s => s.type === type);
 
                 spec.button.innerHTML = this.buyingTower.oldContent;
@@ -700,7 +701,7 @@
                 controller.buyingTower = null;
                 this.saveToCookie();
 
-                if(spec.type === PseudoJellyHeartTower && this.money >= cost){
+                if (didBuy && spec.type === PseudoJellyHeartTower && this.money >= cost){
 			        // Köp fler på en gång
 			        let btn = this.towerSpecs.find(elem => elem.type === PseudoJellyHeartTower).button;
 			        this.buyTower(PseudoJellyHeartTower, PseudoJellyHeartTower.cost, btn);
@@ -851,19 +852,19 @@ class PseudoTower extends GameObject {
         	this.posOK = controller.map.validPosition(this.x, this.y) && controller.map.getGridAt(this.x, this.y) === null;
     }
 
-    done() {
+    done(didBuy) {
         controller.gameArea.canvas.removeEventListener('mousemove', this.mouseMoveCallback);
         controller.gameArea.canvas.removeEventListener('click', this.clickCallback);
         this.id = null;
 
-        this.doneCallback();
+        this.doneCallback(didBuy);
     }
 
     buy() {
         if (this.posOK) {
             controller.money -= this.cost;
             new this.type(this.x, this.y);
-            this.done();
+            this.done(true);
         }
     }
 
