@@ -282,7 +282,9 @@
                 } else
                     throw new Error("Unrecognized image type");
             };
-            if (codebook[creepType].image.complete)
+            if (codebook[creepType].image instanceof Image && codebook[creepType].image.complete)
+                addImg();
+            else if (codebook[creepType].image instanceof HTMLCanvasElement)
                 addImg();
             else {
                 let onload = codebook[creepType].image.onload;

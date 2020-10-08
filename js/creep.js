@@ -298,7 +298,8 @@ function generateImmunityEffectImage(immunityImg, immunityImgScale) {
 }
 
 function generateImmuneCreepImage(immunityEffectImage, creepType) {
-    if (immunityEffectImage === null || (immunityEffectImage instanceof Image && !immunityEffectImage.complete))
+    if (immunityEffectImage === null || (immunityEffectImage instanceof Image && !immunityEffectImage.complete)
+            || creepType.image == null || (creepType.image instanceof Image && !creepType.image.complete))
         return null;
 
     let canvas = document.createElement("canvas");
