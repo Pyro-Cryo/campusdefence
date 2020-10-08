@@ -1,6 +1,4 @@
 function getLevel(number, updateInterval) {
-    console.log(favoredDamageTypes());
-
     let s = 1000 / updateInterval;
     switch (number) {
         case 1:
@@ -10,7 +8,7 @@ function getLevel(number, updateInterval) {
             return (new CreepSequence()
                 .send(30, Ninja).over(15 * s)
                 .wait(2 * s)
-                .send(20, Ninja/*ImmuneCreep(Ninja, [Hug, Fire], hugimg, 0.1)*/).over(10 * s));
+                .send(20, Ninja).over(10 * s));
         case 3:
             return (new CreepSequence()
                 .send(30, Ninja).over(10 * s)
@@ -29,7 +27,7 @@ function getLevel(number, updateInterval) {
                 .send(5, Blue).over(3 * s));
         case 6:
             return (new CreepSequence()
-                .send(1, ShieldedRed).immediately()
+                .send(5, getImmuneCreep(Red, 0.5)).over(2 * s)
                 .wait(4 * s)
                 .send(40, Red).over(20 * s)
                 .interleave(new CreepSequence()
@@ -45,7 +43,7 @@ function getLevel(number, updateInterval) {
 
         case 9:
             return (new CreepSequence()
-                .send(40, Red).over(20 * s)
+                .send(40, getImmuneCreep(Red, 0.6)).over(20 * s)
                 .interleave(new CreepSequence().send(30, Blue).over(20 * s))
                 .wait(8 * s)
                 .send(10, Pink).over(5 * s));
@@ -65,7 +63,8 @@ function getLevel(number, updateInterval) {
 
         case 12:
             return (new CreepSequence()
-                .send(50, Blue).over(20 * s)
+                .send(25, getImmuneCreep(Blue, 0.7)).over(20 * s)
+                .send(25, getImmuneCreep(Blue, 1, true, 1)).over(10 * s)
                 .wait(1 * s)
                 .send(10, Pink).over(10 * s));
 
@@ -307,6 +306,7 @@ function levelMessage(number) {
 
         case 5: return "Fadderisterna har lite olika förmågor - testa dig fram och se vilka du föredrar!<br /><br /><i>Att fadderisterna skulle ansluta sig var väntat - Föhseriet står redo att skicka ut de nästlade trojanska ninjorna.</i>";
 
+        // TODO: uppdatera för att förklara immuniteter
         case 6: return "Blåa ninjor har två röda ninjor i sig - mycket att hantera men det klirrar dödsskönt i kassakistan. Varje ninja du kramar ger en peng, förutom extrapengarna du får efter varje nivå.<br /><br /><i>Trots ninjornas upprepade anfall finns inte minsta antydan till tvekan hos faddrarna - ingen ninja kommer fram okramad.</i>";
 
         case 7: return "Förhoppningsvis har du redan hittat informationslisten ovanför spelplanen - där kan du pausa, snabbspola och återställa spelet samt se din fikabudget och hur många nØllan som finns kvar. Du kan också se vad nästa nivå har att bjuda på.<br /><br /><i>Föhseriet gör sig redo att ta i med hårdhanskarna.</i>";
@@ -353,6 +353,7 @@ function levelMessage(number) {
 const damageTypeMap = {};
 damageTypeMap[Fadder.name] = "Hugs";
 damageTypeMap[Forfadder1.name] = "Hugs";
+damageTypeMap[PseudoJellyHeartTower.name] = "Hugs";
 damageTypeMap[Frida.name] = "Cheats";
 damageTypeMap[Nicole.name] = "Flowers";
 damageTypeMap[Becca.name] = "Fire";
@@ -361,7 +362,7 @@ damageTypeMap[Fnoell.name] = null;
 damageTypeMap[CoffeMaker.name] = null;
 
 
-function favoredDamageTypes() {
+function favoredDamageTypes(weights) {
     let hitCount = {
         "Fire": 0,
         "Flowers": 0,
@@ -377,7 +378,35 @@ function favoredDamageTypes() {
                 hitCount[type] += tup[1];
         });
 
+    if (weights)
+        Object.keys(hitCount).forEach(type => {
+            hitCount[type] *= weights[type] || 1;
+        });
+
     return Object.entries(hitCount).sort((a, b) => b[1] - a[1]);
+}
+
+function getImmuneCreep(creepType, resistance, persistent, nth) {
+    let favored = favoredDamageTypes({ "Hugs": 0.5, "Fire": 2 });
+    console.log("Player strategy:", Object.fromEntries(favored));
+    let damagetype = favored[nth || 0][0];
+
+    let immunities = {
+        "Fire": [Fire, HotFire, FireBomb, FireRing, Burning],
+        "Flowers": [Flower, FleshEatingFlower, GMOFlower, Bouquet, Corn, FlowerWrapper, FleshEatingWrapper, GMOWrapper, BoquetWrapper, CornWrapper, Converted, FleshEatingConverted, GMOConverted],
+        "Alcohol": [Molotov, Drunk],
+        "Cheats": [Wolfram, Distracted, PersistentDistracted, WolframWrapper],
+        "Hugs": [Hug, JellyHeart] // Känns elakt att Jelly inkluderas
+    }[damagetype];
+    let imgInfo = {
+        "Fire": [fireimg, 0.5],
+        "Flowers": [flowerimg, 0.5],
+        "Alcohol": [molotovimg, 0.5],
+        "Cheats": [wolframimg, 0.5],
+        "Hugs": [hugimg, 0.1]
+    }[damagetype];
+    
+    return ImmuneCreep(creepType, immunities, imgInfo[0], imgInfo[1], resistance, persistent || persistent === undefined);
 }
 
 class CreepSequence {
@@ -414,15 +443,19 @@ class CreepSequence {
         }, 0);
     }
 
+    static creepName(creepType) {
+        return creepType.name + (creepType._immunecreepTypeId || "");
+    }
+
     creepSummary() {
         if (!this.iterating || !this._creepSummary)
             this._creepSummary = this.totalSequence.concat(this.currentSequence).reduce((tot, ins) => {
                 if (ins[0] === "spawn") {
                     if (ins[1] instanceof Array)
                         for (let i = 0; i < ins[1].length; i++)
-                            tot[ins[1][i].name] = (tot[ins[1][i].name] || 0) + 1;
+                            tot[CreepSequence.creepName(ins[1][i])] = (tot[CreepSequence.creepName(ins[1][i])] || 0) + 1;
                     else
-                        tot[ins[1].name] = (tot[ins[1].name] || 0) + 1;
+                        tot[CreepSequence.creepName(ins[1])] = (tot[CreepSequence.creepName(ins[1])] || 0) + 1;
                 }
 
                 return tot;
@@ -454,12 +487,12 @@ class CreepSequence {
                 if (ins[1] instanceof Array)
                 {
                     for (let i = 0; i < ins[1].length; i++)
-                        if (!tot[ins[1][i].name])
-                            tot[ins[1][i].name] = ins[1][i];
+                        if (!tot[CreepSequence.creepName(ins[1][i])])
+                            tot[CreepSequence.creepName(ins[1][i])] = ins[1][i];
                 }
                 else
-                    if (!tot[ins[1].name])
-                        tot[ins[1].name] = ins[1];
+                    if (!tot[CreepSequence.creepName(ins[1])])
+                        tot[CreepSequence.creepName(ins[1])] = ins[1];
             }
 
             return tot;

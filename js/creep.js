@@ -163,7 +163,7 @@ class MatryoshkaCreep extends BaseCreep {
 
             // Persistent effects carry over
             this.effects.forEach(function(obj){
-				if(obj.constructor.persistent){
+				if (obj.constructor.persistent || obj.persistent) {
 					nc.addEffect(obj);
 				}
 			});
@@ -267,36 +267,123 @@ class ShieldedCreep extends MatryoshkaCreep {
 	}
 }
 
-function ImmuneCreep(creepType, immunityTypes, immunityImg, immunityScale) {
-	function _immuneCreep() {
-		const c = new creepType();
-		c.addEffect(new Immunity(immunityTypes, immunityImg, immunityScale));
+let nopeimg = new Image();
+nopeimg.src = "img/nope_gray.png";
+
+function generateImmunityEffectImage(immunityImg, immunityImgScale) {
+    const totalImgScale = 1.2;
+    const immunityImgScaleFactor = 0.9;
+
+    if (!nopeimg.complete || immunityImg === null || (immunityImg instanceof Image && !immunityImg.complete))
+        return null;
+
+    let canvas = document.createElement("canvas");
+    canvas.width = Math.ceil(immunityImg.width * immunityImgScale * totalImgScale);
+    canvas.height = Math.ceil(immunityImg.height * immunityImgScale * totalImgScale);
+    let ctx = canvas.getContext("2d");
+
+    let dx = (canvas.width - Math.ceil(immunityImg.width * immunityImgScale * immunityImgScaleFactor)) / 2;
+    let dy = (canvas.height - Math.ceil(immunityImg.height * immunityImgScale * immunityImgScaleFactor)) / 2;
+    ctx.drawImage(immunityImg, dx, dy,
+        Math.ceil(immunityImg.width * immunityImgScale * immunityImgScaleFactor),
+        Math.ceil(immunityImg.height * immunityImgScale * immunityImgScaleFactor)
+    );
+
+    let nopescale = Math.min(canvas.width / nopeimg.width, canvas.height / nopeimg.height);
+    dx = (canvas.width - Math.ceil(nopeimg.width * nopescale)) / 2;
+    dy = (canvas.height - Math.ceil(nopeimg.height * nopescale)) / 2;
+    ctx.drawImage(nopeimg, dx, dy, Math.ceil(nopeimg.width * nopescale), Math.ceil(nopeimg.height * nopescale));
+
+    return canvas;
+}
+
+function generateImmuneCreepImage(immunityEffectImage, creepType) {
+    if (immunityEffectImage === null || (immunityEffectImage instanceof Image && !immunityEffectImage.complete))
+        return null;
+
+    let canvas = document.createElement("canvas");
+    canvas.width = creepType.image.width;
+    canvas.height = creepType.image.height;
+    let ctx2 = canvas.getContext("2d");
+
+    ctx2.drawImage(creepType.image, 0, 0);
+    let immunityeffectscale = Math.min(creepType.image.width / immunityEffectImage.width, creepType.image.height / immunityEffectImage.height) / 2;
+    let dx = creepType.image.width - Math.ceil(immunityEffectImage.width * immunityeffectscale);
+    ctx2.drawImage(immunityEffectImage, dx, 0, Math.ceil(immunityEffectImage.width * immunityeffectscale), Math.ceil(immunityEffectImage.height * immunityeffectscale));
+
+    return canvas;
+}
+
+let _immunecreepTypeId = 1;
+function ImmuneCreep(creepType, immunityTypes, immunityImg, immunityImgScale, probabilities, persistent) {
+    let canvas = null;
+    // Callbacks! :)))
+    // Borde kanske göras med async eller nåt men det känns som ett helt eget projekt att hålla på och byta ut allt så
+    let tmp = () => {
+        let tmp2 = () => {
+            canvas = generateImmunityEffectImage(immunityImg, immunityImgScale);
+
+            let tmp3 = () => {
+                let onload = (_immuneCreep.image || {}).onload;
+                _immuneCreep.image = generateImmuneCreepImage(canvas, creepType);
+                if (onload)
+                    onload();
+            };
+            if (creepType.image instanceof Image) {
+                if (creepType.image.complete)
+                    tmp3();
+                else
+                    creepType.onload = tmp3;
+            }
+        };
+        if (nopeimg.complete)
+            tmp2();
+        else
+            nopeimg.onload = tmp2;
+    };
+
+    function _immuneCreep() {
+        const c = new creepType();
+        c.addEffect(new Immunity(immunityTypes, canvas, probabilities, persistent));
 		return c;
 	};
-	_immuneCreep.prototype = creepType;
-	_immuneCreep.image = creepType.image;
+    _immuneCreep.prototype = creepType;
+    _immuneCreep.image = { complete: false, onload: null };
+    _immuneCreep._immunecreepTypeId = _immunecreepTypeId++;
+
+    if (immunityImg.complete)
+        tmp();
+    else
+        immunityImg.onload = tmp;
+
 	return _immuneCreep;
 }
 
 class Immunity extends BaseEffect {
 
-	constructor(types, img, scale) {
+    constructor(types, img, probabilities, persistent) {
 		super(Number.POSITIVE_INFINITY);
-		this.immunities = types instanceof Array ? types : [types];
-		this.image = img;
-		this.scale = scale;
+        this.immunities = types instanceof Array ? types : [types];
+        probabilities = probabilities || 1;
+        this.probabilities = probabilities instanceof Array ? probabilities : new Array(this.immunities.length).fill(probabilities);
+        if (this.immunities.length !== this.probabilities.length)
+            throw new Error("Probabilities and Immunities lengths must match");
+        this.image = img;
+        this.persistent = !!persistent;
 	}
 	init(object) {
-		let tmp = object.onHit;
-		object.onHit = (projectile) => {
-			if (this.immunities.find(i => i === projectile.constructor) === undefined)
-				tmp(projectile);
+        let tmp = object.onHit.bind(object);
+        object.onHit = (projectile) => {
+            let ind = this.immunities.findIndex(i => i === projectile.constructor);
+            if (ind === -1 || Math.random() > this.probabilities[ind])
+                tmp(projectile);
 		};
 
-		let tmp2 = object.addEffect;
+        let tmp2 = object.addEffect.bind(object);
 		object.addEffect = (effect) => {
-			if (this.immunities.find(i => i === effect.constructor) === undefined)
-				tmp2(effect);
+            let ind = this.immunities.findIndex(i => i === effect.constructor);
+            if (ind === -1 || Math.random() > this.probabilities[ind])
+                tmp2(effect);
 		};
 	}
 }

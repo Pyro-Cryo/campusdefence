@@ -9,7 +9,7 @@
 
 
 - Buggar:
-	- Har man låst upp ett torn och refreshar sidan så kan det köpas, men det står att det inte låsts upp. Förmodligen har det att göra med ändringen kring hur maps/controllern initialiseras.
+	- Creeps som är immuna mot gelehjärtan går rakt igenom dem och konsumerar all deras hp, vilket kanske inte borde hända
 
 Torn:
 

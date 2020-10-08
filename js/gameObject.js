@@ -46,7 +46,7 @@ class PrerenderedObject {
         gameArea.draw(this.imagecache, x, y, 0, 1);
 	}
     prerender() {
-		if(this.image === null || !this.image.complete){
+        if (this.image === null || (this.image instanceof Image && !this.image.complete)) {
 			this.imagecache = null;
 			return;
 		}

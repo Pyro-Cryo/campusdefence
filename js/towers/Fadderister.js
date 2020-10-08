@@ -370,6 +370,262 @@ class Nicole extends TargetingTower {
     }
 }
 
+let distractedimg = new Image();
+distractedimg.src = "img/questionmark.png";
+
+class Distracted extends BaseEffect {
+
+    static get image() { return distractedimg; }
+    static get scale() { return 0.5; }
+
+    constructor(time) {
+        super(time / controller.updateInterval);
+        this.multiplier = 2;
+    }
+    init(object) {
+        object.speed /= this.multiplier;
+    }
+    apply(object) {
+        object.speed *= this.multiplier;
+        this.remove(object);
+    }
+}
+
+class PersistentDistracted extends Distracted {
+    static get persistent() { return true; }
+}
+
+let wolframimg = new Image();
+wolframimg.src = "img/paper.png";
+let splashimg = new Image();
+splashimg.src = "img/papersplash.png";
+
+class Wolfram extends SplashProjectile {
+    static get damage() { return 0; }
+    static get maxHits() { return 3; }
+    constructor(source, target, time, maxhits, persistent, damage) {
+        super(controller.map, wolframimg, splashimg, source, target.x, target.y, 0.5, 1.5, 1 / controller.updateInterval, 0);
+        this.range = 4;
+        this.time = time;
+        this.maxHits = maxhits;
+        this.persistent = persistent;
+        this.damage = damage;
+    }
+    hitCreep(creep) {
+        let e;
+        if (this.persistent)
+            e = new PersistentDistracted(this.time);
+        else
+            e = new Distracted(this.time);
+        creep.addEffect(e);
+        // Förbered för diciplinnämnden
+        creep.cheater = true;
+        super.hitCreep(creep);
+    }
+}
+
+
+
+let pb1 = new Image();
+pb1.src = "img/pb1.png";
+let pb2 = new Image();
+pb2.src = "img/pb2.png";
+let blackboard = new Image();
+blackboard.src = "img/blackboard.png";
+let fpaper = new Image();
+fpaper.src = "img/fpaper.png";
+let paperstack = new Image();
+paperstack.src = "img/paperstack.png";
+
+
+class Envarre extends Gadget {
+
+    static get image() { return pb1; }
+    static get scale() { return 0.45; }
+
+    addTo(tower) {
+        tower.time += 1500;
+        tower.maxHits += 2;
+        super.addTo(tower);
+    }
+}
+
+class Flervarre extends Gadget {
+
+    static get image() { return pb2; }
+    static get scale() { return 0.45; }
+
+    addTo(tower) {
+        tower.time += 1500;
+        tower.maxHits += 5;
+        tower.persistent = true;
+        super.addTo(tower);
+    }
+}
+
+class Blackboard extends Gadget {
+
+    static get image() { return blackboard; }
+    static get scale() { return 0.45; }
+
+    addTo(tower) {
+        tower.maxHits += 12;
+        // tower.splashrange = 1;
+        super.addTo(tower);
+    }
+}
+
+class Errors extends Gadget {
+
+    static get image() { return fpaper; }
+    static get scale() { return 0.5; }
+
+    addTo(tower) {
+        tower.projectiledamage += 1;
+        tower.projectileimg = fpaper;
+        super.addTo(tower);
+    }
+
+}
+
+class FullSolution extends Gadget {
+
+    static get image() { return paperstack; }
+    static get scale() { return 0.5; }
+
+    addTo(tower) {
+        tower.projectiledamage += 1;
+        tower.projectileimg = paperstack;
+        super.addTo(tower);
+    }
+}
+
+class Diciplinary extends Gadget {
+
+    static get image() { return null; }
+    static get scale() { return 1; }
+
+    addTo(tower) {
+        // gothrough all creeps, and kill them
+        controller.map.path.forEach(pathTile => pathTile.data.forEach(creep => {
+            if (creep instanceof BaseFohs || Math.random() < 1 / 6) // Finns några ninjor som inte fuskar
+                return;
+            if (creep instanceof MatryoshkaCreep)
+                creep.innerCreepCount = 0;
+            creep.onDeath();
+        }));
+    }
+}
+
+
+
+let fridaimg = new Image();
+fridaimg.src = "img/transparent/frida.png";
+
+class Frida extends TargetingTower {
+    static get range() { return 2.5; }
+    static get CDtime() { return 1500; }
+    static get image() { return fridaimg; }
+    static get scale() { return 0.2; }
+    static get cost() { return 370; }
+    static get name() { return "Fjädrande Frida"; }
+    static get desc() { return "Fuskande Frida lägger inte ifrån sig sin avstängda mobil på anvisad plats. När hon skickar lösningarna till lämnisarna till en grupp ninjor försöker de läsa och gå samtidigt, men simultanförmåga är en bristvara hos ninjor."; }
+
+    constructor(x, y) {
+        super(x, y);
+
+        this.projectileimg = null;
+        this.time = 4000;
+        this.maxHits = 3;
+        this.persistent = false;
+        this.splashrange = 0;
+        this.projectiledamage = 0;
+    }
+
+    projectile(target) {
+        let proj = new Wolfram(this, target, this.time, this.maxHits, this.persistent, this.projectiledamage);
+
+        proj.splash_range = this.splashrange;
+        if (this.projectileimg)
+            proj.image = this.projectileimg;
+
+        return proj;
+    }
+
+    projectileInfo() {
+        let info = {
+            name: this.projectileimg === paperstack ? "Felaktigt Lösningshäfte" : this.projectileimg === fpaper ? "Felaktiga Lösningsförslag" : "Lösningsförslag",
+            image: this.projectileimg || wolframimg,
+            "Skada": this.projectiledamage,
+            "Splashträffar": this.maxHits === Number.POSITIVE_INFINITY ? "∞" : this.maxHits,
+            "Specialeffekt": (this.persistent ? "Ihållande distrahering" : "Distrahering") + " i " + (this.time / 1000) + " s",
+            "Distrahering": "50% lägre hastighet på ninjor" + (this.persistent ? " (sitter kvar på inre ninjor)" : "")
+        };
+
+        return info;
+    }
+
+    configUpgrades() {
+        this.addUpgrade(
+            TakeAwayCoffee,
+            "Take away kaffe",
+            "Ge faddern lite kaffe så jobbar den snabbare.",
+            150,
+            [],
+            [TakeAwayCoffee],
+            20);
+        this.addUpgrade(
+            Blackboard,
+            "Svarta tavlan",
+            "Genom att lämna lösningarna på svarta tavlan där alla kan se kan Frida nå nästan alla Ninjor inom synhåll.",
+            150,
+            [],
+            [Blackboard],
+            50);
+        this.addUpgrade(
+            Envarre,
+            "SF1625 Envarre",
+            "Med djupare förståelse kan Frida skriva komplexare integraler, utveckla fler av uttrycken och skriva 'inses lätt', vilket gör att Ninjorna tar ännu längre på sig att läsa lösningarna.",
+            200,
+            [],
+            [Envarre, FullSolution],
+            50);
+        this.addUpgrade(
+            Flervarre,
+            "SF1626 Flervarre",
+            "Genom att skriva lösningar i flera variabler blir lösningarna ännu komplexare, vilket ger Ninjorna huvudvärk. Genom att lämna delar av lösningarna 'som övning till läsaren' tar det Ninjorna ännu längre att dechiffrera Fridas lösningar.",
+            400,
+            [Envarre],
+            [Flervarre, FullSolution],
+            150);
+        this.addUpgrade(
+            Errors,
+            "Felaktiga lösningar",
+            "Genom att smyga in små fel i lösningarna kommer de ninjor som tar emot de inte få några bonus till tentan. Vad kunde vara värre?",
+            300,
+            [],
+            [Errors],
+            50);
+        this.addUpgrade(
+            FullSolution,
+            "Lösningshäfte",
+            "Frida skriver ner hela lösningen till inte bara lämnisen, utan alla ex-tentor och ex-ks:ar också. Med så många lösningar tillgängliga lyckas ingen Ninja klara tentan på egen hand.",
+            700,
+            [Errors],
+            [FullSolution, Envarre, Flervarre],
+            250);
+        this.addUpgrade(
+            Diciplinary,
+            "Diciplinnämnden",
+            "Genom ett anonymt tips till diciplinnämnden kan Frida få alla fuskande Ninjor på campus avstängda från KTH!",
+            20000,
+            [Errors, FullSolution, Blackboard],
+            [],
+            100);
+
+    }
+}
+
 let promilleimg = new Image();
 promilleimg.src = "img/promille.png";
 
@@ -513,6 +769,8 @@ class Molotov extends SplashProjectile {
     }
 }
 
+class Drunk extends Distracted {}
+
 let axelimg = new Image();
 axelimg.src = "img/transparent/axel.png";
 
@@ -543,7 +801,11 @@ class Axel extends OmniTower {
                 m.damage *= 3;
             else {
                 m.damage = 0;
-                m.hitCreep = Wolfram.prototype.hitCreep.bind(m);
+                m.time = 3000;
+                m.hitCreep = ((creep) => {
+                    creep.addEffect(new Drunk(this.time));
+                    super.hitCreep(creep);
+                }).bind(m);
             }
         }
         if (this.champagne) {
@@ -628,261 +890,6 @@ class Axel extends OmniTower {
             [Champagne],
             [],
             300);
-    }
-}
-
-let distractedimg = new Image();
-distractedimg.src = "img/questionmark.png";
-
-class Distracted extends BaseEffect {
-
-    static get image() { return distractedimg; }
-    static get scale() { return 0.5; }
-
-    constructor(time) {
-        super(time / controller.updateInterval);
-        this.multiplier = 2;
-    }
-    init(object){
-        object.speed /= this.multiplier;
-    }
-    apply(object) {
-        object.speed *= this.multiplier;
-        this.remove(object);
-    }
-}
-
-class PersistentDistracted extends Distracted {
-    static get persistent() { return true; }
-}
-
-let wolframimg = new Image();
-wolframimg.src = "img/paper.png";
-let splashimg = new Image();
-splashimg.src = "img/papersplash.png";
-
-class Wolfram extends SplashProjectile {
-	static get damage() { return 0; }
-    static get maxHits() { return 3; }
-    constructor(source, target, time, maxhits, persistent, damage) {
-        super(controller.map, wolframimg, splashimg, source, target.x, target.y, 0.5, 1.5, 1 / controller.updateInterval, 0);
-        this.range = 4;
-        this.time = time;
-        this.maxHits = maxhits;
-        this.persistent = persistent;
-        this.damage = damage;
-    }
-    hitCreep(creep) {
-        if(this.persistent)
-            var e = new PersistentDistracted(this.time);
-        else
-            var e = new Distracted(this.time);
-        creep.addEffect(e);
-        // Förbered för diciplinnämnden
-        creep.cheater = true;
-        super.hitCreep(creep);
-    }
-}
-
-
-
-let pb1 = new Image();
-pb1.src = "img/pb1.png";
-let pb2 = new Image();
-pb2.src = "img/pb2.png";
-let blackboard = new Image();
-blackboard.src = "img/blackboard.png";
-let fpaper = new Image();
-fpaper.src = "img/fpaper.png";
-let paperstack = new Image();
-paperstack.src = "img/paperstack.png";
-
-
-class Envarre extends Gadget {
-
-    static get image() { return pb1; }
-    static get scale() { return 0.45; }
-
-    addTo(tower){
-        tower.time += 1500;
-        tower.maxHits += 2;
-        super.addTo(tower);
-    }
-}
-
-class Flervarre extends Gadget {
-
-    static get image() { return pb2; }
-    static get scale() { return 0.45; }
-
-    addTo(tower){
-        tower.time += 1500;
-        tower.maxHits += 5;
-        tower.persistent = true;
-        super.addTo(tower);
-    }
-}
-
-class Blackboard extends Gadget {
-
-    static get image() { return blackboard; }
-    static get scale() { return 0.45; }
-
-    addTo(tower){
-        tower.maxHits += 12;
-        // tower.splashrange = 1;
-        super.addTo(tower);
-    }
-}
-
-class Errors extends Gadget {
-
-    static get image() { return fpaper; }
-    static get scale() { return 0.5; }
-
-    addTo(tower){
-        tower.projectiledamage += 1;
-        tower.projectileimg = fpaper;
-        super.addTo(tower);
-    }
-
-}
-
-class FullSolution extends Gadget {
-
-    static get image() { return paperstack; }
-    static get scale() { return 0.5; }
-
-    addTo(tower){
-        tower.projectiledamage += 1;
-        tower.projectileimg = paperstack;
-        super.addTo(tower);
-    }
-}
-
-class Diciplinary extends Gadget {
-
-    static get image() { return null; }
-    static get scale() { return 1; }
-
-    addTo(tower){
-        // gothrough all creeps, and kill them
-        controller.map.path.forEach(pathTile => pathTile.data.forEach(creep => {
-            if (creep instanceof BaseFohs || Math.random() < 1/6) // Finns några ninjor som inte fuskar
-                return;
-            if(creep instanceof MatryoshkaCreep)
-                creep.innerCreepCount = 0;
-            creep.onDeath();
-        }));
-    }
-}
-
-
-
-let fridaimg = new Image();
-fridaimg.src = "img/transparent/frida.png";
-
-class Frida extends TargetingTower {
-    static get range() { return 2.5; }
-    static get CDtime() { return 1500; }
-    static get image() { return fridaimg; }
-    static get scale() { return 0.2; }
-    static get cost() { return 370; }
-    static get name() { return "Fjädrande Frida"; }
-    static get desc() { return "Fuskande Frida lägger inte ifrån sig sin avstängda mobil på anvisad plats. När hon skickar lösningarna till lämnisarna till en grupp ninjor försöker de läsa och gå samtidigt, men simultanförmåga är en bristvara hos ninjor."; }
-
-    constructor(x,y){
-        super(x,y);
-
-        this.projectileimg = null;
-        this.time = 4000;
-        this.maxHits = 3;
-        this.persistent = false;
-        this.splashrange = 0;
-        this.projectiledamage = 0; 
-    }
-
-    projectile(target) {
-        let proj = new Wolfram(this, target, this.time, this.maxHits, this.persistent, this.projectiledamage);
-
-        proj.splash_range = this.splashrange;
-        if(this.projectileimg)
-            proj.image = this.projectileimg;
-
-        return proj;
-    }
-
-    projectileInfo() {
-        let info = {
-            name: this.projectileimg === paperstack ? "Felaktigt Lösningshäfte" : this.projectileimg === fpaper ? "Felaktiga Lösningsförslag" : "Lösningsförslag",
-            image: this.projectileimg || wolframimg,
-            "Skada": this.projectiledamage,
-            "Splashträffar": this.maxHits === Number.POSITIVE_INFINITY ? "∞" : this.maxHits,
-            "Specialeffekt": (this.persistent ? "Ihållande distrahering" : "Distrahering") + " i " + (this.time / 1000) + " s",
-            "Distrahering": "50% lägre hastighet på ninjor" + (this.persistent ? " (sitter kvar på inre ninjor)" : "")
-        };
-
-        return info;
-    }
-
-    configUpgrades() {
-		this.addUpgrade(
-			TakeAwayCoffee, 
-			"Take away kaffe", 
-			"Ge faddern lite kaffe så jobbar den snabbare.", 
-			150, 
-			[], 
-			[TakeAwayCoffee],
-			20);
-        this.addUpgrade(
-            Blackboard,
-            "Svarta tavlan",
-            "Genom att lämna lösningarna på svarta tavlan där alla kan se kan Frida nå nästan alla Ninjor inom synhåll.",
-            150,
-            [],
-            [Blackboard],
-            50);
-        this.addUpgrade(
-            Envarre,
-            "SF1625 Envarre",
-            "Med djupare förståelse kan Frida skriva komplexare integraler, utveckla fler av uttrycken och skriva 'inses lätt', vilket gör att Ninjorna tar ännu längre på sig att läsa lösningarna.",
-            200,
-            [],
-            [Envarre, FullSolution],
-            50);
-        this.addUpgrade(
-            Flervarre,
-            "SF1626 Flervarre",
-            "Genom att skriva lösningar i flera variabler blir lösningarna ännu komplexare, vilket ger Ninjorna huvudvärk. Genom att lämna delar av lösningarna 'som övning till läsaren' tar det Ninjorna ännu längre att dechiffrera Fridas lösningar.",
-            400,
-            [Envarre],
-            [Flervarre, FullSolution],
-            150);
-        this.addUpgrade(
-            Errors,
-            "Felaktiga lösningar",
-            "Genom att smyga in små fel i lösningarna kommer de ninjor som tar emot de inte få några bonus till tentan. Vad kunde vara värre?",
-            300,
-            [],
-            [Errors],
-            50);
-        this.addUpgrade(
-            FullSolution,
-            "Lösningshäfte",
-            "Frida skriver ner hela lösningen till inte bara lämnisen, utan alla ex-tentor och ex-ks:ar också. Med så många lösningar tillgängliga lyckas ingen Ninja klara tentan på egen hand.",
-            700,
-            [Errors],
-            [FullSolution, Envarre, Flervarre],
-            250);
-        this.addUpgrade(
-            Diciplinary,
-            "Diciplinnämnden",
-            "Genom ett anonymt tips till diciplinnämnden kan Frida få alla fuskande Ninjor på campus avstängda från KTH!",
-            20000,
-            [Errors, FullSolution, Blackboard],
-            [],
-            100);
-
     }
 }
 
@@ -1428,18 +1435,18 @@ class Fnoell extends BaseTower {
             else
                 controller.hitsFromSoldTowers[
                     {
-                        "Hug": "Forfadder1",
-                        "Patch": "Forfadder1",
-                        "WolframWrapper": "Frida",
-                        "FleshEatingWrapper": "Nicole",
-                        "GMOWrapper": "Nicole",
-                        "CornWrapper": "Nicole",
-                        "BoquetWrapper": "Nicole",
-                        "FlowerWrapper": "Nicole",
-                        "Fire": "Becca",
-                        "HotFire": "Becca",
-                        "Molotov": "Axel"
-                    }[this.currentProjectile.constructor.name]
+                        "Hug": Forfadder1.name,
+                        "Patch": Forfadder1.name,
+                        "WolframWrapper": Frida.name,
+                        "FleshEatingWrapper": Nicole.name,
+                        "GMOWrapper": Nicole.name,
+                        "CornWrapper": Nicole.name,
+                        "BoquetWrapper": Nicole.name,
+                        "FlowerWrapper": Nicole.name,
+                        "Fire": Becca.name,
+                        "HotFire": Becca.name,
+                        "Molotov": Axel.name
+                    }[this.currentProjectile.name]
                 ] += newHits;
         }
         

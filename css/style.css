@@ -72,11 +72,16 @@ div.infobar {
 #creepSummary {
     display: inline;
 }
-#creepSummary img {
-    position: relative;
-    height: 1em;
-    top: 0.2em;
-}
+    #creepSummary img {
+        position: relative;
+        height: 1em;
+        top: 0.2em;
+    }
+    #creepSummary canvas {
+        position: relative;
+        height: 1em;
+        top: 0.2em;
+    }
 div.counter{
     margin: 5px;
     float: left;

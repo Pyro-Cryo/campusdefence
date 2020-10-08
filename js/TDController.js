@@ -27,7 +27,8 @@
         this.versions = [
             "1.1.0",
             "1.1.1",
-            "1.1.2"
+            "1.1.2",
+            "1.1.3"
         ];
         if ((window.localStorage.getItem("campusdefence_version") || "1.0") !== this.versions[this.versions.length - 1]) {
             //window.alert("Campus Defence har uppdaterats och ditt sparade spel går tyvärr inte längre att fortsätta på.");
@@ -270,10 +271,29 @@
         let i = 0;
         for (let creepType in remaining)
         {
-            let img = new Image();
-            img.src = codebook[creepType].image.src;
+            let imgContainer = document.createElement("span");
+            let addImg = () => {
+                if (codebook[creepType].image instanceof Image)
+                    imgContainer.appendChild(codebook[creepType].image.cloneNode());
+                else if (codebook[creepType].image instanceof HTMLCanvasElement) {
+                    let clone = codebook[creepType].image.cloneNode();
+                    clone.getContext("2d").drawImage(codebook[creepType].image, 0, 0);
+                    imgContainer.appendChild(clone);
+                } else
+                    throw new Error("Unrecognized image type");
+            };
+            if (codebook[creepType].image.complete)
+                addImg();
+            else {
+                let onload = codebook[creepType].image.onload;
+                codebook[creepType].image.onload = () => {
+                    if (onload)
+                        onload();
+                    addImg();
+                };
+            }
             this.creepSummaryElement.appendChild(new Text((i ? ", " : "") + remaining[creepType] + "\xa0"));
-            this.creepSummaryElement.appendChild(img);
+            this.creepSummaryElement.appendChild(imgContainer);
             i++;
         }
     }
@@ -682,7 +702,6 @@
 
     buyTower(type, cost, originatingButton) {
         let onlyCancel = this.buyingTower !== null && this.buyingTower.type === type;
-        console.log(type, originatingButton);
 
         // Avbryt ett eventuellt pågående köp om sånt finns
         if (this.buyingTower !== null) {

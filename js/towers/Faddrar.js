@@ -316,6 +316,11 @@ class JellyHeart extends BasicProjectile {
         this.y = pathtile.y;
         this.angle = 0;
     }
+
+    hitCreep(creep) {
+        super.hitCreep(creep);
+        controller.hitsFromSoldTowers[PseudoJellyHeartTower.name]++;
+    }
 }
 
 class PseudoJellyHeartTower extends BaseTower {
