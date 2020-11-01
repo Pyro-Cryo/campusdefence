@@ -65,6 +65,7 @@
         this.addTowerSpec({type: Axel, unlockLevel: 6});
         this.addTowerSpec({type: Fnoell, unlockLevel: 7});
         this.addTowerSpec({type: MediaFadder, unlockLevel: 10});
+        this.addTowerSpec({type: MatBeredare, unlockLevel: 10});
         
         this.buyingTower = null;
         

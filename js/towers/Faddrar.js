@@ -168,8 +168,8 @@ let forfadder2img = new Image();
 forfadder2img.src = "img/helmer2.png";
 
 class Forfadder1 extends Fadder {
-    static get range() { return 4; }
-    static get CDtime() { return 600; }
+    static get range() { return Fadder.range+1; }
+    static get CDtime() { return Fadder.CDtime-200; }
     static get image() { return forfadder2img; }
     static get scale() { return 0.2; }
     static get cost() { return 320; }
@@ -212,94 +212,6 @@ class Forfadder1 extends Fadder {
     }
 }
 
-class CaffeinKick extends BaseEffect {
-    constructor() {
-        super(5000 / controller.updateInterval);
-        this.multiplier = 1.41;
-    }
-    init(object){
-        object.CDtime /= this.multiplier;
-    }
-    apply(object){
-        this.remove(object);
-    }
-    remove(object) {
-        object.CDtime *= this.multiplier;
-        super.remove(object);
-    }
-}
-
-let coffeempty = new Image();
-let coffeefull = new Image();
-coffeempty.src = "img/coffemaker-empty.png";
-coffeefull.src = "img/coffemaker-full.png";
-
-class CoffeMaker extends SupportTower {
-
-    static get range() { return 4; }
-    static get CDtime() {return  5000;}
-    static get image() { return coffeempty; }
-    static get scale() { return 0.18; }
-    static get cost() { return 1200; }
-    static get name() { return "Kaffekokare"; }
-    static get desc() { return "Inget får fysiker att studsa upp så snabbt från sina stolar som Konsulatets kaffekokare. Kaffe gör att en student jobbar dubbelt så snabbt som vanligt, men tyvärr räcker inte kaffet så länge, och snart är det tomt i kannan igen."; }
-
-    configUpgrades() {
-        this.addUpgrade(
-            MakeCoffe, 
-            "Sätt på kaffe", 
-            "Gör en kanna kaffe och ge dina torn en rejäl boost i fem sekunder.", 
-            10, 
-            [], 
-            [],
-            -1);
-    }
-
-    constructor(x,y) {
-        super(x,y);
-        this.CDtimer = this.constructor.CDtime;
-        this.apply();
-        this.applied = false;
-    }
-    apply() {
-        if(this.applied)
-            return;
-        this.image = coffeefull;
-        this.effectCDtimer = this.effectCDtime;
-        this.applied = true;
-        super.apply();
-    }
-    remove() {
-        this.applied = false;
-        this.image = coffeempty;
-        this.gadgets = this.gadgets.filter(function(obj){
-            return obj instanceof CaffeinKick;
-        }.bind(this));
-        super.remove();
-    }
-    applyTo(tower) {
-        let c = new CaffeinKick();
-        tower.addEffect(c);
-    }
-}
-
-class MakeCoffe extends Gadget {
-
-    // The tower's sprite
-    static get image() { return null; }
-    // The tower's sprite's scale
-    static get scale() { return 1; }
-
-    addTo(tower){
-        tower.apply();
-    }
-
-    draw(gameArea){
-    }
-
-}
-
-
 let geleimg = new Image();
 geleimg.src = "img/gele.png";
 
@@ -312,9 +224,9 @@ class JellyHeart extends BasicProjectile {
 
     constructor(pathtile){
         super(controller.map, geleimg, {x:pathtile.x, y:pathtile.y, range:1, hits:0}, 0, 0, 0.75, 0);
-        this.x = pathtile.x;
-        this.y = pathtile.y;
-        this.angle = 0;
+        this.x = pathtile.x + (Math.random()-0.5)*0.5;
+        this.y = pathtile.y + (Math.random()-0.5)*0.5;
+        this.angle = (Math.random()-0.5)*Math.PI;
     }
 
     hitCreep(creep) {
@@ -370,14 +282,14 @@ class Stunned extends BaseEffect {
 
 class Flash extends OmniProjectile {
 
-    static get hitpoints() { return 50; }
+    static get hitpoints() { return 10; }
     static get damage() { return 0; }
 
     constructor(source) {
         super(source, flashimg, 0.75, 50);
     }
     hitCreep(creep){
-        let b = new Stunned(2000);
+        let b = new Stunned(1000);
         creep.addEffect(b);
 
         super.hitCreep(creep);
@@ -391,13 +303,13 @@ class MediaFadder extends TargetingTower {
 
     static get range() { return 4; }
     // Cooldown time for projectiles, in ms
-    static get CDtime() { return 1500; }
+    static get CDtime() { return 2500; }
     // The tower's sprite
     static get image() { return feliximg; }
     // The tower's sprite's scale
     static get scale() { return 0.2; }
     static get cost() { return 500; }
-    static get name() { return "MediaFadder"}
+    static get name() { return "Mediafadder"}
     static get desc() { return "Stunnar Ninjor med sin kamerablixt"; }
 
 
@@ -406,4 +318,195 @@ class MediaFadder extends TargetingTower {
         return new Flash(this);
     }
 
+}
+
+
+let foodmakerimg = new Image();
+foodmakerimg.src = "img/jonas.png";
+
+class MatBeredare extends SupportTower {
+
+	static get range() { return 2.5; }
+	static get CDtime() {return  7000;}
+	static get image() { return foodmakerimg; }
+	static get scale() { return 0.15; }
+	static get cost() { return 750; }
+	static get name() { return "Matberedare"; }
+	static get desc() { return "Inte ens fadderiet orkar kramas på fastande mage. Tack och lov för matberedarna, som lyckas försörja hela mottagningen med energi."; }
+
+
+	configUpgrades() {
+		super.configUpgrades();
+
+		this.addUpgrade(
+			Snackbar,
+			"Godisskåpet",
+			"I konsulatets godisskåp finns alltid nånting sött att finna. Matberedaren köper gelehjärtan för Mottagningens interrep-pengar och bjuder alla ninjor hen ser.",
+			750,
+			[],
+			[Snackbar, CoffeMaker],
+			0
+			);
+		this.addUpgrade(
+			CoffeMaker,
+			"Kaffekokare",
+			"Inget får fysiker att studsa upp så snabbt från sina stolar som Konsulatets kaffekokare, och när matberedaren kommer med kaffe jobbar alla faddrar i närheten mycket snabbare.",
+			750,
+			[],
+			[Snackbar, CoffeMaker],
+			0
+			);
+		this.addUpgrade(
+			Pasta,
+			"Pastasallad",
+			"Det är svårt att slå en bra pastasallad, och när faddrarna har fått lite mat orkar de springa längre och kan nå ännu fler ninjor.",
+			400,
+			[],
+			[Snackbar, Pasta],
+			0
+			);
+		this.addUpgrade(
+			Chili,
+			"Chilistyrka",
+			"Matberedarna har i några chilifrukter i maten för att få till lite hetta. Hur många chilifrukter blir det nu igen om vi ska skala upp receptet från 4 personer till 200? Äsch ta allihopa bara.",
+			750,
+			[],
+			[Snackbar, CoffeMaker],
+			0
+			);
+	}
+
+	constructor(x,y){
+		super(x,y);
+		this.chili = false;
+		this.snackbar = false;
+		this.coffee = false;
+		this.pasta = false;
+
+		this.multiplier = 0.9;
+
+		this.apply();
+	}
+
+	applyTo(tower){
+
+		if(this.chili){
+
+			// Injicera vår Buring-effect på alla projektiler. Bäst att inte läsa
+			// för noga hur det faktiskt går till...
+			if(tower.raw_projectile == undefined)
+				tower.raw_projectile = tower.projectile;
+
+			tower.projectile = function(target){
+				let p = tower.raw_projectile(target);
+				p.raw_hitCreep = p.hitCreep;
+				p.hitCreep = function(creep){
+					let e = new Burning();
+					creep.addEffect(e);
+					p.raw_hitCreep(creep);
+				}.bind(p);
+				return p;
+			}.bind(tower);
+		}
+
+		if(this.coffee)
+			tower.CDtime *= this.multiplier;
+
+		if(this.pasta)
+			tower.range += 0.6;
+
+	}
+
+	removeFrom(tower){
+		if(tower.raw_projectile != undefined){
+			tower.projectile = tower.raw_projectile;
+			tower.raw_projectile = undefined;
+		}
+
+		if(this.coffee)
+			tower.CDtime /= this.multiplier;
+
+		if(this.pasta)
+			tower.range -= 0.6;
+	}
+
+	target(){
+		return this.inrange[parseInt(Math.random()*this.inrange.length)];
+	}
+
+	projectile(target) {
+		if(this.snackbar){
+			let p = new JellyHeart(target);
+			p.onHitCreep = function(){
+				this.hits++;
+			}.bind(this);
+			return p;
+		}
+		return null;
+	}
+}
+
+
+let coffeempty = new Image();
+let coffeefull = new Image();
+coffeempty.src = "img/coffemaker-empty.png";
+coffeefull.src = "img/coffemaker-full.png";
+
+class CoffeMaker extends Gadget {
+
+	static get image(){ return coffeefull; }
+	static get scale(){ return 0.09; }
+
+
+	addTo(tower){
+		tower.remove();
+		tower.coffee = true;
+		super.addTo(tower);
+		tower.apply();
+	}
+}
+
+let snackimg = new Image();
+snackimg.src = "img/soda.png";
+class Snackbar extends Gadget {
+
+	static get image() { return snackimg; }
+	static get scale() { return 0.1; }
+
+	addTo(tower){
+		tower.remove();
+		tower.snackbar = true;
+		super.addTo(tower);
+		tower.apply();
+	}
+}
+
+let chiliimg = new Image();
+chiliimg.src = "img/chili.png";
+class Chili extends Gadget {
+
+	static get image() { return chiliimg; }
+	static get scale() { return 0.25; }
+
+	addTo(tower){
+		tower.remove();
+		tower.chili = true;
+		super.addTo(tower);
+		tower.apply();
+	}
+}
+
+let pastaimg = new Image();
+pastaimg.src = "img/pasta.png";
+class Pasta extends Gadget {
+
+	static get image() { return pastaimg; }
+	static get scale() { return 0.3; }
+
+	addTo(tower){
+		tower.remove();
+		tower.pasta = true;
+		super.addTo(tower);
+		tower.apply();
+	}
 }
