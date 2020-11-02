@@ -53,7 +53,7 @@ class BaseTower extends GameObject {
         this.map = controller.map;
         this.range = this.constructor.range;
         this.CDtime = this.constructor.CDtime / controller.updateInterval;
-        this.CDtimer = 0;
+        this.CDtimer = this.CDtime;
         this.hits = 0;
 
         this.gadgets = [];
@@ -286,6 +286,12 @@ class SupportTower extends BaseTower {
         }
         super.update();
     }
+
+    // addGadget(gadget){
+    //     this.remove();
+    //     this.apply();
+    //     super.addGadget(gadget);
+    // }
 
     towersInRange() {
         return controller.map.towers.filter(function(tower){

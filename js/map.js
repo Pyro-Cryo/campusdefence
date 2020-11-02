@@ -217,7 +217,7 @@ class TDMap extends PrerenderedObject {
             throw new Error("x = " + x + " out of range [-" + this.margin + ", " + (this.gridInnerWidth + this.margin) + "]");
         if (y + this.margin < 0 || this.gridHeight - 1 < y + this.margin)
             throw new Error("y = " + y + " out of range [-" + this.margin + ", " + (this.gridInnerHeight + this.margin) + "]");
-        return this.grid[y + this.margin][x + this.margin];
+        return this.grid[Math.round(y + this.margin)][Math.round(x + this.margin)];
     }
 
     validPosition(x, y) {

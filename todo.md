@@ -79,6 +79,7 @@ Matberedare
 	- support-torn, ersätter kaffekokaren
 	- Olika maträtter som uppgraderingar
 	- Bullens veganska wraps gör AoE-skada
+	- Godisskåpet spiller ut gelehjärtan
 
 
 Boomboxen
