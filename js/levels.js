@@ -273,6 +273,10 @@ function autolevel(levelnumber, updateInterval){
 function levelClearReward(number) {
     let cash = 0;
     switch (number) {
+        case 4:
+        case 6:
+            cash = 150; //Lite extra cash för att kompensera för de nya blåa spökena early game
+            break;
 
         case 8:
         case 11:
@@ -359,6 +363,7 @@ damageTypeMap[Nicole.name] = "Flowers";
 damageTypeMap[Becca.name] = "Fire";
 damageTypeMap[Axel.name] = "Alcohol";
 damageTypeMap[Fnoell.name] = null;
+damageTypeMap[MediaFadder.name] = "Light";
 damageTypeMap[CoffeMaker.name] = null;
 
 
@@ -368,7 +373,8 @@ function favoredDamageTypes(weights) {
         "Flowers": 0,
         "Alcohol": 0,
         "Cheats": 0,
-        "Hugs": 0
+        "Hugs": 0,
+        "Light": 0
     };
     controller.map.towers.map(t => [t.constructor.name, t.hits])
         .concat(Object.entries(controller.hitsFromSoldTowers))
@@ -396,14 +402,16 @@ function getImmuneCreep(creepType, resistance, persistent, nth) {
         "Flowers": [Flower, FleshEatingFlower, GMOFlower, Bouquet, Corn, FlowerWrapper, FleshEatingWrapper, GMOWrapper, BoquetWrapper, CornWrapper, Converted, FleshEatingConverted, GMOConverted],
         "Alcohol": [Molotov, Drunk],
         "Cheats": [Wolfram, Distracted, PersistentDistracted, WolframWrapper],
-        "Hugs": [Hug, JellyHeart] // Känns elakt att Jelly inkluderas
+        "Hugs": [Hug, JellyHeart], // Känns elakt att Jelly inkluderas. Patch är medvetet utelämnad.
+        "Light": [Flash, Stunned]
     }[damagetype];
     let imgInfo = {
         "Fire": [fireimg, 0.5],
         "Flowers": [flowerimg, 0.5],
         "Alcohol": [molotovimg, 0.5],
         "Cheats": [wolframimg, 0.5],
-        "Hugs": [hugimg, 0.1]
+        "Hugs": [hugimg, 0.1],
+        "Light": [flashimg, 0.05]
     }[damagetype];
     
     return ImmuneCreep(creepType, immunities, imgInfo[0], imgInfo[1], resistance, persistent || persistent === undefined);

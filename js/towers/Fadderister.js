@@ -601,7 +601,7 @@ class Frida extends TargetingTower {
         this.addUpgrade(
             Errors,
             "Felaktiga lösningar",
-            "Genom att smyga in små fel i lösningarna kommer de ninjor som tar emot de inte få några bonus till tentan. Vad kunde vara värre?",
+            "Genom att smyga in små fel i lösningarna kommer de ninjor som tar emot dem inte få några bonus till tentan. Vad kunde vara värre?",
             300,
             [],
             [Errors],

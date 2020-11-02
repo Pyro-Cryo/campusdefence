@@ -332,7 +332,7 @@ class PseudoJellyHeartTower extends BaseTower {
     static get scale() { return 0.75; }
     static get cost() { return Math.round(JellyHeart.hitpoints*2); }
     static get name() { return "Gelehjärtan"; }
-    static get desc() { return "Att få ett gelehjärta är nästan som att få en kram. Men se upp, ninjornas kärlek är dyrköpt. Kommer med 20 gelehallon per ask"; }
+    static get desc() { return "Att få ett gelehjärta är nästan som att få en kram. Men se upp, ninjornas kärlek är dyrköpt. Kommer med 20 gelehallon per ask. Kan innehålla spår av nötter."; }
 
     constructor(x,y) {
         // super() ska inte köras här. Vi använder bara torn-klassen för att kunna köpa våra geleprojektiler
@@ -397,7 +397,7 @@ class MediaFadder extends TargetingTower {
     // The tower's sprite's scale
     static get scale() { return 0.2; }
     static get cost() { return 500; }
-    static get name() { return "MediaFadder"}
+    static get name() { return "Media-fadder"}
     static get desc() { return "Stunnar Ninjor med sin kamerablixt"; }
 
 
