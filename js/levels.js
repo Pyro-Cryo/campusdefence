@@ -350,7 +350,15 @@ function levelMessage(number) {
         case 1337: return "LEET";
 
         default:
-            return "_";
+            const tips = [
+                "Visste du att: Föhseriet låter sig inte mutas av godis. De är helt självförsörjande på den fronten och tar allt snask behöver från små nØllan, eller Styret.",
+                "Visste du att: Campus Defence består i skrivande stund av 7396 rader kod. Skriver man ut den och lägger papprena kant i kant räcker det 0.000007792% av avståndet till månen!",
+                "Visste du att: Båda utvecklarna borde ha tagit examen vid det här laget och kanske inte lägga så mycket tid på webbläsarspel.",
+                "Visste du att: Om du behöver en godtycklig siffra så har empirisk testning visat att 4 nästan alltid är det bästa valet.",
+                "Visste du att: Lillie-Fnöll står för ungefär 80% av alla buggar.",
+                "Visste du att: Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>controller.money = 9999</i>"
+            ];
+            return tips[Math.floor(Math.random(tips.length))];
     }
 }
 

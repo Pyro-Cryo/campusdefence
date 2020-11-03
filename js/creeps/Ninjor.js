@@ -40,6 +40,7 @@ class Pink extends ColorNinja {
     static get image() { return colorimgs[2]; }
     static get innerCreep() { return Blue; }
 }
+// Jag tror på att göra motsvarande med grön eller violett som med blå, dvs ersätta flera innercreeps med mer HP //Helmer
 class Green extends ColorNinja {
     static get speed() { return 0.75; }
     static get image() { return colorimgs[3]; }

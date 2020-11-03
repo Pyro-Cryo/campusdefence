@@ -259,6 +259,44 @@ class PseudoJellyHeartTower extends BaseTower {
 }
 
 
+let aftonbladetimg = new Image();
+let skvallerpressimg = new Image();
+let forceimg = new Image();
+aftonbladetimg.src = "img/aftonbladet.png";
+skvallerpressimg.src = "img/skvallerpress.png";
+forceimg.src = "img/force.png";
+
+class Aftonbladet extends Gadget {
+
+    static get image() { return aftonbladetimg; }
+    static get scale() { return 0.5; }
+
+    addTo(tower) {
+        tower.aftonbladet = true;
+        super.addTo(tower);
+    }
+}
+class Skvallerpress extends Gadget {
+
+    static get image() { return skvallerpressimg; }
+    static get scale() { return 0.5; }
+
+    addTo(tower) {
+        tower.skvallerpress = true;
+        super.addTo(tower);
+    }
+}
+class Force extends Gadget {
+
+    static get image() { return forceimg; }
+    static get scale() { return 0.5; }
+
+    addTo(tower) {
+        tower.force = true;
+        super.addTo(tower);
+    }
+}
+
 let flashimg = new Image();
 flashimg.src = "img/flash.png";
 class Stunned extends BaseEffect {
@@ -284,12 +322,14 @@ class Flash extends OmniProjectile {
 
     static get hitpoints() { return 10; }
     static get damage() { return 0; }
+    static get stunDuration() { return 1000; }
 
     constructor(source) {
         super(source, flashimg, 0.75, 50);
+        this.stunDuration = Flash.stunDuration;
     }
-    hitCreep(creep){
-        let b = new Stunned(1000);
+    hitCreep(creep) {
+        let b = new Stunned(this.stunDuration);
         creep.addEffect(b);
 
         super.hitCreep(creep);
@@ -309,15 +349,67 @@ class MediaFadder extends TargetingTower {
     // The tower's sprite's scale
     static get scale() { return 0.2; }
     static get cost() { return 500; }
-    static get name() { return "Mediafadder"}
-    static get desc() { return "Stunnar Ninjor med sin kamerablixt"; }
+    static get name() { return "Mediafadder"; }
+    static get desc() { return "Omelett! Mediafaddrarna dokumenterar mottagningen och ninjorna vill såklart vara med på bild. Så fort kameran åker fram stannar de och poserar, oftast med tillhörande fula grimaser."; }
 
+    constructor(x, y) {
+        super(x, y);
+        this.aftonbladet = false;
+        this.skvallerpress = false;
+        this.force = false;
+    }
+
+    projectileInfo() {
+        let info = {
+            name: "Blixt",
+            image: flashimg,
+            "Skada": 0,
+            "Träffar per skott": Flash.hitpoints,
+            "Specialeffekt": `Stannar ninjorna i ${Flash.stunDuration / 1000} s`
+        };
+
+        return info;
+    }
 
     projectile(target) {
         // Create and return a new projectile object, that is targeted at target
         return new Flash(this);
     }
 
+    configUpgrades() {
+        this.addUpgrade(
+            TakeAwayCoffee,
+            "Take away kaffe",
+            "Ge faddern lite kaffe så jobbar den snabbare.",
+            100,
+            [],
+            [TakeAwayCoffee],
+            0);
+        this.addUpgrade(
+            Skvallerpress,
+            "Hänt! Extra",
+            "Mediafaddern publicerar bilderna i sektionstidningen",
+            100,
+            [],
+            [Force, Skvallerpress, Aftonbladet],
+            100);
+        this.addUpgrade(
+            Force,
+            "The Force",
+            "Mediafaddern publicerar bilderna i sektionstidningen",
+            100,
+            [],
+            [Force, Skvallerpress, Aftonbladet],
+            100);
+        this.addUpgrade(
+            Aftonbladet,
+            "Aftonbladet",
+            "Mediafaddern publicerar bilderna i sektionstidningen",
+            100,
+            [],
+            [Force, Skvallerpress, Aftonbladet],
+            100);
+    }
 }
 
 
