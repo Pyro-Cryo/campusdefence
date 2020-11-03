@@ -258,13 +258,36 @@ class PseudoJellyHeartTower extends BaseTower {
     }
 }
 
+let teleobjektivimg = new Image();
+teleobjektivimg.src = "img/teleobjektiv.png";
+
+class Teleobjektiv extends Gadget {
+
+    static get image() { return teleobjektivimg; }
+    static get scale() { return 0.5; }
+
+    addTo(tower) {
+        tower.range += 1.5;
+        super.addTo(tower);
+    }
+}
+
+let autofocusimg = new Image();
+autofocusimg.src = "img/autofocus.png";
+
+class Autofocus extends Gadget {
+
+    static get image() { return autofocusimg; }
+    static get scale() { return 0.5; }
+
+    addTo(tower) {
+        tower.CDtime *= 0.8;
+        super.addTo(tower);
+    }
+}
 
 let aftonbladetimg = new Image();
-let skvallerpressimg = new Image();
-let forceimg = new Image();
 aftonbladetimg.src = "img/aftonbladet.png";
-skvallerpressimg.src = "img/skvallerpress.png";
-forceimg.src = "img/force.png";
 
 class Aftonbladet extends Gadget {
 
@@ -276,6 +299,9 @@ class Aftonbladet extends Gadget {
         super.addTo(tower);
     }
 }
+
+let skvallerpressimg = new Image();
+skvallerpressimg.src = "img/skvallerpress.png";
 class Skvallerpress extends Gadget {
 
     static get image() { return skvallerpressimg; }
@@ -286,6 +312,9 @@ class Skvallerpress extends Gadget {
         super.addTo(tower);
     }
 }
+
+let forceimg = new Image();
+forceimg.src = "img/force.png";
 class Force extends Gadget {
 
     static get image() { return forceimg; }
@@ -324,9 +353,11 @@ class Flash extends OmniProjectile {
     static get damage() { return 0; }
     static get stunDuration() { return 1000; }
 
-    constructor(source) {
+    constructor(source, damage) {
         super(source, flashimg, 0.75, 50);
         this.stunDuration = Flash.stunDuration;
+        if (damage)
+            this.damage = damage;
     }
     hitCreep(creep) {
         let b = new Stunned(this.stunDuration);
@@ -341,7 +372,7 @@ let feliximg = new Image();
 feliximg.src = "img/felix.png";
 class MediaFadder extends TargetingTower {
 
-    static get range() { return 4; }
+    static get range() { return 2.5; }
     // Cooldown time for projectiles, in ms
     static get CDtime() { return 2500; }
     // The tower's sprite
@@ -363,52 +394,62 @@ class MediaFadder extends TargetingTower {
         let info = {
             name: "Blixt",
             image: flashimg,
-            "Skada": 0,
-            "Träffar per skott": Flash.hitpoints,
+            "Skada": this.force ? 1 : 0,
+            "Får plats i bild": Flash.hitpoints,
             "Specialeffekt": `Stannar ninjorna i ${Flash.stunDuration / 1000} s`
         };
+        if (this.skvallerpress)
+            ; // Lägg till i Specialeffekt
 
         return info;
     }
 
     projectile(target) {
         // Create and return a new projectile object, that is targeted at target
-        return new Flash(this);
+        return new Flash(this, this.force ? 1 : 0);
     }
 
     configUpgrades() {
         this.addUpgrade(
-            TakeAwayCoffee,
-            "Take away kaffe",
-            "Ge faddern lite kaffe så jobbar den snabbare.",
+            Autofocus,
+            "Autofokus",
+            "När kameran själv hittar rätt inställningar kan mediafaddern fokusera på att fota snabbare.",
             100,
             [],
-            [TakeAwayCoffee],
+            [Autofocus],
             0);
         this.addUpgrade(
-            Skvallerpress,
-            "Hänt! Extra",
-            "Mediafaddern publicerar bilderna i sektionstidningen",
-            100,
-            [],
-            [Force, Skvallerpress, Aftonbladet],
-            100);
+            Teleobjektiv,
+            "Teleobjektiv",
+            "Med teleobjektiv kan man ta bilder på folk jättelångt bort!",
+            150,
+            [Autofocus],
+            [Teleobjektiv],
+            50);
         this.addUpgrade(
             Force,
             "The Force",
-            "Mediafaddern publicerar bilderna i sektionstidningen",
-            100,
+            "Mediafaddern publicerar bilderna i sektionstidningen. Ninjornas vänner skrattar gott åt de roliga bilderna, och för ett tag är ninjorna känsliga för andra attacker, men snart kommer ett nytt nummer och effekten går över.",
+            300,
             [],
             [Force, Skvallerpress, Aftonbladet],
             100);
         this.addUpgrade(
-            Aftonbladet,
-            "Aftonbladet",
-            "Mediafaddern publicerar bilderna i sektionstidningen",
+            Skvallerpress,
+            "Hänt! Extra",
+            "Mediafaddern hänger ut ninjornas fyllebilder i skvallerpressen. Pinsamheten av att ha betett sig som en f.d. finansminister gör att ninjorna tar psykisk skada.",
             100,
             [],
-            [Force, Skvallerpress, Aftonbladet],
-            100);
+            [Force, Skvallerpress],
+            50);
+        this.addUpgrade(
+            Aftonbladet,
+            "Aftonbladet",
+            "Mediafaddern tipsar kvällstidningarna som publicerar artiklar om hur ninjorna inte respekterar Coronarestriktionerna. Ögontjänare som de är ser ninjorna till att hålla social distansering inom kamerornas räckvidd.",
+            1000,
+            [Skvallerpress, Teleobjektiv],
+            [Force, Aftonbladet],
+            150);
     }
 }
 
@@ -424,7 +465,7 @@ class MatBeredare extends SupportTower {
 	static get scale() { return 0.15; }
 	static get cost() { return 750; }
 	static get name() { return "Matberedare"; }
-	static get desc() { return "Inte ens fadderiet orkar kramas på fastande mage. Tack och lov för matberedarna, som lyckas försörja hela mottagningen med energi."; }
+	static get desc() { return "Inte ens Fadderiet orkar kramas på fastande mage. Tack och lov för matberedarna, som lyckas försörja hela mottagningen med energi."; }
 
 
 	configUpgrades() {
