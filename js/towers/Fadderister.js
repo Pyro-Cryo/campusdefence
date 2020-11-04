@@ -801,11 +801,13 @@ class Axel extends OmniTower {
                 m.damage *= 3;
             else {
                 m.damage = 0;
-                m.time = 3000;
-                m.hitCreep = ((creep) => {
+                m.time = 1000;
+                m.raw_hitCreep = m.hitCreep;
+                m.hitCreep = function(creep){
                     creep.addEffect(new Drunk(this.time));
-                    super.hitCreep(creep);
-                }).bind(m);
+                    this.raw_hitCreep(creep);
+                }.bind(m);
+                // console.log(m)
             }
         }
         if (this.champagne) {

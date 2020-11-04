@@ -287,11 +287,23 @@ class SupportTower extends BaseTower {
         super.update();
     }
 
-    // addGadget(gadget){
-    //     this.remove();
-    //     this.apply();
-    //     super.addGadget(gadget);
-    // }
+    updateRange() {
+        var oldrange = this.towersinrange;
+        var newrange = this.towersInRange();
+
+        let newtowers = newrange.filter(t => !oldrange.includes(t));
+        let removedtowers = oldrange.filter(t => !newrange.includes(t));
+        
+        this.towersinrange = newrange;
+
+        for (var i = 0; i < newtowers.length; i++) {
+            this.applyTo(newtowers[i]);
+        }
+
+        for (var i = 0; i < removedtowers.length; i++) {
+            this.removeFrom(removedtowers[i]);
+        }
+    }
 
     towersInRange() {
         return controller.map.towers.filter(function(tower){
@@ -313,25 +325,31 @@ class SupportTower extends BaseTower {
         }
     }
     applyTo(tower) {
-
     }
     removeFrom(tower) {
-
     }
     onMapUpdate(tower) {
-        if(tower === this){
+        if (tower === this){
             return;
         }
-        if(tower.id !== null){
-            if(Math.sqrt(Math.pow(this.x - tower.x, 2) + Math.pow(this.y - tower.y, 2)) < this.range + 0.1){
+        
+        if (tower.id !== null && !this.towersinrange.includes(tower)){
+            if (Math.sqrt(Math.pow(this.x - tower.x, 2) + Math.pow(this.y - tower.y, 2)) < this.range + 0.1){
                 this.towersinrange.push(tower);
                 this.applyTo(tower);
             }
         }
-        else{
-            this.towersinrange = this.towersinrange.filter(t =>
-                t.id !== null 
-                );
+
+        else if (tower instanceof Fnoell && this.towersinrange.includes(tower)){ 
+            if (Math.sqrt(Math.pow(this.x - tower.x, 2) + Math.pow(this.y - tower.y, 2)) > this.range + 0.1){
+                this.removeFrom(tower);
+                this.towersinrange = this.towersinrange.filter(t => t.id !== tower.id );
+            }
+        }
+        
+        else if(tower.id === null && this.towersinrange.includes(tower)) {
+            this.removeFrom(tower);
+            this.towersinrange = this.towersinrange.filter(t => t.id !== null );
         }
     }
     destroy(){

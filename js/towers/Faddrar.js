@@ -278,10 +278,11 @@ teleobjektivimg.src = "img/teleobjektiv.png";
 class Teleobjektiv extends Gadget {
 
     static get image() { return teleobjektivimg; }
-    static get scale() { return 0.25; }
+    static get scale() { return 0.2; }
 
     addTo(tower) {
         tower.range += 1.5;
+        tower.inrange = tower.pathInRange();
         super.addTo(tower);
     }
 }
@@ -306,7 +307,7 @@ bigflashimg.src = "img/extern_flash.png";
 class ExternFlash extends Gadget {
 
     static get image() { return bigflashimg; }
-    static get scale() { return 0.3; }
+    static get scale() { return 0.2; }
 
     addTo(tower) {
         tower.flash_power = 1.5;
@@ -407,7 +408,7 @@ class MediaFadder extends TargetingTower {
     // The tower's sprite
     static get image() { return feliximg; }
     // The tower's sprite's scale
-    static get scale() { return 0.2; }
+    static get scale() { return 0.18; }
     static get cost() { return 500; }
     static get name() { return "Mediafadder"; }
     static get desc() { return "Omelett! Mediafaddrarna dokumenterar mottagningen och ninjorna vill såklart vara med på bild. Så fort kameran åker fram stannar de och poserar, oftast med tillhörande fula grimaser."; }
@@ -503,10 +504,52 @@ class MatBeredare extends SupportTower {
 	static get CDtime() {return  7500;}
 	static get image() { return foodmakerimg; }
 	static get scale() { return 0.1; }
-	static get cost() { return 750; }
+	static get cost() { return 150; }
 	static get name() { return "Matberedare"; }
 	static get desc() { return "Inte ens Fadderiet orkar kramas på fastande mage. Tack och lov för matberedarna, som lyckas försörja hela mottagningen med energi."; }
 
+    projectileInfo() {
+        let info = {
+            name: "Går och handlar",
+            image: MatBeredare.image,
+            "Skada": 0,
+            "Specialeffekt": "Ingen"
+        };
+        if(this.snackbar && this.projectiletype == 1){
+        	info["Spiller ut"] = "Gelehjärtan";
+        	info.name = "Godisskåpet";
+        	info.image = geleimg;
+        	info["Skada"] = JellyHeart.damage;
+        }
+        if(this.snackbar && this.projectiletype == 1){
+        	info["Spiller ut"] = "Delicatobollar";
+        	info.name = "Godisskåpet";
+        	info.image = delicatoimg;
+        	info["Skada"] = DelicatoBoll.damage;
+        }
+        if(this.coffee && this.pasta){
+        	info["Specialeffekt"] = "Ger faddrar i närheten extra räckvidd och snabbare skott";
+        	info.image = pastaimg;
+        	info.name = "Fikapaus"
+        }
+        else if(this.coffee){
+        	info["Specialeffekt"] = "Ger faddrar i närheten snabbare skott";
+        	info.image = coffeefull;
+        	info.name = "Kaffepaus"
+        }
+        else if(this.pasta && this.chili){
+        	info["Specialeffekt"] = "Ger faddrar i närheten extra räckvidd och 20% chans att sätta eld på ninjor";
+        	info.image = chiliimg;
+        	info.name = "Lunchpaus"
+        }
+        else if(this.pasta){
+        	info["Specialeffekt"] = "Ger faddrar i närheten extra räckvidd";
+        	info.image = pastaimg;
+        	info.name = "Lunchpaus"
+        }
+
+        return info;
+    }
 
 	configUpgrades() {
 		super.configUpgrades();
@@ -517,7 +560,7 @@ class MatBeredare extends SupportTower {
 			"I konsulatets godisskåp finns alltid nånting sött att finna. Matberedaren köper gelehjärtan för Mottagningens interrep-pengar och bjuder alla ninjor hen ser.",
 			750,
 			[],
-			[Snackbar, CoffeMaker],
+			[Snackbar, CoffeMaker, Pasta],
 			0
 			);
         this.addUpgrade(
@@ -526,7 +569,7 @@ class MatBeredare extends SupportTower {
             "Delicatobollarna är tveklöst det mest åtråvärda i godisskåpet. De går åt dubbelt så fort som vanliga gelehjärtan.",
             800,
             [Snackbar],
-            [Delicato],
+            [Delicato, Pasta, CoffeMaker, Chili],
             250
             );
         this.addUpgrade(
@@ -544,7 +587,7 @@ class MatBeredare extends SupportTower {
 			"Inget får fysiker att studsa upp så snabbt från sina stolar som Konsulatets kaffekokare, och när matberedaren kommer med kaffe jobbar alla faddrar i närheten mycket snabbare.",
 			750,
 			[],
-			[Snackbar, CoffeMaker],
+			[Snackbar, CoffeMaker, Chili],
 			0
 			);
 		this.addUpgrade(
@@ -562,7 +605,7 @@ class MatBeredare extends SupportTower {
 			"Matberedarna har i några chilifrukter i maten för att få till lite hetta. Hur många chilifrukter blir det nu igen om vi ska skala upp receptet från 4 personer till 200? Äsch ta allihopa bara.",
 			750,
 			[Pasta],
-			[Snackbar, CoffeMaker],
+			[Snackbar, CoffeMaker, Chili],
 			0
 			);
 	}
@@ -575,36 +618,49 @@ class MatBeredare extends SupportTower {
 		this.pasta = false;
 
 		this.multiplier = 0.9;
+		this.projectiletype = 0;
 
 		this.apply();
 	}
 
 	applyTo(tower){
 
-		if(this.chili){
 
+		if(this.chili){
 			// Injicera vår Buring-effect på alla projektiler. Bäst att inte läsa
 			// för noga hur det faktiskt går till...
-			if(tower.raw_projectile == undefined)
+			if(tower.raw_projectile == undefined){
 				tower.raw_projectile = tower.projectile;
 
-			tower.projectile = function(target){
-				let p = tower.raw_projectile(target);
-				p.raw_hitCreep = p.hitCreep;
-				p.hitCreep = function(creep){
-					let e = new Burning();
-					creep.addEffect(e);
-					p.raw_hitCreep(creep);
-				}.bind(p);
-				return p;
-			}.bind(tower);
+				tower.projectile = function(target){
+					let p = this.raw_projectile(target);
+					if(p === null)
+						return null;
+					if(Math.random() > 0.2)
+						return p;
+					p.raw_hitCreep = p.hitCreep;
+					p.hitCreep = function(creep){
+						let e = new Burning();
+						creep.addEffect(e);
+						this.raw_hitCreep(creep);
+					}.bind(p);
+					return p;
+				}.bind(tower);
+			}
 		}
 
 		if(this.coffee)
 			tower.CDtime *= this.multiplier;
 
-		if(this.pasta)
+		if(this.pasta){
 			tower.range += 0.6;
+			tower.inrange = tower.pathInRange();
+			if(tower instanceof SupportTower)
+				if(tower.towersinrange !== undefined)
+					tower.updateRange();
+		}
+
+		super.applyTo(tower);
 
 	}
 
@@ -617,8 +673,14 @@ class MatBeredare extends SupportTower {
 		if(this.coffee)
 			tower.CDtime /= this.multiplier;
 
-		if(this.pasta)
+		if(this.pasta){
 			tower.range -= 0.6;
+			tower.inrange = tower.pathInRange();
+			if(tower instanceof SupportTower)
+				tower.updateRange();
+		}
+
+		super.removeFrom(tower);
 	}
 
 	target(){
