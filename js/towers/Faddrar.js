@@ -495,14 +495,14 @@ class MediaFadder extends TargetingTower {
 
 
 let foodmakerimg = new Image();
-foodmakerimg.src = "img/jonas.png";
+foodmakerimg.src = "img/fredrik.png";
 
 class MatBeredare extends SupportTower {
 
 	static get range() { return 2.5; }
 	static get CDtime() {return  7500;}
 	static get image() { return foodmakerimg; }
-	static get scale() { return 0.15; }
+	static get scale() { return 0.1; }
 	static get cost() { return 750; }
 	static get name() { return "Matberedare"; }
 	static get desc() { return "Inte ens Fadderiet orkar kramas på fastande mage. Tack och lov för matberedarna, som lyckas försörja hela mottagningen med energi."; }
@@ -561,7 +561,7 @@ class MatBeredare extends SupportTower {
 			"Chilistyrka",
 			"Matberedarna har i några chilifrukter i maten för att få till lite hetta. Hur många chilifrukter blir det nu igen om vi ska skala upp receptet från 4 personer till 200? Äsch ta allihopa bara.",
 			750,
-			[],
+			[Pasta],
 			[Snackbar, CoffeMaker],
 			0
 			);
