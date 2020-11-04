@@ -837,7 +837,10 @@
 
         for (var i = 0; i < data.projectiles.length; i++) {
 
-        	let pt = controller.map.getGridAt(data.projectiles[i].x, data.projectiles[i].y);
+            if (!this.map.validPosition(data.projectiles[i].x, data.projectiles[i].y) ){
+                continue;
+            }
+        	let pt = this.map.getGridAt(data.projectiles[i].x, data.projectiles[i].y);
             //console.log(data.projectiles[i].type, JellyHeart.constructor.name, DelicatoBoll.constructor.name)
             
             if(data.projectiles[i].type == "JellyHeart")
