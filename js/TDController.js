@@ -28,7 +28,8 @@
             "1.1.0",
             "1.1.1",
             "1.1.2",
-            "1.1.3"
+            "1.1.3",
+            "1.1.4"
         ];
         if ((window.localStorage.getItem("campusdefence_version") || "1.0") !== this.versions[this.versions.length - 1]) {
             //window.alert("Campus Defence har uppdaterats och ditt sparade spel går tyvärr inte längre att fortsätta på.");
@@ -781,6 +782,7 @@
 
 				p.x = current.obj.x;
 				p.y = current.obj.y;
+                p.angle = current.obj.angle;
 
 				data.projectiles.push(p);
         	}
@@ -836,7 +838,16 @@
         for (var i = 0; i < data.projectiles.length; i++) {
 
         	let pt = controller.map.getGridAt(data.projectiles[i].x, data.projectiles[i].y);
-        	let p = new JellyHeart(pt);
+            //console.log(data.projectiles[i].type, JellyHeart.constructor.name, DelicatoBoll.constructor.name)
+            
+            if(data.projectiles[i].type == "JellyHeart")
+                var p = new JellyHeart(pt);
+            else if(data.projectiles[i].type == "DelicatoBoll")
+                var p = new DelicatoBoll(pt);
+
+            p.x = data.projectiles[i].x;
+            p.y = data.projectiles[i].y;
+            p.angle = data.projectiles[i].angle;
         	p.hitpoints = data.projectiles[i].hp;
 
         	controller.registerObject(p);

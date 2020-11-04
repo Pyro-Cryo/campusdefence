@@ -223,7 +223,7 @@ class JellyHeart extends BasicProjectile {
     static get drawHealthBar() { return true; }
 
     constructor(pathtile){
-        super(controller.map, geleimg, {x:pathtile.x, y:pathtile.y, range:1, hits:0}, 0, 0, 0.75, 0);
+        super(controller.map, geleimg, {x:pathtile.x, y:pathtile.y, range:1, hits:0}, 0, 0, PseudoJellyHeartTower.scale, 0);
         this.x = pathtile.x + (Math.random()-0.5)*0.5;
         this.y = pathtile.y + (Math.random()-0.5)*0.5;
         this.angle = (Math.random()-0.5)*Math.PI;
@@ -241,7 +241,7 @@ class PseudoJellyHeartTower extends BaseTower {
     // The tower's sprite
     static get image() { return geleimg; }
     // The tower's sprite's scale
-    static get scale() { return 0.75; }
+    static get scale() { return 0.7; }
     static get cost() { return Math.round(JellyHeart.hitpoints*2); }
     static get name() { return "Gelehjärtan"; }
     static get desc() { return "Att få ett gelehjärta är nästan som att få en kram. Men se upp, ninjornas kärlek är dyrköpt. Kommer med 20 gelehallon per ask. Kan innehålla spår av nötter."; }
@@ -258,13 +258,27 @@ class PseudoJellyHeartTower extends BaseTower {
     }
 }
 
+let delicatoimg = new Image();
+delicatoimg.src = "img/delicato.png";
+
+class DelicatoBoll extends JellyHeart {
+
+    static get damage() { return JellyHeart.damage+1; }
+
+    constructor(pathtile){
+        super(pathtile);
+        this.image = delicatoimg;
+        this.scale = 0.2;
+    }
+}
+
 let teleobjektivimg = new Image();
 teleobjektivimg.src = "img/teleobjektiv.png";
 
 class Teleobjektiv extends Gadget {
 
     static get image() { return teleobjektivimg; }
-    static get scale() { return 0.5; }
+    static get scale() { return 0.25; }
 
     addTo(tower) {
         tower.range += 1.5;
@@ -278,7 +292,7 @@ autofocusimg.src = "img/autofocus.png";
 class Autofocus extends Gadget {
 
     static get image() { return autofocusimg; }
-    static get scale() { return 0.5; }
+    static get scale() { return 0.25; }
 
     addTo(tower) {
         tower.CDtime *= 0.8;
@@ -286,13 +300,28 @@ class Autofocus extends Gadget {
     }
 }
 
+let bigflashimg = new Image();
+bigflashimg.src = "img/extern_flash.png";
+
+class ExternFlash extends Gadget {
+
+    static get image() { return bigflashimg; }
+    static get scale() { return 0.3; }
+
+    addTo(tower) {
+        tower.flash_power = 1.5;
+        super.addTo(tower);
+    }
+}
+
+
 let aftonbladetimg = new Image();
 aftonbladetimg.src = "img/aftonbladet.png";
 
 class Aftonbladet extends Gadget {
 
     static get image() { return aftonbladetimg; }
-    static get scale() { return 0.5; }
+    static get scale() { return 0.25; }
 
     addTo(tower) {
         tower.aftonbladet = true;
@@ -305,7 +334,7 @@ skvallerpressimg.src = "img/skvallerpress.png";
 class Skvallerpress extends Gadget {
 
     static get image() { return skvallerpressimg; }
-    static get scale() { return 0.5; }
+    static get scale() { return 0.25; }
 
     addTo(tower) {
         tower.skvallerpress = true;
@@ -318,7 +347,7 @@ forceimg.src = "img/force.png";
 class Force extends Gadget {
 
     static get image() { return forceimg; }
-    static get scale() { return 0.5; }
+    static get scale() { return 0.25; }
 
     addTo(tower) {
         tower.force = true;
@@ -388,6 +417,7 @@ class MediaFadder extends TargetingTower {
         this.aftonbladet = false;
         this.skvallerpress = false;
         this.force = false;
+        this.flash_power = 1;
     }
 
     projectileInfo() {
@@ -395,7 +425,7 @@ class MediaFadder extends TargetingTower {
             name: "Blixt",
             image: flashimg,
             "Skada": this.force ? 1 : 0,
-            "Får plats i bild": Flash.hitpoints,
+            "Får plats i bild": Flash.hitpoints * this.flash_power,
             "Specialeffekt": `Stannar ninjorna i ${Flash.stunDuration / 1000} s`
         };
         if (this.skvallerpress)
@@ -406,7 +436,9 @@ class MediaFadder extends TargetingTower {
 
     projectile(target) {
         // Create and return a new projectile object, that is targeted at target
-        return new Flash(this, this.force ? 1 : 0);
+        let p = new Flash(this, this.force ? 1 : 0);
+        p.hitpoints *= this.flash_power;
+        return p;
     }
 
     configUpgrades() {
@@ -426,6 +458,14 @@ class MediaFadder extends TargetingTower {
             [Autofocus],
             [Teleobjektiv],
             50);
+        this.addUpgrade(
+            ExternFlash,
+            "Kraftigare blixt",
+            "Mer energi innebär större räckvidd och fler ninjor som träffas. Med den här jätteblixten kan 50% fler ninjor bländas samtidigt.",
+            300,
+            [Autofocus],
+            [ExternFlash],
+            150);
         this.addUpgrade(
             Force,
             "The Force",
@@ -460,7 +500,7 @@ foodmakerimg.src = "img/jonas.png";
 class MatBeredare extends SupportTower {
 
 	static get range() { return 2.5; }
-	static get CDtime() {return  7000;}
+	static get CDtime() {return  7500;}
 	static get image() { return foodmakerimg; }
 	static get scale() { return 0.15; }
 	static get cost() { return 750; }
@@ -480,6 +520,24 @@ class MatBeredare extends SupportTower {
 			[Snackbar, CoffeMaker],
 			0
 			);
+        this.addUpgrade(
+            Delicato,
+            "Delicatobollar",
+            "Delicatobollarna är tveklöst det mest åtråvärda i godisskåpet. De går åt dubbelt så fort som vanliga gelehjärtan.",
+            800,
+            [Snackbar],
+            [Delicato],
+            250
+            );
+        this.addUpgrade(
+            ExpressDelivery,
+            "Express-leverans",
+            "Istället för att åka och handla själv beställer CdA godis med express-leverans, så att godisskåpet kan sälja mångdubbelt mer godis.",
+            1000,
+            [Snackbar],
+            [ExpressDelivery],
+            250
+            );
 		this.addUpgrade(
 			CoffeMaker,
 			"Kaffekokare",
@@ -569,7 +627,11 @@ class MatBeredare extends SupportTower {
 
 	projectile(target) {
 		if(this.snackbar){
-			let p = new JellyHeart(target);
+            if (this.projectiletype == 1)
+                var p = new JellyHeart(target);
+            else if (this.projectiletype == 2)
+                var p = new DelicatoBoll(target);
+
 			p.onHitCreep = function(){
 				this.hits++;
 			}.bind(this);
@@ -604,42 +666,66 @@ snackimg.src = "img/soda.png";
 class Snackbar extends Gadget {
 
 	static get image() { return snackimg; }
-	static get scale() { return 0.1; }
+	static get scale() { return 0.25; }
 
 	addTo(tower){
-		tower.remove();
 		tower.snackbar = true;
+        tower.projectiletype = 1;
 		super.addTo(tower);
-		tower.apply();
 	}
+}
+
+class Delicato extends Gadget {
+
+    static get image() { return delicatoimg; }
+    static get scale() { return 0.18; }
+
+    addTo(tower){
+        tower.projectiletype = 2;
+        super.addTo(tower);
+    }
+}
+
+let expressimg = new Image();
+expressimg.src = "img/delivery.png";
+class ExpressDelivery extends Gadget {
+
+    static get image() { return expressimg; }
+    static get scale() { return 0.15; }
+
+    addTo(tower){
+        tower.CDtime *= 0.6;
+        super.addTo(tower);
+    }
+
 }
 
 let chiliimg = new Image();
 chiliimg.src = "img/chili.png";
 class Chili extends Gadget {
 
-	static get image() { return chiliimg; }
-	static get scale() { return 0.25; }
+    static get image() { return chiliimg; }
+    static get scale() { return 0.25; }
 
-	addTo(tower){
-		tower.remove();
-		tower.chili = true;
-		super.addTo(tower);
-		tower.apply();
-	}
+    addTo(tower){
+        tower.remove();
+        tower.chili = true;
+        super.addTo(tower);
+        tower.apply();
+    }
 }
 
 let pastaimg = new Image();
 pastaimg.src = "img/pasta.png";
 class Pasta extends Gadget {
 
-	static get image() { return pastaimg; }
-	static get scale() { return 0.3; }
+    static get image() { return pastaimg; }
+    static get scale() { return 0.3; }
 
-	addTo(tower){
-		tower.remove();
-		tower.pasta = true;
-		super.addTo(tower);
-		tower.apply();
-	}
+    addTo(tower){
+        tower.remove();
+        tower.pasta = true;
+        super.addTo(tower);
+        tower.apply();
+    }
 }
