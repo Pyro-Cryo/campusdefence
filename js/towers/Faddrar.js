@@ -322,7 +322,7 @@ aftonbladetimg.src = "img/aftonbladet.png";
 class Aftonbladet extends Gadget {
 
     static get image() { return aftonbladetimg; }
-    static get scale() { return 0.25; }
+    static get scale() { return 0.15; }
 
     addTo(tower) {
         tower.aftonbladet = true;
@@ -335,7 +335,7 @@ skvallerpressimg.src = "img/skvallerpress.png";
 class Skvallerpress extends Gadget {
 
     static get image() { return skvallerpressimg; }
-    static get scale() { return 0.25; }
+    static get scale() { return 0.15; }
 
     addTo(tower) {
         tower.skvallerpress = true;
@@ -348,7 +348,7 @@ forceimg.src = "img/force.png";
 class Force extends Gadget {
 
     static get image() { return forceimg; }
-    static get scale() { return 0.25; }
+    static get scale() { return 0.15; }
 
     addTo(tower) {
         tower.force = true;
