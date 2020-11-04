@@ -208,14 +208,15 @@ function getLevel(number, updateInterval) {
                 .send(15, ShieldedOrange).over(5 * s)
                 .send(25, ShieldedPink).over(5 * s)
                 .wait(2 * s)
+                .send(1, Burvagn).immediately()
                 .send(50, ShieldedBlue).over(10 * s)
-                .interleave(new CreepSequence()
-                    .wait(30 * s)
-                    .send(1, TF_3).immediately()
-                    .wait(1.75 * s)
-                    .send(1, OF_3).immediately()
-                    .wait(1.75 * s)
-                    .send(1, SF_3).immediately())
+                // .interleave(new CreepSequence()
+                //     .wait(30 * s)
+                //     .send(1, TF_3).immediately()
+                //     .wait(1.75 * s)
+                //     .send(1, OF_3).immediately()
+                //     .wait(1.75 * s)
+                //     .send(1, SF_3).immediately())
                 .send(50, ShieldedPink).over(25 * s)
                 );
 
@@ -351,12 +352,14 @@ function levelMessage(number) {
 
         default:
             const tips = [
-                "Visste du att: Föhseriet låter sig inte mutas av godis. De är helt självförsörjande på den fronten och tar allt snask behöver från små nØllan, eller Styret.",
+                "Visste du att: Föhseriet låter sig inte mutas av godis. De är helt självförsörjande på den fronten och tar allt snask de behöver från små nØllan, eller Styret.",
                 "Visste du att: Campus Defence består i skrivande stund av 7396 rader kod. Skriver man ut den och lägger papprena kant i kant räcker det 0.000007792% av avståndet till månen!",
                 "Visste du att: Båda utvecklarna borde ha tagit examen vid det här laget och kanske inte lägga så mycket tid på webbläsarspel.",
                 "Visste du att: Om du behöver en godtycklig siffra så har empirisk testning visat att 4 nästan alltid är det bästa valet.",
                 "Visste du att: Lillie-Fnöll står för ungefär 80% av alla buggar.",
-                "Visste du att: Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>controller.money = 9999</i>"
+                "Visste du att: Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>controller.money = 9999</i>",
+                "Visste du att: Föhseriets val av transportmedel påfallande ofta är burvagn.",
+                "Visste du att: Fadderisternas olika förmågor i spelet är baserade på deras försök att hemlighålla Fadderiets tema."
             ];
             return tips[Math.floor(Math.random(tips.length))];
     }
@@ -372,7 +375,7 @@ damageTypeMap[Becca.name] = "Fire";
 damageTypeMap[Axel.name] = "Alcohol";
 damageTypeMap[Fnoell.name] = null;
 damageTypeMap[MediaFadder.name] = "Light";
-damageTypeMap[CoffeMaker.name] = null;
+damageTypeMap[MatBeredare.name] = null;
 
 
 function favoredDamageTypes(weights) {

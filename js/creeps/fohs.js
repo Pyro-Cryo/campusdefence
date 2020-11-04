@@ -82,6 +82,11 @@ class TF_1 extends BaseFohs {
     static get ninjaType() { return Ninja; }
 
     onHit(projectile){
+        this.spawnNinja();
+    	super.onHit(projectile);
+    }
+
+    spawnNinja(){
         const maxdist = controller.map.path.length - 1;
         let low = -Math.floor(this.constructor.creepCount/2);
         let high = Math.ceil(this.constructor.creepCount/2);
@@ -89,9 +94,7 @@ class TF_1 extends BaseFohs {
     	for (var i = low; i < high; i++) {
     		new type(Math.max(0, Math.min(maxdist, this.distance+i*this.constructor.spread)));
     	}
-    	super.onHit(projectile);
     }
-
 }
 
 
@@ -227,6 +230,79 @@ class OF_inf extends OF_1 {
         this.cooldown *= 50/controller.levelNumber;
         this.health = Math.floor(controller.levelNumber * 2.5);
         this.initial_health = this.health;
+    }
+}
+
+
+let burvagnimg = new Image();
+burvagnimg.src = "img/transparent/burvagn.png";
+class Burvagn extends BaseFohs {
+
+    static get speed() { return 0.2; }
+    static get image() { return burvagnimg; }
+    static get scale() { return 0.3; }
+    static get health() { return 175; }
+    static get drawHealthBar() { return true; }
+    static get value() { return 100; }
+
+    constructor(distance){
+        super(distance);
+        this.despawnTime = 0
+        this.fudge = 0;
+
+        this.cooldown = Math.floor(this.innerFohs()[1].cooldown / controller.updateInterval);
+        this.cdTimer = 0;
+    }
+
+    onDeath(){
+        super.onDeath();
+
+        let dl = -0.2;
+        let fohs = this.innerFohs();
+
+        for (var i = 0; i < fohs.length; i++) {
+        	new fohs[i](this.distance + dl);
+        	dl += 0.2;
+        }
+    }
+
+    onHit(projectile){
+        // TF spawnar ninjor
+        let tf_type = this.innerFohs()[0];
+
+        const maxdist = controller.map.path.length - 1;
+        let low = -Math.floor(tf_type.creepCount/2);
+        let high = Math.ceil(tf_type.creepCount/2);
+        for (var i = low; i < high; i++) {
+            new tf_type.ninjaType(Math.max(0, Math.min(maxdist, this.distance+i*tf_type.spread)));
+        }
+
+        // ÖF slår tillbaka! 
+        if(this.cdTimer <= 0){
+            let proj = new Payback(this, projectile.sourceTower);
+            controller.registerObject(proj);
+            this.cdTimer = this.cooldown;
+        }
+
+        let original_damage = projectile.damage;
+        projectile.damage /=2;
+        super.onHit(projectile);
+        projectile.damage = original_damage;
+    }
+
+    update() {
+        if(this.cdTimer > 0){
+            this.cdTimer--;
+        }
+        super.update();
+    }
+
+    addEffect(effect) {
+        // Burvagn är immun mot allt
+    }
+
+    innerFohs(){
+        return [TF_1, OF_1, SF_1];
     }
 }
 
