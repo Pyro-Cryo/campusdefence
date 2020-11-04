@@ -222,11 +222,16 @@ class JellyHeart extends BasicProjectile {
     static get persistent() { return true; }
     static get drawHealthBar() { return true; }
 
-    constructor(pathtile){
+    constructor(pathtile, hp = undefined){
         super(controller.map, geleimg, {x:pathtile.x, y:pathtile.y, range:1, hits:0}, 0, 0, PseudoJellyHeartTower.scale, 0);
         this.x = pathtile.x + (Math.random()-0.5)*0.5;
         this.y = pathtile.y + (Math.random()-0.5)*0.5;
         this.angle = (Math.random()-0.5)*Math.PI;
+
+        if(hp !== undefined){
+            this.hitpoints = hp;
+            this.initialHealth = hp;
+        }
     }
 
     hitCreep(creep) {
@@ -265,8 +270,8 @@ class DelicatoBoll extends JellyHeart {
 
     static get damage() { return JellyHeart.damage+1; }
 
-    constructor(pathtile){
-        super(pathtile);
+    constructor(pathtile, hp = undefined){
+        super(pathtile, hp=hp);
         this.image = delicatoimg;
         this.scale = 0.2;
     }
@@ -560,7 +565,7 @@ class MatBeredare extends SupportTower {
 			"I konsulatets godisskåp finns alltid nånting sött att finna. Matberedaren köper gelehjärtan för Mottagningens interrep-pengar och bjuder alla ninjor hen ser.",
 			750,
 			[],
-			[Snackbar, CoffeMaker, Pasta],
+			[Snackbar, CoffeMaker, Pasta, Wraps, Leftovers],
 			0
 			);
         this.addUpgrade(
@@ -569,7 +574,7 @@ class MatBeredare extends SupportTower {
             "Delicatobollarna är tveklöst det mest åtråvärda i godisskåpet. De går åt dubbelt så fort som vanliga gelehjärtan.",
             800,
             [Snackbar],
-            [Delicato, Pasta, CoffeMaker, Chili],
+            [Delicato, Pasta, CoffeMaker],
             250
             );
         this.addUpgrade(
@@ -587,7 +592,7 @@ class MatBeredare extends SupportTower {
 			"Inget får fysiker att studsa upp så snabbt från sina stolar som Konsulatets kaffekokare, och när matberedaren kommer med kaffe jobbar alla faddrar i närheten mycket snabbare.",
 			750,
 			[],
-			[Snackbar, CoffeMaker, Chili],
+			[Snackbar, CoffeMaker, Chili, Leftovers],
 			0
 			);
 		this.addUpgrade(
@@ -596,7 +601,7 @@ class MatBeredare extends SupportTower {
 			"Det är svårt att slå en bra pastasallad, och när faddrarna har fått lite mat orkar de springa längre och kan nå ännu fler ninjor.",
 			400,
 			[],
-			[Snackbar, Pasta],
+			[Snackbar, Pasta, Wraps, Leftovers],
 			0
 			);
 		this.addUpgrade(
@@ -608,6 +613,22 @@ class MatBeredare extends SupportTower {
 			[Snackbar, CoffeMaker, Chili],
 			0
 			);
+		this.addUpgrade(
+			Wraps,
+			"Valhallavägenveganwraps",
+			"Mottagningen blir sponsrade av en restaurang på Valhallavägen. Alla faddrar som får mat blir 40% billigare, men pga veganwrapsens låga näringsvärde blir de inte riktigt lika effektiva som annars.",
+			400,
+			[],
+			[Wraps, Snackbar, Pasta, Leftovers],
+			0);
+		this.addUpgrade(
+			Leftovers,
+			"Matlåda",
+			"Matberedaren delar ut maten som blev över från lunchen till middag. Ger en slumpmässig uppgradering varje runda.",
+			480,
+			[],
+			[Snackbar, CoffeMaker, Pasta, Wraps],
+			0);
 	}
 
 	constructor(x,y){
@@ -616,8 +637,15 @@ class MatBeredare extends SupportTower {
 		this.snackbar = false;
 		this.coffee = false;
 		this.pasta = false;
+		
+		this.discounts = false;
+		this.randomize = false;
 
 		this.multiplier = 0.9;
+		this.extrarange = 0.6;
+		this.pricecut = 0.4;
+		this.CDchange = 1.3;
+
 		this.projectiletype = 0;
 
 		this.apply();
@@ -653,7 +681,7 @@ class MatBeredare extends SupportTower {
 			tower.CDtime *= this.multiplier;
 
 		if(this.pasta){
-			tower.range += 0.6;
+			tower.range += this.extrarange;
 			tower.inrange = tower.pathInRange();
 			if(tower instanceof SupportTower)
 				if(tower.towersinrange !== undefined)
@@ -674,7 +702,7 @@ class MatBeredare extends SupportTower {
 			tower.CDtime /= this.multiplier;
 
 		if(this.pasta){
-			tower.range -= 0.6;
+			tower.range -= this.extrarange;
 			tower.inrange = tower.pathInRange();
 			if(tower instanceof SupportTower)
 				tower.updateRange();
@@ -713,7 +741,6 @@ class CoffeMaker extends Gadget {
 
 	static get image(){ return coffeefull; }
 	static get scale(){ return 0.09; }
-
 
 	addTo(tower){
 		tower.remove();
@@ -790,4 +817,30 @@ class Pasta extends Gadget {
         super.addTo(tower);
         tower.apply();
     }
+}
+
+let wrapimg = new Image();
+wrapimg.src = "img/iceberg.png";
+class Wraps extends Gadget {
+
+	static get image() { return wrapimg; }
+	static get scale() { return 0.2; }
+
+	addTo(tower){
+		tower.discounts = true;
+		super.addTo(tower);
+	}
+}
+
+let leftoverimg = new Image();
+leftoverimg.src = "img/leftovers.png";
+class Leftovers extends Gadget {
+
+	static get image() { return leftoverimg; }
+	static get scale() { return 0.2; }
+
+	addTo(tower){
+		tower.randomize = true;
+		super.addTo(tower);
+	}
 }

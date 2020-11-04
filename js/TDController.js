@@ -29,7 +29,8 @@
             "1.1.1",
             "1.1.2",
             "1.1.3",
-            "1.1.4"
+            "1.1.4",
+            "1.1.5"
         ];
         if ((window.localStorage.getItem("campusdefence_version") || "1.0") !== this.versions[this.versions.length - 1]) {
             //window.alert("Campus Defence har uppdaterats och ditt sparade spel går tyvärr inte längre att fortsätta på.");
@@ -62,11 +63,11 @@
         this.addTowerSpec({type: PseudoJellyHeartTower, unlockLevel: 3});
         this.addTowerSpec({type: Frida, unlockLevel: 3});
         this.addTowerSpec({type: Nicole, unlockLevel: 4});
-        this.addTowerSpec({type: Becca, unlockLevel: 5});
+        this.addTowerSpec({type: Becca, unlockLevel: 6});
         this.addTowerSpec({type: Axel, unlockLevel: 6});
         this.addTowerSpec({type: Fnoell, unlockLevel: 7});
-        this.addTowerSpec({type: MediaFadder, unlockLevel: 10});
-        this.addTowerSpec({type: MatBeredare, unlockLevel: 10});
+        this.addTowerSpec({type: MediaFadder, unlockLevel: 8});
+        this.addTowerSpec({type: MatBeredare, unlockLevel: 8});
         
         this.buyingTower = null;
         
@@ -477,14 +478,15 @@
             imgsrc: "img/yeet.png",
             button: {
                 action: "Adjö",
-                cost: -(this.sellPriceMultiplier * this.selectedTower.value),
+                cost: -parseInt(this.sellPriceMultiplier * this.selectedTower.value * this.selectedTower.discount_multiplier),
                 onclick: () => {
-                    this.money += this.sellPriceMultiplier * this.selectedTower.value;
+                    this.money += this.sellPriceMultiplier * this.selectedTower.value * this.selectedTower.discount_multiplier;
                     this.hitsFromSoldTowers[this.selectedTower.constructor.name] += this.selectedTower.hits;
                     this.selectedTower.destroy();
                     this.selectedTower = null;
                     this.contextMenuRefresh = null;
                     this.destroyContextMenu();
+
                 }
             }
         });
@@ -769,6 +771,8 @@
                     t.gadgets.push(current.obj.gadgets[i].constructor.name)
                 }
                 t.target = current.obj.targeting;
+                t.discount_multiplier = current.obj.discount_multiplier;
+                t.CDpenalty_multiplier = current.obj.CDpenalty_multiplier;
                 data.towers.push(t);
             }
         }
@@ -817,6 +821,11 @@
             let tower = new type(x, y);
             tower.hits = data.towers[i].hits;
             tower.targeting = data.towers[i].target;
+
+            tower.discount_multiplier = data.towers[i].discount_multiplier;
+            tower.CDpenalty_multiplier = data.towers[i].CDpenalty_multiplier;
+            tower.CDtime *= data.towers[i].CDpenalty_multiplier;
+
             if (tower instanceof Fnoell) {
                 tower.originalX = data.towers[i].originalX;
                 tower.originalY = data.towers[i].originalY;
@@ -869,6 +878,7 @@ class PseudoTower extends GameObject {
         this.type = type;
         this.cost = cost;
         this.posOK = false;
+        this.extrarange = 0;
 
         this.doneCallback = doneCallback;
         this.mouseMoveCallback = this.updatePos.bind(this);
@@ -882,10 +892,13 @@ class PseudoTower extends GameObject {
         this.x = Math.round(controller.gameArea.canvasToGridX(event.clientX - rect.left));
         this.y = Math.round(controller.gameArea.canvasToGridY(event.clientY - rect.top));
 
-        if(this.type === PseudoJellyHeartTower)
+        if(this.type === PseudoJellyHeartTower){
         	this.posOK = controller.map.validPosition(this.x, this.y) && controller.map.getGridAt(this.x, this.y) instanceof PathTile;
-        else
+        }
+        else{
         	this.posOK = controller.map.validPosition(this.x, this.y) && controller.map.getGridAt(this.x, this.y) === null;
+            this.extrarange = this.getExtraRange(this.x,this.y);
+        }
     }
 
     done(didBuy) {
@@ -898,18 +911,23 @@ class PseudoTower extends GameObject {
 
     buy() {
         if (this.posOK) {
-            controller.money -= this.cost;
-            new this.type(this.x, this.y);
+            let pc = this.getPriceCut(this.x,this.y);
+            console.log(pc);
+            controller.money -= this.cost * pc[0];
+            let t = new this.type(this.x, this.y);
+            t.discount_multiplier = pc[0];
+            t.CDpenalty_multiplier = pc[1];
+            t.CDtime *= pc[1];
             this.done(true);
         }
     }
 
-    update() {
-        super.update();
-    }
+    // update() {
+    //     super.update();
+    // }
 
     draw(gameArea) {
-        gameArea.disc(this.x, this.y, this.type.range, this.posOK ? "rgba(0, 212, 0, 0.5)" : "rgba(212, 0, 0, 0.5)");
+        gameArea.disc(this.x, this.y, this.type.range+this.extrarange, this.posOK ? "rgba(0, 212, 0, 0.5)" : "rgba(212, 0, 0, 0.5)");
         if (this.posOK)
             controller.map.path.filter(pt =>
                 Math.sqrt(Math.pow(this.x - pt.x, 2) + Math.pow(this.y - pt.y, 2)) < this.type.range + 0.1
@@ -917,6 +935,29 @@ class PseudoTower extends GameObject {
                 gameArea.disc(pt.x, pt.y, 0.25, "rgba(255, 255, 255, 0.7)")
             );
         super.draw(gameArea);
+    }
+
+    getExtraRange(x,y){
+
+        let range = 0;
+        let towers = controller.map.getSupportTowersInRange(x,y);
+        for (var i = 0; i < towers.length; i++) 
+            if(towers[i] instanceof MatBeredare && towers[i].pasta == true)
+                range += towers[i].extrarange;
+        return range;
+    }
+
+    getPriceCut(x,y){
+
+        let multiplier = 1;
+        let CDchange = 1;
+        let towers = controller.map.getSupportTowersInRange(x,y);
+        for (var i = 0; i < towers.length; i++) 
+            if(towers[i] instanceof MatBeredare && towers[i].discounts == true){
+                multiplier *= (1-towers[i].pricecut);
+                CDchange *= towers[i].CDchange;
+            }
+        return [multiplier, CDchange];
     }
 }
 

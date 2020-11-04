@@ -66,6 +66,9 @@ class BaseTower extends GameObject {
 
         this.configUpgrades();
 
+        this.discount_multiplier = 1;
+        this.CDpenalty_multiplier = 1;
+
         this._targeting = BaseTower.TARGET_NONE;
     }
 
@@ -159,9 +162,13 @@ class BaseTower extends GameObject {
         return this.inrange.find(pt => pt.hasCreep());
     }
 
+    inRange(x,y){
+        return Math.sqrt(Math.pow(this.x - x, 2) + Math.pow(this.y - y, 2)) < this.range + 0.1;
+    }
+
     pathInRange() {
         let path = this.map.path.filter(pt =>
-            Math.sqrt(Math.pow(this.x - pt.x, 2) + Math.pow(this.y - pt.y, 2)) < this.range + 0.1
+            this.inRange(pt.x, pt.y)
         ).reverse();
 
         if(this._targeting == BaseTower.TARGET_LAST)
@@ -310,7 +317,7 @@ class SupportTower extends BaseTower {
             if(tower === this){
                 return false;
             }
-            return Math.sqrt(Math.pow(this.x - tower.x, 2) + Math.pow(this.y - tower.y, 2)) < this.range + 0.1;
+            return this.inRange(tower.x, tower.y);
         }.bind(this));
     }
     apply() {
@@ -334,14 +341,14 @@ class SupportTower extends BaseTower {
         }
         
         if (tower.id !== null && !this.towersinrange.includes(tower)){
-            if (Math.sqrt(Math.pow(this.x - tower.x, 2) + Math.pow(this.y - tower.y, 2)) < this.range + 0.1){
+            if (this.inRange(tower.x, tower.y)){
                 this.towersinrange.push(tower);
                 this.applyTo(tower);
             }
         }
 
         else if (tower instanceof Fnoell && this.towersinrange.includes(tower)){ 
-            if (Math.sqrt(Math.pow(this.x - tower.x, 2) + Math.pow(this.y - tower.y, 2)) > this.range + 0.1){
+            if (this.inRange(tower.x, tower.y)){
                 this.removeFrom(tower);
                 this.towersinrange = this.towersinrange.filter(t => t.id !== tower.id );
             }

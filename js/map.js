@@ -239,6 +239,18 @@ class TDMap extends PrerenderedObject {
         return Splines.interpolateLinear(t, this.linearizedPath, this.path.length);
     }
 
+    getSupportTowersInRange(x,y){
+        if (!this.validPosition(x,y))
+            throw new Error("Invalid position");
+
+        let stowers = [];
+        for (var i = 0; i < this.towers.length; i++) {
+            if (this.towers[i] instanceof SupportTower && this.towers[i].inRange(x,y)) 
+                stowers.push(this.towers[i]);
+        }
+        return stowers;
+    }
+
     clear() {
         for (var i = 0; i < this.path.length; i++) {
             this.path[i].clear();
