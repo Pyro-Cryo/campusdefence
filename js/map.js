@@ -327,6 +327,7 @@ class PathTile {
         this.prev = null;
         this.next = null;
         this.data = new Set();
+        this.dataCap = Number.POSITIVE_INFINITY;
         this.diagonality = 0;
 
         this._first = null;
@@ -335,17 +336,21 @@ class PathTile {
         this._weak = null;
     }
 
-    add(obj) {
-        this.data.add(obj);
+    add(obj, ignoreCap = false) {
+        if (ignoreCap || this.data.size < this.dataCap) {
+            this.data.add(obj);
 
-        if(this._first === null || obj.distance > this._first.distance)
-            this._first = obj;
-        if(this._last === null || obj.distance < this._last.distance)
-            this._last = obj;
-        if(this._strong === null || obj.strength > this._strong.strength)
-            this._strong = obj;
-        if(this._weak == null || obj.strength < this._weak.strength)
-            this._weak = obj;
+            if (this._first === null || obj.distance > this._first.distance)
+                this._first = obj;
+            if (this._last === null || obj.distance < this._last.distance)
+                this._last = obj;
+            if (this._strong === null || obj.strength > this._strong.strength)
+                this._strong = obj;
+            if (this._weak === null || obj.strength < this._weak.strength)
+                this._weak = obj;
+
+            return true;
+        } else return false;
     }
 
     remove(obj) {
@@ -359,7 +364,6 @@ class PathTile {
             this._strong = null;
         if(obj === this._weak)
             this._weak = null;
-
     }
 
     clear() {

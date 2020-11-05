@@ -18,6 +18,7 @@ for (var i = 0; i < 5; i++) {
 class BaseFohs extends BaseCreep {
 
     static get value() { return 100; }
+    static get respectPathTileCap() { return false; }
 
     constructor(distance){
         super(distance);

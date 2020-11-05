@@ -331,6 +331,7 @@ class Aftonbladet extends Gadget {
 
     addTo(tower) {
         tower.aftonbladet = true;
+        tower.enforceDistancing();
         super.addTo(tower);
     }
 }
@@ -470,6 +471,8 @@ class MediaFadder extends TargetingTower {
         this.skvallerpress = false;
         this.force = false;
         this.flash_power = 1;
+        this.old_inrange = this.pathInRange();
+        this.socialDistancingLimit = 20;
     }
 
     projectileInfo() {
@@ -477,9 +480,12 @@ class MediaFadder extends TargetingTower {
             name: "Blixt",
             image: flashimg,
             "Skada": this.skvallerpress ? 1 : 0,
-            "Får plats i bild": Flash.hitpoints * this.flash_power,
-            "Specialeffekt": `Stannar ninjorna i ${Flash.stunDuration / 1000} s`
+            "Får plats i bild": Flash.hitpoints * this.flash_power
         };
+        if (this.aftonbladet)
+            info["Distansering"] = "Max " + this.socialDistancingLimit + " per ruta";
+
+        info["Specialeffekt"] = `Stannar ninjorna i ${Flash.stunDuration / 1000} s`;
         if (this.force)
             info["Specialeffekt"] += ` och får dem att skämmas i ${ForceFlash.weaknessDuration / 1000} s`;
 
@@ -495,6 +501,29 @@ class MediaFadder extends TargetingTower {
             p = new Flash(this, this.skvallerpress ? 1 : 0);
         p.hitpoints *= this.flash_power;
         return p;
+    }
+
+    //TODO: fixa edge caset om det finns flera aftonbladetmediafaddrar som överlappar
+    enforceDistancing() {
+        this.old_inrange.forEach(pt => { pt.dataCap = Number.POSITIVE_INFINITY; });
+        this.inrange.forEach(pt => { pt.dataCap = this.socialDistancingLimit; });
+        this.old_inrange = this.inrange;
+    }
+
+    disenforceDistancing() {
+        this.inrange.forEach(pt => { pt.dataCap = Number.POSITIVE_INFINITY; });
+    }
+
+    updateRange() {
+        super.updateRange();
+        if (this.aftonbladet)
+            this.enforceDistancing();
+    }
+
+    destroy() {
+        if (this.aftonbladet)
+            this.disenforceDistancing();
+        super.destroy();
     }
 
     configUpgrades() {
@@ -773,9 +802,7 @@ class MatBeredare extends SupportTower {
 		if(this.pasta){
 			tower.range += this.extrarange;
 			tower.inrange = tower.pathInRange();
-			if(tower instanceof SupportTower)
-				if(tower.towersinrange !== undefined)
-					tower.updateRange();
+			tower.updateRange();
 		}
 
 		super.applyTo(tower);
@@ -794,8 +821,7 @@ class MatBeredare extends SupportTower {
 		if(this.pasta){
 			tower.range -= this.extrarange;
 			tower.inrange = tower.pathInRange();
-			if(tower instanceof SupportTower)
-				tower.updateRange();
+			tower.updateRange();
 		}
 
 		super.removeFrom(tower);

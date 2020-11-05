@@ -503,9 +503,9 @@
             imgsrc: "img/yeet.png",
             button: {
                 action: "Adjö",
-                cost: -parseInt(this.sellPriceMultiplier * this.selectedTower.value * this.selectedTower.discount_multiplier),
+                cost: -parseInt(this.sellPriceMultiplier * this.selectedTower.value * (this.selectedTower.discount_multiplier || 1)),
                 onclick: () => {
-                    this.money += this.sellPriceMultiplier * this.selectedTower.value * this.selectedTower.discount_multiplier;
+                    this.money += this.sellPriceMultiplier * this.selectedTower.value * (this.selectedTower.discount_multiplier || 1);
                     this.hitsFromSoldTowers[this.selectedTower.constructor.name] += this.selectedTower.hits;
                     this.selectedTower.destroy();
                     this.selectedTower = null;
@@ -531,9 +531,9 @@
                     },
                     button: {
                         action: "Köp",
-                        cost: upgrade.cost,
+                        cost: upgrade.cost * (this.selectedTower.discount_multiplier || 1),
                         onclick: () => {
-                            this.money -= upgrade.cost;
+                            this.money -= upgrade.cost * (this.selectedTower.discount_multiplier || 1);
                             let gadget = new upgrade.type(this.selectedTower);
 
                             this.saveToCookie();
@@ -669,12 +669,12 @@
                 option.classList.remove("locked");
                 option.classList.remove("hideme");
             }
-            if (currentState !== "affordable" && this.money >= upgrade.cost)
+            if (currentState !== "affordable" && this.money >= upgrade.cost * (this.selectedTower.discount_multiplier || 1))
                 option.querySelector("button[name='actionbtn']").removeAttribute("disabled");
-            else if ((!currentState || currentState === "affordable") && this.money < upgrade.cost)
+            else if ((!currentState || currentState === "affordable") && this.money < upgrade.cost * (this.selectedTower.discount_multiplier || 1))
                 option.querySelector("button[name='actionbtn']").disabled = "disabled";
             
-            if (this.money >= upgrade.cost)
+            if (this.money >= upgrade.cost * (this.selectedTower.discount_multiplier || 1))
                 return gotAllArgs ? "affordable" : ["affordable", blocking, existingRequired];
             else
                 return gotAllArgs ? "unlocked" : ["unlocked", blocking, existingRequired];
@@ -937,7 +937,7 @@ class PseudoTower extends GameObject {
     buy() {
         if (this.posOK) {
             let pc = this.getPriceCut(this.x,this.y);
-            console.log(pc);
+            //console.log(pc);
             controller.money -= this.cost * pc[0];
             let t = new this.type(this.x, this.y);
             t.discount_multiplier = pc[0];

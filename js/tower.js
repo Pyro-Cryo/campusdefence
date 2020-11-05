@@ -207,6 +207,8 @@ class BaseTower extends GameObject {
         //this.upgrades = this.upgrades.filter(up => gadget.constructor.name !== up.type.name);
     }
 
+    updateRange() {}
+
     update() {
         if (this.CDtimer <= 0) {
             let target = this.target();
@@ -295,19 +297,26 @@ class SupportTower extends BaseTower {
     }
 
     updateRange() {
+        super.updateRange();
         var oldrange = this.towersinrange;
         var newrange = this.towersInRange();
 
-        let newtowers = newrange.filter(t => !oldrange.includes(t));
-        let removedtowers = oldrange.filter(t => !newrange.includes(t));
+        let addedtowers, removedtowers;
+        if (oldrange === undefined) {
+            addedtowers = newrange;
+            removedtowers = [];
+        } else {
+            addedtowers = newrange.filter(t => !oldrange.includes(t));
+            removedtowers = oldrange.filter(t => !newrange.includes(t));
+        }
         
         this.towersinrange = newrange;
 
-        for (var i = 0; i < newtowers.length; i++) {
-            this.applyTo(newtowers[i]);
+        for (let i = 0; i < addedtowers.length; i++) {
+            this.applyTo(addedtowers[i]);
         }
 
-        for (var i = 0; i < removedtowers.length; i++) {
+        for (let i = 0; i < removedtowers.length; i++) {
             this.removeFrom(removedtowers[i]);
         }
     }

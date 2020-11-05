@@ -26,6 +26,8 @@ class BaseCreep extends GameObject {
     static get damage() { return 1; }
     // Should the creep draw a health bar?
     static get drawHealthBar() { return false; }
+    // Does the creep respect the limit on number of creeps per PathTile?
+    static get respectPathTileCap() { return true; }
 
 
 	constructor(distance) {
@@ -38,6 +40,7 @@ class BaseCreep extends GameObject {
         this.initial_health = this.constructor.health;
         this.value = this.constructor.value;
         this.drawHealthBar = this.constructor.drawHealthBar;
+        this.respectPathTileCap = this.constructor.respectPathTileCap;
 
 		this.pathlength = controller.map.path.length - 1;
 		// Distance traveled along the path for this creep
@@ -88,7 +91,8 @@ class BaseCreep extends GameObject {
 
 		// Move object
 		this.lastx = this.x;
-		this.lasty = this.y;
+        this.lasty = this.y;
+        this.lastdistance = this.distance;
 
 		if (this.pathtile.diagonality & (this.distance - Math.trunc(this.distance) < 0.5 ? DIAGONAL_OUTGOING : DIAGONAL_INCOMING))
 			this.distance += 0.7071 * this.speed / controller.updateInterval;
@@ -109,9 +113,15 @@ class BaseCreep extends GameObject {
 				let pt = controller.map.getGridAt(Math.round(this.x), Math.round(this.y));
 
                 if (pt !== this.pathtile && pt instanceof PathTile) {
-					this.pathtile.remove(this);
-					this.pathtile = pt;
-					this.pathtile.add(this);
+                    const oldpt = this.pathtile;
+                    if (pt.add(this, !this.respectPathTileCap)) {
+                        oldpt.remove(this);
+                        this.pathtile = pt;
+                    } else { // Next pathtile is full, don't move
+                        this.x = this.lastx;
+                        this.y = this.lasty;
+                        this.distance = this.lastdistance;
+                    }
 				}
 			}
 		}
@@ -158,7 +168,7 @@ class MatryoshkaCreep extends BaseCreep {
     onDeath() {
         for (let i = 0; i < this.innerCreepCount; i++){
             let nc = new this.constructor.innerCreep(
-                Math.min(controller.map.path.length - 1, Math.max(0, this.distance + this.speed * (0.5 + i - this.constructor.innerCreepCount / 2)))
+                Math.min(controller.map.path.length - 1, Math.max(0, this.distance + Math.max(this.speed, 0.2) * (0.5 + i - this.constructor.innerCreepCount / 2)))
             );
 
             // Persistent effects carry over
