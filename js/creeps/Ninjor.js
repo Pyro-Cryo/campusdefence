@@ -28,7 +28,7 @@ helmets[1].src = "img/helmet1.png";
 
 class ColorNinja extends MatryoshkaCreep {
 	static get scale() { return 1; }
-	static get innerCreepCount() { return 2; }
+	static get innerCreepCount() { return 1; }
 
 	constructor(distance){
 		super(distance);
@@ -78,7 +78,6 @@ class Red extends ColorNinja {
 class Blue extends ColorNinja {
     static get speed() { return 0.6; }
     static get health() { return 4; }
-    static get innerCreepCount() { return 1; }
     static get image() { return colorimgs[1]; }
     static get innerCreep() { return Red; }
 }
@@ -94,32 +93,23 @@ class Green extends ColorNinja {
     static get health() { return 6; }
     static get image() { return colorimgs[3]; }
     static get innerCreep() { return Pink; }
+    static get innerCreepCount() { return 2; }
 }
 class Violet extends ColorNinja {
     static get speed() { return 0.85; }
-    static get health() { return 6; }
+    static get health() { return 8; }
     static get image() { return colorimgs[4]; }
     static get innerCreep() { return Green; }
+    static get innerCreepCount() { return 2; }
 }
 class Orange extends ColorNinja {
     static get speed() { return 0.95; }
-    static get health() { return 8; }
+    static get health() { return 11; }
     static get image() { return colorimgs[5]; }
     static get innerCreep() { return Violet; }
+    static get innerCreepCount() { return 4; }
 }
 
-class ShieldedRed extends ShieldedCreep {
-    static get shieldStrength() { return 10; }
-    static get creepType() { return Red; }
-}
-class ShieldedBlue extends ShieldedCreep {
-    static get shieldStrength() { return 12; }
-    static get creepType() { return Blue; }
-}
-class ShieldedPink extends ShieldedCreep {
-    static get shieldStrength() { return 14; }
-    static get creepType() { return Pink; }
-}
 class ShieldedGreen extends ShieldedCreep {
     static get shieldStrength() { return 16; }
     static get creepType() { return Green; }
