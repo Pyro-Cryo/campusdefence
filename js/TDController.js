@@ -251,7 +251,7 @@
         console.log("Creep summary: ", this.levelIterator.creepSummary());
 
         for (var i = 0; i < this.levelListeners.length; i++) {
-            this.levelListeners[i].levelUpdate(true);
+            this.levelListeners[i].onLevelUpdate(true);
         }
     }
     endLevel() {
@@ -282,6 +282,10 @@
         this.saveToCookie();
         this.updateCreepSummary();
         this.setMessage(levelMessage(this.levelNumber), false);
+
+        for (var i = 0; i < this.levelListeners.length; i++) {
+            this.levelListeners[i].onLevelUpdate(true);
+        }
     }
 
     updateCreepSummary() {

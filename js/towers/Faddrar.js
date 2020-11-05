@@ -717,7 +717,7 @@ class MatBeredare extends SupportTower {
 			"Matberedaren delar ut maten som blev över från lunchen till middag. Ger en slumpmässig uppgradering varje runda.",
 			480,
 			[],
-			[Snackbar, CoffeMaker, Pasta, Wraps],
+			[Leftovers, Snackbar, CoffeMaker, Pasta, Wraps],
 			0);
 	}
 

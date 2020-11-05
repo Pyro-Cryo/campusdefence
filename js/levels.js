@@ -88,16 +88,16 @@ function getLevel(number, updateInterval) {
 
         case 16:
             return (new CreepSequence()
-                .send(20, getImmuneCreep(Blue, 0.6, true)).over(20 * s)
-                .send(10, getImmuneCreep(Pink, 0.7, true, 1)).over(20 * s)
+                .send(30, getImmuneCreep(Blue, 0.6, true)).over(20 * s)
+                .send(20, getImmuneCreep(Pink, 0.7, true, 1)).over(20 * s)
                 .send(5, Green).over(3 * s));
 
         case 17:
             return (new CreepSequence()
                 .send(1, Violet).immediately()
                 .wait(3 * s)
-                .send(30, Green).over(15 * s)
-                .interleave(new CreepSequence().send(43, Pink).over(15 * s))
+                .send(20, Green).over(20 * s)
+                .send(50, Ninja).over(10 * s)
                 );
         case 18:
             return (new CreepSequence()
