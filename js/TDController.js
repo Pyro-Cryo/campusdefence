@@ -24,6 +24,8 @@
         this.healthcounter = document.getElementById("healthcounter");
         this.moneycounter = document.getElementById("moneycounter");
 
+        this.levelListeners = [];
+
         this.versions = [
             "1.1.0",
             "1.1.1",
@@ -107,6 +109,20 @@
         	ts.description = ts.type.desc;
         ts.button = null;
     	this.towerSpecs.push(ts);
+    }
+
+    addLevelListener(obj){
+        this.levelListeners.push(obj);
+    }
+
+    removeLevelListener(obj){
+        this.levelListeners = this.levelListeners.filter(function(o){
+            if(o.id != undefined && o.id === null)
+                return true;
+            if(o.id != undefined && o.id == obj.id)
+                return true;
+            return false;
+        });
     }
 
     update() {
@@ -233,6 +249,10 @@
         console.log("Time: " + this.levelIterator.totalTime() * this.updateInterval / 1000 + " s");
         console.log("Total creeps: " + this.levelIterator.totalExplicitCreeps());
         console.log("Creep summary: ", this.levelIterator.creepSummary());
+
+        for (var i = 0; i < this.levelListeners.length; i++) {
+            this.levelListeners[i].levelUpdate(true);
+        }
     }
     endLevel() {
         this.onPause();

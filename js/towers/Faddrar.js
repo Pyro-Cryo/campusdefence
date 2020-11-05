@@ -610,22 +610,37 @@ class MatBeredare extends SupportTower {
         if(this.coffee && this.pasta){
         	info["Specialeffekt"] = "Ger faddrar i närheten extra räckvidd och snabbare skott";
         	info.image = pastaimg;
-        	info.name = "Fikapaus"
+        	info.name = "Pastasallad och kaffe"
         }
         else if(this.coffee){
         	info["Specialeffekt"] = "Ger faddrar i närheten snabbare skott";
         	info.image = coffeefull;
-        	info.name = "Kaffepaus"
+        	info.name = "En kopp kaffe"
         }
         else if(this.pasta && this.chili){
         	info["Specialeffekt"] = "Ger faddrar i närheten extra räckvidd och 20% chans att sätta eld på ninjor";
         	info.image = chiliimg;
-        	info.name = "Lunchpaus"
+        	info.name = "Spicy pastasallad"
         }
         else if(this.pasta){
         	info["Specialeffekt"] = "Ger faddrar i närheten extra räckvidd";
         	info.image = pastaimg;
-        	info.name = "Lunchpaus"
+        	info.name = "Pastasallad"
+        }
+        else if(this.chili){
+        	info["Specialeffekt"] = "Ger faddrar i närheten 20% chans att sätta eld på ninjor";
+        	info.image = chiliimg;
+        	info.name = "Chili";
+        }
+    	else if(this.discounts){
+    		info["Specialeffekt"] = "Gör att faddrar blir billigare att köpa, men också presterar sämre";
+    		info.image = wrapimg;
+    		info.name = "Valhalla\u00ADvägen\u00ADvegan\u00ADwraps";
+    	}
+
+        if(this.randomize){
+        	info = Object.assign({"Dagens lunch": info.name}, info);
+        	info.name = "Matlåda"
         }
 
         return info;
@@ -708,12 +723,13 @@ class MatBeredare extends SupportTower {
 
 	constructor(x,y){
 		super(x,y);
-		this.chili = false;
 		this.snackbar = false;
+		this.projectiletype = 0;
 		this.coffee = false;
 		this.pasta = false;
-		
+		this.chili = false;
 		this.discounts = false;
+		
 		this.randomize = false;
 
 		this.multiplier = 0.9;
@@ -721,7 +737,6 @@ class MatBeredare extends SupportTower {
 		this.pricecut = 0.4;
 		this.CDchange = 1.3;
 
-		this.projectiletype = 0;
 
 		this.apply();
 	}
@@ -803,6 +818,57 @@ class MatBeredare extends SupportTower {
 			return p;
 		}
 		return null;
+	}
+
+	onLevelUpdate(startlevel){
+		if(startlevel)
+			return;
+		if(!this.randomize)
+			return;
+
+		this.remove();
+
+		this.snackbar = false;
+		this.projectiletype = 0;
+		this.coffee = false;
+		this.pasta = false;
+		this.chili = false;
+		this.discounts = false;
+		let n = parseInt(Math.random()*6)
+		switch(n){
+
+		case 0:
+			this.projectiletype = 1;
+			this.snackbar = true;
+			break;
+		case 1:
+			this.projectiletype = 2;
+			this.snackbar = true;
+			break;
+		case 2:
+			this.coffee = true;
+			break;
+		case 3:
+			this.chili = true;
+			break;
+		case 4:
+			this.pasta = true;
+			break;
+		case 5:
+			this.discounts = true;
+			break;
+
+		default:
+			console.log("twf??", n);
+
+		}
+
+		this.apply();
+	}
+
+	destroy(){
+		controller.removeLevelListener(this);
+		super.destroy();
 	}
 }
 
@@ -916,6 +982,8 @@ class Leftovers extends Gadget {
 
 	addTo(tower){
 		tower.randomize = true;
+		controller.addLevelListener(tower);
+		tower.onLevelUpdate(false);
 		super.addTo(tower);
 	}
 }
