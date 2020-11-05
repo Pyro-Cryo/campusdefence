@@ -18,10 +18,13 @@ colorimgs[3].src = "img/fohs_green.png";
 colorimgs[4].src = "img/fohs_violet.png";
 colorimgs[5].src = "img/fohs_orange.png";
 
-let overlays = [new Image(), new Image()];
-overlays[0].src = "img/ninja_overlay0.png";
-overlays[1].src = "img/ninja_overlay1.png";
+// let overlays = [new Image(), new Image()];
+// overlays[0].src = "img/ninja_overlay0.png";
+// overlays[1].src = "img/ninja_overlay1.png";
 
+let helmets = [new Image(), new Image()];
+helmets[0].src = "img/helmet0.png";
+helmets[1].src = "img/helmet1.png";
 
 class ColorNinja extends MatryoshkaCreep {
 	static get scale() { return 1; }
@@ -29,20 +32,25 @@ class ColorNinja extends MatryoshkaCreep {
 
 	constructor(distance){
 		super(distance);
-		this.overlay = null;
+        if(this.health > 1)
+		  this.overlay = helmets[0];
 	}
 
 	update(){
 		super.update();
-		if (this.health / this.initial_health < 0.4){
-			if (this.overlay != overlays[1]){
-				this.overlay = overlays[1];
+
+        if (this.overlay === null)
+            return;
+
+		if (this.health / this.initial_health < 0.3){
+			if (this.overlay !== null){
+				this.overlay = null;
 				this.imageDirty = true;
 			}
 		}
-		else if (this.health / this.initial_health < 0.8){
-			if (this.overlay != overlays[0]){
-				this.overlay = overlays[0];
+		else if (this.health / this.initial_health < 0.7){
+			if (this.overlay != helmets[1]){
+				this.overlay = helmets[1];
 				this.imageDirty = true;
 			}
 		}
