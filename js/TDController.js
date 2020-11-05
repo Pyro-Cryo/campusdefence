@@ -30,7 +30,8 @@
             "1.1.2",
             "1.1.3",
             "1.1.4",
-            "1.1.5"
+            "1.1.5",
+			"1.1.6"
         ];
         if ((window.localStorage.getItem("campusdefence_version") || "1.0") !== this.versions[this.versions.length - 1]) {
             //window.alert("Campus Defence har uppdaterats och ditt sparade spel går tyvärr inte längre att fortsätta på.");
@@ -63,11 +64,11 @@
         this.addTowerSpec({type: PseudoJellyHeartTower, unlockLevel: 3});
         this.addTowerSpec({type: Frida, unlockLevel: 3});
         this.addTowerSpec({type: Nicole, unlockLevel: 4});
+        this.addTowerSpec({type: Axel, unlockLevel: 5});
         this.addTowerSpec({type: Becca, unlockLevel: 6});
-        this.addTowerSpec({type: Axel, unlockLevel: 6});
         this.addTowerSpec({type: Fnoell, unlockLevel: 7});
-        this.addTowerSpec({type: MediaFadder, unlockLevel: 8});
         this.addTowerSpec({type: MatBeredare, unlockLevel: 8});
+        this.addTowerSpec({type: MediaFadder, unlockLevel: 9});
         
         this.buyingTower = null;
         

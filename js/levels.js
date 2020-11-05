@@ -303,7 +303,7 @@ function levelMessage(number) {
             if (controller.hp === controller.initialHP)
                 return "Bra jobbat! Du kan klicka på faddrarna du placerat ut för att uppgradera eller sälja dem.<br /><br/><i>Den första attacken avstyrdes enkelt, men ninjorna kommer att återvända i större antal.</i>";
             else
-                return "Aj då, nu slank det igenom " + (controller.initialHP - controller.hp == 1 ? "en" : "ett par") + ". Prova att placera ut fler faddrar, eller att sätta dem mer strategiskt! Du kan sälja eller uppgradera dina faddrar genom att klicka på dem.<br /><br /><i>Någon nØllan strök med, men lite svinn får man räkna med. Det är dock än fler ninjor på väg...</i>";
+                return "Aj då, nu slank det igenom " + (controller.initialHP - controller.hp === 1 ? "en" : "ett par") + ". Prova att placera ut fler faddrar, eller att sätta dem mer strategiskt! Du kan sälja eller uppgradera dina faddrar genom att klicka på dem.<br /><br /><i>Någon nØllan strök med, men lite svinn får man räkna med. Det är dock än fler ninjor på väg...</i>";
             
         case 3: return "Det finns olika typer av ninjor, vilket man kan se på deras färg. De med röd huva har två stycken med svart huva i sig.<br /><br /><i>Föhseriet inser att faddrarna utgör ett starkare försvar än väntat - som väntat. Taktikföhs sätter in de specialtränade trojanska ninjorna.</i>";
         
@@ -332,11 +332,9 @@ function levelMessage(number) {
         
         case 17: return "<br/><br/><i>Föhseriet drar sig tillbaka och observerar faddrarnas kamp från behörigt avstånd. Deras beslutsamhet är, liksom deras tålamod, oändligt.</i>";
 
-        case 30: return "<i>Föhseriet har tröttnat på Fadderisternas dumheter, och bestämmer sig för att ta sig förbi deras försvar en gång för alla.</i>";
+        case 30: return "<i>Föhseriet har tröttnat på Fadderisternas dumheter, och bestämmer sig för att ta sig förbi deras försvar en gång för alla. Ett ohyggligt oväsen varnar om att Föhseriet dammat av stridsvagnen och kommer inskumpandes i full fart.</i>";
 
         case 31: return "Du har lyckats försvara nØllan från Föhseriet förvånansvärt länge, bra gjort. Härifrån kommer nivåerna snabbt bli svårare och tunga för datorn att köra. Ha så kul!<br/><br/><i>Föhseriet är nedslagna, men långtifrån besegrade. \"Brute Force\", säger TF. \"Vi blir tvungna att överväldiga dem.\"</i>";
-
-        case 32: return "Campus Defence - ett spel av Pyro och Cryo.";
 
         case 40: return "Du har inte gett upp än alltså? Låt oss skruva upp svårighetsgraden lite...";
 
@@ -414,7 +412,7 @@ function getImmuneCreep(creepType, resistance, persistent, nth) {
         "Alcohol": [Molotov, Drunk],
         "Cheats": [Wolfram, Distracted, PersistentDistracted, WolframWrapper],
         "Hugs": [Hug, JellyHeart], // Känns elakt att Jelly inkluderas. Patch är medvetet utelämnad.
-        "Light": [Flash, Stunned]
+        "Light": [Flash, ForceFlash, Stunned, Weak]
     }[damagetype];
     let imgInfo = {
         "Fire": [fireimg, 0.5],

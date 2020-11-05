@@ -1081,7 +1081,7 @@ class Becca extends TargetingTower {
         super(x,y);
         this.upgradeLevel = 1;
         this.projectiletype = 1;
-        this.firebombChance = 0.2;
+        this.firebombChance = 0.1;
         this.fireringChance = 0.1;
         this.double = false;
     }

@@ -377,7 +377,37 @@ class Stunned extends BaseEffect {
         super.init(object);
     }
     apply(object) {
-        object.speed = this.speed;
+        object.speed = this.speed; //TODO: Detta interagerar inte korrekt med Nicole
+        this.remove(object);
+    }
+}
+
+// Temporary HP drain by 33%
+let weakimg = new Image();
+weakimg.src = "img/weak.png";
+class Weak extends BaseEffect {
+
+    static get image() { return weakimg; }
+    static get scale() { return 0.25; }
+    static get drainfactor() { return 1 / 3; }
+
+    constructor(time) {
+        super(time / controller.updateInterval);
+        this.drainfactor = Weak.drainfactor;
+    }
+    init(object) {
+        this.healthDiff = Math.round(object.health * this.drainfactor);
+        this.initialHealthDiff = Math.round(object.initial_health * this.drainfactor);
+        object.health -= this.healthDiff;
+        object.initial_health -= this.initialHealthDiff;
+
+        super.init(object);
+    }
+    apply(object) {
+        if (object.health > 0)
+            object.health += this.healthDiff;
+        object.initial_health += this.initialHealthDiff;
+
         this.remove(object);
     }
 }
@@ -396,6 +426,22 @@ class Flash extends OmniProjectile {
     }
     hitCreep(creep) {
         let b = new Stunned(this.stunDuration);
+        creep.addEffect(b);
+
+        super.hitCreep(creep);
+    }
+}
+
+// Forceflash sätter både stunned och weak
+class ForceFlash extends Flash {
+    static get weaknessDuration() { return 2000; }
+
+    constructor(source, damage) {
+        super(source, damage);
+        this.weaknessDuration = ForceFlash.weaknessDuration;
+    }
+    hitCreep(creep) {
+        let b = new Weak(this.weaknessDuration);
         creep.addEffect(b);
 
         super.hitCreep(creep);
@@ -430,19 +476,23 @@ class MediaFadder extends TargetingTower {
         let info = {
             name: "Blixt",
             image: flashimg,
-            "Skada": this.force ? 1 : 0,
+            "Skada": this.skvallerpress ? 1 : 0,
             "Får plats i bild": Flash.hitpoints * this.flash_power,
             "Specialeffekt": `Stannar ninjorna i ${Flash.stunDuration / 1000} s`
         };
-        if (this.skvallerpress)
-            ; // Lägg till i Specialeffekt
+        if (this.force)
+            info["Specialeffekt"] += ` och får dem att skämmas i ${ForceFlash.weaknessDuration / 1000} s`;
 
         return info;
     }
 
     projectile(target) {
         // Create and return a new projectile object, that is targeted at target
-        let p = new Flash(this, this.force ? 1 : 0);
+        let p;
+        if (this.force)
+            p = new ForceFlash(this, this.skvallerpress ? 1 : 0);
+        else
+            p = new Flash(this, this.skvallerpress ? 1 : 0);
         p.hitpoints *= this.flash_power;
         return p;
     }
@@ -476,7 +526,7 @@ class MediaFadder extends TargetingTower {
             Force,
             "The Force",
             "Mediafaddern publicerar bilderna i sektionstidningen. Ninjornas vänner skrattar gott åt de roliga bilderna, och för ett tag är ninjorna känsliga för andra attacker, men snart kommer ett nytt nummer och effekten går över.",
-            300,
+            300, // Kanske borde vara dyrare?
             [],
             [Force, Skvallerpress, Aftonbladet],
             100);
@@ -514,8 +564,33 @@ class MatBeredare extends SupportTower {
 	static get desc() { return "Inte ens Fadderiet orkar kramas på fastande mage. Tack och lov för matberedarna, som lyckas försörja hela mottagningen med energi."; }
 
     projectileInfo() {
+        let names = [
+            "Går och handlar",
+            "Hackar lök",
+            "Hackar lök (utan att gråta)",
+            "Kokar pasta",
+            "Steker korv i ett joggingspår",
+            "Kirrar biffen",
+            "Sätter den sista potatisen",
+            "Betalar för gammal ost",
+            "Kokar stekt fläsk",
+            "Lägger rabarber på efterrätten",
+            "Gör slarvsylta",
+            "Kokar soppa på en spik",
+            "Renar mjölet i påsen",
+            "Provsmakar gräset",
+            "Drar dit pepparn växer",
+            "Värmer sina fiskar",
+            "Glider in på en räkmacka",
+            "Gör hönsbuljong av fjädrar",
+            "Tar kål på förrätten",
+            "Ligger i fatet",
+            "Jämför äpplen och päron",
+            "Lägger ägg i en korg",
+            "Fastnar med fingrarna i syltburken"
+        ];
         let info = {
-            name: "Går och handlar",
+            name: names[Math.floor(Math.random() * names.length)],
             image: MatBeredare.image,
             "Skada": 0,
             "Specialeffekt": "Ingen"
@@ -526,7 +601,7 @@ class MatBeredare extends SupportTower {
         	info.image = geleimg;
         	info["Skada"] = JellyHeart.damage;
         }
-        if(this.snackbar && this.projectiletype == 1){
+        if(this.snackbar && this.projectiletype == 2){
         	info["Spiller ut"] = "Delicatobollar";
         	info.name = "Godisskåpet";
         	info.image = delicatoimg;
@@ -562,7 +637,7 @@ class MatBeredare extends SupportTower {
 		this.addUpgrade(
 			Snackbar,
 			"Godisskåpet",
-			"I konsulatets godisskåp finns alltid nånting sött att finna. Matberedaren köper gelehjärtan för Mottagningens interrep-pengar och bjuder alla ninjor hen ser.",
+			"I konsulatets godisskåp finns alltid nånting sött att finna. Matberedaren köper gelehjärtan för Mottagningens internrep-pengar och bjuder alla ninjor hen ser.",
 			750,
 			[],
 			[Snackbar, CoffeMaker, Pasta, Wraps, Leftovers],
@@ -579,8 +654,8 @@ class MatBeredare extends SupportTower {
             );
         this.addUpgrade(
             ExpressDelivery,
-            "Express-leverans",
-            "Istället för att åka och handla själv beställer CdA godis med express-leverans, så att godisskåpet kan sälja mångdubbelt mer godis.",
+            "Expressleverans",
+            "Istället för att åka och handla själv beställer CdA godis med expressleverans, så att godisskåpet kan sälja mångdubbelt mer godis.",
             1000,
             [Snackbar],
             [ExpressDelivery],
@@ -615,7 +690,7 @@ class MatBeredare extends SupportTower {
 			);
 		this.addUpgrade(
 			Wraps,
-			"Valhallavägenveganwraps",
+			"Valhalla\u00ADvägen\u00ADvegan\u00ADwraps",
 			"Mottagningen blir sponsrade av en restaurang på Valhallavägen. Alla faddrar som får mat blir 40% billigare, men pga veganwrapsens låga näringsvärde blir de inte riktigt lika effektiva som annars.",
 			400,
 			[],
