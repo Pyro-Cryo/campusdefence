@@ -24,11 +24,10 @@ class PrerenderedObject {
 	}
 	set angle(v) {
 		if (Math.abs(v) > Math.PI / 2)
-            v -= Math.sign(v) * Math.PI;
+			v -= Math.sign(v) * Math.PI;
 
-        // 
-        if(Math.abs(this._angle - v) < 5 * Math.PI/180)
-        	return;
+		if(Math.abs(this._angle - v) < 5 * Math.PI/180)
+			return;
 		this._angle = v;
 		this.imageDirty = true;
 	}
@@ -43,10 +42,10 @@ class PrerenderedObject {
 			return;
 		if(this.imagecache.width == 0 || this.imagecache.height == 0)
 			return;
-        gameArea.draw(this.imagecache, x, y, 0, 1);
+		gameArea.draw(this.imagecache, x, y, 0, 1);
 	}
-    prerender() {
-        if (this.image === null || (this.image instanceof Image && !this.image.complete)) {
+	prerender() {
+		if (this.image === null || (this.image instanceof Image && !this.image.complete)) {
 			this.imagecache = null;
 			return;
 		}
@@ -67,7 +66,7 @@ class PrerenderedObject {
 			this.image.width * this.scale, this.image.height * this.scale
 		);
 
-        this.imageDirty = false;
+		this.imageDirty = false;
 	}
 }
 

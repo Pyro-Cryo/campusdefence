@@ -298,7 +298,7 @@ class Burvagn extends BaseFohs {
     }
 
     addEffect(effect) {
-        // Burvagn är immun mot allt
+        // Burvagn är immun mot allt?
     }
 
     innerFohs(){
@@ -308,14 +308,14 @@ class Burvagn extends BaseFohs {
 
 
 let pbimg = new Image();
-pbimg.src = "img/boom.png";
+pbimg.src = "img/ljungeld.png";
 class Payback extends InverseProjectile {
 
     constructor(source, target){
-        super(pbimg, source, target, 0.5, 5/controller.updateInterval);
+        super(pbimg, source, target, 0.95, 3.5/controller.updateInterval);
 
     }
     hitTower(tower) {
-        tower.CDtimer = 4000 / controller.updateInterval + tower.CDtime;
+        tower.CDtimer = 4500 / controller.updateInterval + tower.CDtime;
     }
 }
