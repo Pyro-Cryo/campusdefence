@@ -63,8 +63,8 @@ function getLevel(number, updateInterval) {
 
         case 12:
             return (new CreepSequence()
-                .send(25, getImmuneCreep(Blue, 0.7)).over(20 * s)
-                .send(25, getImmuneCreep(Blue, 0.7, true, 1)).over(10 * s)
+                .send(25, getImmuneCreep(Blue, 0.6)).over(20 * s)
+                .send(25, getImmuneCreep(Blue, 0.6, true, 1)).over(10 * s)
                 .wait(1 * s)
                 .send(10, Pink).over(10 * s));
 
@@ -77,7 +77,7 @@ function getLevel(number, updateInterval) {
 
         case 14:
             return (new CreepSequence()
-                .send(5, Green).over(15 * s)
+                .send(5, Green).over(12 * s)
                 .wait(1 * s)
                 .send(50, Red).over(30 * s)
                 .send(5, Green).over(7 * s));
@@ -101,23 +101,29 @@ function getLevel(number, updateInterval) {
                 );
         case 18:
             return (new CreepSequence()
-                .send(20, Green).over(20 * s).
-                interleave(new CreepSequence().wait(5 * s).send(20, ShieldedGreen).over(15 * s)));
+                .send(20, getImmuneCreep(Pink, 0.6, true)).over(20 * s)
+                .interleave(new CreepSequence()
+                    .wait(1/3 * s)
+                    .send(20, getImmuneCreep(Pink, 0.6, true, 1)).over(20 * s))
+                .interleave(new CreepSequence()
+                    .wait(2/3 * s)
+                    .send(10, getImmuneCreep(Pink, 0.6, true, 2)).over(20 * s))
+                );
 
         case 19:
             return (new CreepSequence()
                 .send(1, Orange).immediately()
                 .wait(1 * s)
                 .send(50, Blue).over(11 * s)
-                .send(3, Orange).over(3 * s));
+                .send(3, Green).over(3 * s));
 
         // Ta bort Föhseriet från denna level så de inte kommer så ofta?
         case 20:
             return (new CreepSequence()
                 .send(20, Blue).over(10 * s)
-                .send(8, Pink).over(4 * s)
+                .send(10, getImmuneCreep(Pink, 0.8, true)).over(4 * s)
                 .interleave(new CreepSequence()
-                    .wait(10 * s)
+                    .wait(11 * s)
                     .send(1, TF_2).immediately()
                     .wait(1.4 * s)
                     .send(1, OF_2).immediately()
@@ -210,13 +216,6 @@ function getLevel(number, updateInterval) {
                 .wait(2 * s)
                 .send(1, Burvagn).immediately()
                 .send(50, ShieldedBlue).over(10 * s)
-                // .interleave(new CreepSequence()
-                //     .wait(30 * s)
-                //     .send(1, TF_3).immediately()
-                //     .wait(1.75 * s)
-                //     .send(1, OF_3).immediately()
-                //     .wait(1.75 * s)
-                //     .send(1, SF_3).immediately())
                 .send(50, ShieldedPink).over(25 * s)
                 );
 

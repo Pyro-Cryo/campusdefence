@@ -574,6 +574,7 @@ class MatBeredare extends SupportTower {
             "Sätter den sista potatisen",
             "Betalar för gammal ost",
             "Kokar stekt fläsk",
+            "Steker kokt fläsk",
             "Lägger rabarber på efterrätten",
             "Gör slarvsylta",
             "Kokar soppa på en spik",
@@ -587,7 +588,12 @@ class MatBeredare extends SupportTower {
             "Ligger i fatet",
             "Jämför äpplen och päron",
             "Lägger ägg i en korg",
-            "Fastnar med fingrarna i syltburken"
+            "Fastnar med fingrarna i syltburken",
+            "Saltar såren",
+            "Lägger lök på faxen",
+            "Är först till kvarnen",
+            "Är en av många kockar",
+
         ];
         let info = {
             name: names[Math.floor(Math.random() * names.length)],
