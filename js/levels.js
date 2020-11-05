@@ -22,30 +22,30 @@ function getLevel(number, updateInterval) {
             return (new CreepSequence()
                 .send(30, Red).over(20 * s)
                 .wait(1 * s)
-                .send(20, Ninja).over(2 * s)
+                .send(20, Ninja).over(3 * s)
                 .wait(4 * s)
                 .send(5, Blue).over(3 * s));
         case 6:
             return (new CreepSequence()
                 .send(5, getImmuneCreep(Red, 0.5)).over(2 * s)
-                .wait(4 * s)
-                .send(40, Red).over(20 * s)
+                .wait(5 * s)
+                .send(30, Red).over(20 * s)
                 .interleave(new CreepSequence()
-                    .wait(13 * s)
-                    .send(10, Blue).over(7 * s)));
+                    .wait(14 * s)
+                    .send(7, Blue).over(7 * s)));
         case 7:
             return (new CreepSequence()
                 .send(40, Red).over(20 * s)
-                .interleave(new CreepSequence().send(20, Blue).over(20 * s)));
+                .interleave(new CreepSequence().send(8, Blue).over(20 * s)));
         case 8:
             return (new CreepSequence()
                 .send(1, TF_1).immediately());
 
         case 9:
             return (new CreepSequence()
-                .send(40, getImmuneCreep(Red, 0.6)).over(20 * s)
-                .interleave(new CreepSequence().send(30, Blue).over(20 * s))
-                .wait(8 * s)
+                .send(30, getImmuneCreep(Red, 0.6)).over(20 * s)
+                .interleave(new CreepSequence().send(20, Blue).over(20 * s))
+                .wait(10 * s)
                 .send(10, Pink).over(5 * s));
 
         case 10:
@@ -70,17 +70,17 @@ function getLevel(number, updateInterval) {
 
         case 13:
             return (new CreepSequence()
-                .send(20, Pink).over(15 * s)
-                .interleave(new CreepSequence().send(20, Blue).over(15 * s))
-                .send(20, Pink).over(8 * s)
+                .send(15, Pink).over(20 * s)
+                .interleave(new CreepSequence().send(10, Red).over(20 * s))
+                .send(20, Pink).over(10 * s)
                 );
 
         case 14:
             return (new CreepSequence()
-                .send(15, Green).over(15 * s)
+                .send(5, Green).over(15 * s)
                 .wait(1 * s)
-                .send(50, Pink).over(20 * s)
-                .interleave(new CreepSequence().send(50, Blue).over(20 * s)));
+                .send(50, Red).over(30 * s)
+                .send(5, Green).over(7 * s));
         
         case 15:
             return (new CreepSequence()
@@ -88,9 +88,9 @@ function getLevel(number, updateInterval) {
 
         case 16:
             return (new CreepSequence()
-                .send(30, ShieldedBlue).over(30 * s)
-                .send(10, ShieldedPink).over(6 * s)
-                .send(5, ShieldedGreen).over(3 * s));
+                .send(20, getImmuneCreep(Blue, 0.6, true)).over(20 * s)
+                .send(10, getImmuneCreep(Pink, 0.7, true, 1)).over(20 * s)
+                .send(5, Green).over(3 * s));
 
         case 17:
             return (new CreepSequence()
@@ -326,6 +326,8 @@ function levelMessage(number) {
 
         // case 12: return "";
 
+        case 14: return "Behöver du lite pengar? Här kommer en enkel omgång.";
+
         case 15: return "Överföhs accepterar inte några motgångar, och om någon försöker hindra honom höjer han glasögonen och släpper lös sin ljungeldsblick. Den kan få vem som helst att frysa av rädsla.<br/><br/><i>ÖF måste själv se vad för oväsen faddrarna har ställt till med. \"Hälsa på Överföhs, nØllan!\"</i>";
 
         case 16: return "Föhseriets olika förmågor kompletterar varandra och de är som starkast när de är tillsammans. Lycka till!<br /><br /><i>Efter att ÖF själv har sett med vilken beslutsamhet faddrarna försvarar nØllan beslutar föhseriet att göra gemensam sak. \"Nu får det vara nog med daltandet. JUBLA, nØLLAN!\"</i>";
@@ -342,24 +344,26 @@ function levelMessage(number) {
 
         case 55: return "Det finns ett liv utanför campus också.";
 
-        case 100: return "<i>Psst. På <a href=\"https://f.kth.se/arcade\">f.kth.se/arcade</a> finns det andra spel att prokrastinera med.</i>"; 
-
         case 420: return "";
 
         case 1337: return "LEET";
 
         default:
             const tips = [
-                "Visste du att: Föhseriet låter sig inte mutas av godis. De är helt självförsörjande på den fronten och tar allt snask de behöver från små nØllan, eller Styret.",
-                "Visste du att: Campus Defence består i skrivande stund av 7396 rader kod. Skriver man ut den och lägger papprena kant i kant räcker det 0.000007792% av avståndet till månen!",
-                "Visste du att: Båda utvecklarna borde ha tagit examen vid det här laget och kanske inte lägga så mycket tid på webbläsarspel.",
-                "Visste du att: Om du behöver en godtycklig siffra så har empirisk testning visat att 4 nästan alltid är det bästa valet.",
-                "Visste du att: Lillie-Fnöll står för ungefär 80% av alla buggar.",
-                "Visste du att: Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>controller.money = 9999</i>",
-                "Visste du att: Föhseriets val av transportmedel påfallande ofta är burvagn.",
-                "Visste du att: Fadderisternas olika förmågor i spelet är baserade på deras försök att hemlighålla Fadderiets tema."
+                "Föhseriet låter sig inte mutas av godis. De är helt självförsörjande på den fronten och tar allt snask de behöver från små nØllan, eller Styret.",
+                "Campus Defence består i skrivande stund av 7396 rader kod. Skriver man ut den och lägger papprena kant i kant räcker det 0.000007792% av avståndet till månen!",
+                "Båda utvecklarna borde ha tagit examen vid det här laget och kanske inte lägga så mycket tid på webbläsarspel.",
+                "Om du behöver en godtycklig siffra så har empirisk testning visat att 4 nästan alltid är det bästa valet.",
+                "Lillie-Fnöll står för ungefär 80% av alla buggar.",
+                "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>controller.money = 9999</i>",
+                "Föhseriets val av transportmedel påfallande ofta är burvagn.",
+                "Fadderisternas olika förmågor i spelet är baserade på deras försök att hemlighålla Fadderiets tema.",
+                "På <a href=\"https://f.kth.se/arcade\">f.kth.se/arcade</a> finns det andra spel att prokrastinera med",
+                "Nämnden Mottagningen ska skrivs med stort M medan händelsen mottagningen med litet",
+                "Alla torn och uppgraderingar har en väldigt intetsägande beskrivning som utvecklarna lagt mycket tid på att hitta på.",
+                "Lillie-Fnölls uppgraderingar är baserade på gamla nØllelåtar",
             ];
-            return tips[Math.floor(Math.random(tips.length))];
+            return "Visste du att: " + tips[Math.floor(Math.random(tips.length))];
     }
 }
 
