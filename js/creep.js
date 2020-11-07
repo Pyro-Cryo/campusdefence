@@ -58,7 +58,8 @@ class BaseCreep extends GameObject {
 		if(this.health <= 0){
 			this.onDeath();
 		}
-	}
+    }
+    //Ta bort? Verkar inte användas någonstans
 	affectedBy(projectile){
 		return true;
 	}

@@ -475,7 +475,7 @@ class MediaFadder extends TargetingTower {
         this.force = false;
         this.flash_power = 1;
         this.old_inrange = this.pathInRange();
-        this.socialDistancingLimit = 20;
+        this.socialDistancingLimit = 15;
     }
 
     projectileInfo() {
@@ -506,7 +506,7 @@ class MediaFadder extends TargetingTower {
         return p;
     }
 
-    //TODO: fixa edge caset om det finns flera aftonbladetmediafaddrar som överlappar
+    //TODO: fixa edge caset om det finns flera matberedarbuffade aftonbladetmediafaddrar som överlappar
     enforceDistancing() {
         this.old_inrange.forEach(pt => { pt.dataCap = Number.POSITIVE_INFINITY; });
         this.inrange.forEach(pt => { pt.dataCap = this.socialDistancingLimit; });

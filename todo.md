@@ -9,6 +9,8 @@
 
 
 - Buggar:
+	- Det borde inte gå att köpa dompa/disciplinnämnden i pausen mellan rundor (kommer kräva att man petar i contextmenycachningen dock och det vågar jag knappt)
+	- Mouseover på köpknappar med fler än två rader text gör att hela alternativet buggar lite visuellt
 	- Creeps som är immuna mot gelehjärtan går rakt igenom dem och konsumerar all deras hp, vilket kanske inte borde hända
 
 Torn:
