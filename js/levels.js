@@ -415,7 +415,7 @@ function getImmuneCreep(creepType, resistance, persistent, nth) {
         "Alcohol": [Molotov, Drunk],
         "Cheats": [Wolfram, Distracted, PersistentDistracted, WolframWrapper],
         "Hugs": [Hug, JellyHeart], // Känns elakt att Jelly inkluderas. Patch är medvetet utelämnad.
-        "Light": [Flash, ForceFlash, Stunned, Weak]
+        "Light": [Flash, ForceFlash, BallOfLight, Stunned, Weak]
     }[damagetype];
     let imgInfo = {
         "Fire": [fireimg, 0.5],

@@ -27,6 +27,9 @@ class Converted extends BaseEffect {
     init(object){
         if (object.speed > 0)
             object.speed = -object.speed;
+        object.timesConverted = (object.timesConverted || 0) + 1;
+        if (object.timesConverted >= 10 && Math.random() < object.timesConverted / 5)
+            object.onHit({ damage: 1 });
         super.init(object);
     }
     apply(object) {
@@ -1311,6 +1314,32 @@ class BoquetWrapper extends Bouquet {
     }
 }
 
+// Flash-motsvarighet
+class BallOfLight extends BasicProjectile {
+
+    static get damage() { return 0; }
+
+    constructor(_, source, target) {
+        super(controller.map, flashimg, source, target.x, target.y, 0.05, 1 / controller.updateInterval);
+        this.angle = 0;
+        this.range = source.range + 1;
+        this.stun = 0;
+        this.weak = 0;
+    }
+    hitCreep(creep) {
+        if (this.stun > 0) {
+            let s = new Stunned(this.stun);
+            creep.addEffect(s);
+        }
+        if (this.weak > 0) {
+            let w = new Weak(this.weak);
+            creep.addEffect(w);
+        }
+
+        super.hitCreep(creep);
+    }
+}
+
 let fnoellimg = new Image();
 fnoellimg.src = "img/transparent/lillie.png";
 
@@ -1684,6 +1713,25 @@ class Fnoell extends BaseTower {
                 };
                 Fnoell.copyProjectileInfo(info, this.currentProjectileInfo, Object.keys(info));
             }
+        }
+
+        else if (closestTower instanceof MediaFadder) {
+            this.currentProjectile = BallOfLight;
+            this.currentProjectilePostprocess = b => {
+                b.stun = Flash.stunDuration;
+                if (closestTower.force)
+                    b.weak = ForceFlash.weaknessDuration;
+                if (closestTower.skvallerpress)
+                    b.damage = 1;
+                if (closestTower.flash_power > 1)
+                    b.hitpoints = 2;
+            };
+
+            let sourceinf = closestTower.projectileInfo();
+            this.currentProjectileInfo["name"] = "Blixtboll";
+            Fnoell.copyProjectileInfo(sourceinf, this.currentProjectileInfo, ["image", "Skada"]);
+            this.currentProjectileInfo["Träffar per skott"] = closestTower.flash_power > 1 ? 2 : 1;
+            this.currentProjectileInfo["Specialeffekt"] = sourceinf["Specialeffekt"];
         }
 
         else

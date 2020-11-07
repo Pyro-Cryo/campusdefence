@@ -375,6 +375,9 @@ class Stunned extends BaseEffect {
     init(object){
         this.speed = object.speed;
         object.speed = 0;
+        object.timesStunned = (object.timesStunned || 0) + 1;
+        if (object.timesStunned >= 10 && Math.random() < object.timesStunned / 5)
+            object.onHit({ damage: 1 });
         super.init(object);
     }
     apply(object) {
