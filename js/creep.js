@@ -28,6 +28,10 @@ class BaseCreep extends GameObject {
     static get drawHealthBar() { return false; }
     // Does the creep respect the limit on number of creeps per PathTile?
     static get respectPathTileCap() { return true; }
+    // Does this creep regenerate health?
+    static get regenerative() { return false; }
+    // Default regenerate one per second if not hit
+    static get regenerationspeed() { return 1 / controller.updateInterval; }
 
 
 	constructor(distance) {
@@ -42,6 +46,10 @@ class BaseCreep extends GameObject {
         this.drawHealthBar = this.constructor.drawHealthBar;
         this.respectPathTileCap = this.constructor.respectPathTileCap;
 
+        this.regenerative = this.constructor.regenerative;
+        this.regenerationspeed = this.constructor.regenerationspeed;
+        this.regenerationtimer = 0;
+
 		this.pathlength = controller.map.path.length - 1;
 		// Distance traveled along the path for this creep
 		this.distance = distance || 0;
@@ -55,6 +63,7 @@ class BaseCreep extends GameObject {
 	}
 	onHit(projectile) {
 		this.health -= projectile.damage;
+        this.regenerationtimer = this.regenerationspeed;
 		if(this.health <= 0){
 			this.onDeath();
 		}
@@ -125,6 +134,12 @@ class BaseCreep extends GameObject {
 				}
 			}
 		}
+
+        if (this.regenerative && this.health < this.initial_health)
+            if (--this.regenerationtimer <= 0){
+                this.health += 1;
+                this.regenerationtimer = this.regenerationspeed;
+            }
 
 		// Draw ourselves at new position.
         super.update();

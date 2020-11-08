@@ -4,9 +4,9 @@ let fohsimg = new Image();
 fohsimg.src = "img/fohs.png";
 
 class Ninja extends BaseCreep {
-    static get speed() { return 0.5; }
-    static get image() { return fohsimg; }
-    static get scale() { return 1; }
+	static get speed() { return 0.5; }
+	static get image() { return fohsimg; }
+	static get scale() { return 1; }
 }
 
 
@@ -32,15 +32,15 @@ class ColorNinja extends MatryoshkaCreep {
 
 	constructor(distance){
 		super(distance);
-        if(this.health > 1)
+		if(this.health > 1)
 		  this.overlay = helmets[0];
 	}
 
 	update(){
 		super.update();
 
-        if (this.overlay === null)
-            return;
+		if (this.overlay === null)
+			return;
 
 		if (this.health / this.initial_health < 0.3){
 			if (this.overlay !== null){
@@ -71,54 +71,57 @@ class ColorNinja extends MatryoshkaCreep {
 }
 
 class Red extends ColorNinja {
-    static get speed() { return 0.55; }
-    static get image() { return colorimgs[0]; }
-    static get innerCreep() { return Ninja; }
+	static get speed() { return 0.55; }
+	static get image() { return colorimgs[0]; }
+	static get innerCreep() { return Ninja; }
 }
 class Blue extends ColorNinja {
-    static get speed() { return 0.6; }
-    static get health() { return 4; }
-    static get image() { return colorimgs[1]; }
-    static get innerCreep() { return Red; }
+	static get speed() { return 0.6; }
+	static get health() { return 4; }
+	static get image() { return colorimgs[1]; }
+	static get innerCreep() { return Red; }
 }
 class Pink extends ColorNinja {
-    static get speed() { return 0.65; }
-    static get health() { return 4; }
-    static get image() { return colorimgs[2]; }
-    static get innerCreep() { return Blue; }
+	static get speed() { return 0.65; }
+	static get health() { return 4; }
+	static get image() { return colorimgs[2]; }
+	static get innerCreep() { return Blue; }
 }
 // Jag tror på att göra motsvarande med grön eller violett som med blå, dvs ersätta flera innercreeps med mer HP //Helmer
 class Green extends ColorNinja {
-    static get speed() { return 0.75; }
-    static get health() { return 6; }
-    static get image() { return colorimgs[3]; }
-    static get innerCreep() { return Pink; }
-    static get innerCreepCount() { return 2; }
+	static get speed() { return 0.75; }
+	static get health() { return 6; }
+	static get image() { return colorimgs[3]; }
+	static get innerCreep() { return Pink; }
+	static get innerCreepCount() { return 2; }
 }
 class Violet extends ColorNinja {
-    static get speed() { return 0.85; }
-    static get health() { return 8; }
-    static get image() { return colorimgs[4]; }
-    static get innerCreep() { return Green; }
-    static get innerCreepCount() { return 2; }
+	static get speed() { return 0.85; }
+	static get health() { return 8; }
+	static get image() { return colorimgs[4]; }
+	static get innerCreep() { return Green; }
+	static get innerCreepCount() { return 2; }
+	static get regenerative() { return true; }
 }
 class Orange extends ColorNinja {
-    static get speed() { return 0.95; }
-    static get health() { return 11; }
-    static get image() { return colorimgs[5]; }
-    static get innerCreep() { return Violet; }
-    static get innerCreepCount() { return 4; }
+	static get speed() { return 0.95; }
+	static get health() { return 11; }
+	static get image() { return colorimgs[5]; }
+	static get innerCreep() { return Violet; }
+	static get innerCreepCount() { return 2; }
+	static get regenerative() { return true; }
+	static get regenerationspeed() { return 0.75 / controller.updateInterval; }
 }
 
 class ShieldedGreen extends ShieldedCreep {
-    static get shieldStrength() { return 16; }
-    static get creepType() { return Green; }
+	static get shieldStrength() { return 16; }
+	static get creepType() { return Green; }
 }
 class ShieldedViolet extends ShieldedCreep {
-    static get shieldStrength() { return 20; }
-    static get creepType() { return Violet; }
+	static get shieldStrength() { return 20; }
+	static get creepType() { return Violet; }
 }
 class ShieldedOrange extends ShieldedCreep {
-    static get shieldStrength() { return 25; }
-    static get creepType() { return Orange; }
+	static get shieldStrength() { return 25; }
+	static get creepType() { return Orange; }
 }

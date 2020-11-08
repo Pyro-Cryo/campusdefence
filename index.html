@@ -181,24 +181,26 @@
         let map = new mapclass(controller.gameArea, 19, 16);
         controller.setMap(map);
 
-        controller.begin();
-        controller.setupTowerTable();
+        window.onload = function(){
+            controller.begin();
+            controller.setupTowerTable();
 
-        let mapSelectElement = document.getElementById("mapSelect");
-        availableMaps.forEach(m => {
-            mapSelectElement.appendChild(new Option(m.mapName, m.name, m === mapclass, m === mapclass));
-        });
-        mapSelectElement.onchange = e => {
-            mapclass = availableMaps.find(m => m.name === mapSelectElement.value);
-            //if (controller.map instanceof mapclass)
-            //    return;
+            let mapSelectElement = document.getElementById("mapSelect");
+            availableMaps.forEach(m => {
+                mapSelectElement.appendChild(new Option(m.mapName, m.name, m === mapclass, m === mapclass));
+            });
+            mapSelectElement.onchange = e => {
+                mapclass = availableMaps.find(m => m.name === mapSelectElement.value);
+                //if (controller.map instanceof mapclass)
+                //    return;
 
-            if (controller.getState() === null || window.confirm("Är du säker på att du vill byta bana? Dina framsteg på denna kommer att gå förlorade")) {
-                controller.clearState();
-                window.localStorage.setItem("campusdefence_mapclass", mapclass.name);
-                location.reload();
-            }
-        };
+                if (controller.getState() === null || window.confirm("Är du säker på att du vill byta bana? Dina framsteg på denna kommer att gå förlorade")) {
+                    controller.clearState();
+                    window.localStorage.setItem("campusdefence_mapclass", mapclass.name);
+                    location.reload();
+                }
+            };
+        }
     </script>
 </body>
 </html>

@@ -354,13 +354,15 @@ function levelMessage(number) {
                 "Båda utvecklarna borde ha tagit examen vid det här laget och kanske inte lägga så mycket tid på webbläsarspel.",
                 "Om du behöver en godtycklig siffra så har empirisk testning visat att 4 nästan alltid är det bästa valet.",
                 "Lillie-Fnöll står för ungefär 80% av alla buggar.",
-                "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>controller.money = 9999</i>",
+                "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>controller.money = 9999</i>.",
                 "Föhseriets val av transportmedel påfallande ofta är burvagn.",
                 "Fadderisternas olika förmågor i spelet är baserade på deras försök att hemlighålla Fadderiets tema.",
-                "På <a href=\"https://f.kth.se/arcade\">f.kth.se/arcade</a> finns det andra spel att prokrastinera med",
-                "Nämnden Mottagningen ska skrivs med stort M medan händelsen mottagningen med litet",
+                "På <a href=\"https://f.kth.se/arcade\">f.kth.se/arcade</a> finns det andra spel att prokrastinera med.",
+                "Nämnden Mottagningen ska skrivs med stort M medan händelsen mottagningen med litet.",
                 "Alla torn och uppgraderingar har en väldigt intetsägande beskrivning som utvecklarna lagt mycket tid på att hitta på.",
-                "Lillie-Fnölls uppgraderingar är baserade på gamla nØllelåtar",
+                "Lillie-Fnölls uppgraderingar är baserade på gamla nØllelåtar.",
+                "Du kan byta mellan olika kartor i rullgardinsmenyn i övre högra hörnet på sidan. Vissa banor är lite svårare och andra lite lättare, det finns nånting för alla!",
+                
             ];
             return "Visste du att: " + tips[Math.floor(Math.random(tips.length))];
     }

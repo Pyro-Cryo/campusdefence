@@ -166,6 +166,10 @@ class BaseTower extends GameObject {
         return Math.sqrt(Math.pow(this.x - x, 2) + Math.pow(this.y - y, 2)) < this.range + 0.1;
     }
 
+    objectsInRange(){
+        return this.pathInRange();
+    }
+
     pathInRange() {
         let path = this.map.path.filter(pt =>
             this.inRange(pt.x, pt.y)
@@ -329,6 +333,11 @@ class SupportTower extends BaseTower {
             return this.inRange(tower.x, tower.y);
         }.bind(this));
     }
+
+    objectsInRange(){
+        return this.pathInRange().concat(this.towersInRange());
+    }
+
     apply() {
         for (var i = 0; i < this.towersinrange.length; i++) {
             this.applyTo(this.towersinrange[i]);
