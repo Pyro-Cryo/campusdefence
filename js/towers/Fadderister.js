@@ -55,6 +55,9 @@ class Converted extends BaseEffect {
     init(object){
         if (object.speed > 0)
             object.speed = -object.speed;
+        object.timesConverted = (object.timesConverted || 0) + 1;
+        if (object.timesConverted >= 10 && Math.random() < object.timesConverted / 5)
+            object.onHit({ damage: 1 });
         super.init(object);
     }
     apply(object) {
@@ -228,6 +231,7 @@ class Distracted extends BaseEffect {
     }
     init(object) {
         object.speed /= this.multiplier;
+        object.cheater = true;
     }
     apply(object) {
         object.speed *= this.multiplier;
@@ -348,11 +352,24 @@ class Diciplinary extends Gadget {
 
     static get image() { return null; }
     static get scale() { return 1; }
+    static get cheatingNinjasRatio() { return 1 / 3; }
+    static get costPerCreep() { return 10; }
 
     addTo(tower) {
         // gothrough all creeps, and kill them
+        const costPerCreep = Math.round(Diciplinary.costPerCreep * (tower.discount_multiplier || 1));
+            
         controller.map.path.forEach(pathTile => pathTile.data.forEach(creep => {
-            if (creep instanceof BaseFohs || Math.random() < 1 / 6) // Finns några ninjor som inte fuskar
+            if (creep instanceof BaseFohs) // Föhseriet fuskar inte, de vinner på stilpoäng
+                return;
+            if (creep.cheater === undefined)
+                creep.cheater = Math.random() < Diciplinary.cheatingNinjasRatio; // 2/3 ninjor fuskar inte, i alla fall inte innan de mött Frida
+            if (!creep.cheater)
+                return;
+
+            if (controller.money >= costPerCreep)
+                controller.money -= costPerCreep;
+            else
                 return;
             if (creep instanceof MatryoshkaCreep)
                 creep.innerCreepCount = 0;
@@ -445,7 +462,7 @@ class Frida extends TargetingTower {
         this.addUpgrade(
             Errors,
             "Felaktiga lösningar",
-            "Genom att smyga in små fel i lösningarna kommer de ninjor som tar emot dem inte få några bonus till tentan. Vad kunde vara värre?",
+            "Genom att smyga in små fel i lösningarna kommer de ninjor som tar emot dem inte få några bonuspoäng till tentan. Vad kunde vara värre?",
             300,
             [],
             [Errors],
@@ -460,13 +477,13 @@ class Frida extends TargetingTower {
             250);
         this.addUpgrade(
             Diciplinary,
-            "Diciplinnämnden",
-            "Genom ett anonymt tips till diciplinnämnden kan Frida få alla fuskande Ninjor på campus avstängda från KTH!",
-            20000,
-            [Errors, FullSolution, Blackboard],
+            "Disciplinnämnden",
+            "Genom anonyma tips till Disciplinnämnden kan Frida få alla fuskande ninjor på campus avstängda från KTH! Tipsen ges från burner phones vilka såklart kostar en del. Mest värt det när du har starka ninjor som redan träffats av Frida.",
+            2000,
+            [FullSolution, Blackboard],
             [],
-            100);
-
+            250,
+            (cost, discount) => `${cost} +${Math.round(Diciplinary.costPerCreep * discount)}/st`);
     }
 }
 
@@ -577,10 +594,17 @@ dompaimg.src = "img/dompa.png";
 
 class Dompa extends Gadget {
 	static get image() { return dompaimg; }
-	static get scale() { return 0.5; }
+    static get scale() { return 0.5; }
+    static get costPerCreep() { return 4; }
 
-	addTo(tower) {
-		controller.map.path.forEach(pathTile => pathTile.data.forEach(creep => {
+    addTo(tower) {
+        const costPerCreep = Math.round(Dompa.costPerCreep * (tower.discount_multiplier || 1));
+        controller.map.path.forEach(pathTile => pathTile.data.forEach(creep => {
+            if (controller.money >= costPerCreep)
+                controller.money -= costPerCreep;
+            else
+                return;
+
             let molotov = tower.projectile(creep);
             molotov.target = creep;
             molotov.range = Number.POSITIVE_INFINITY;
@@ -613,7 +637,12 @@ class Molotov extends SplashProjectile {
     }
 }
 
-class Drunk extends Distracted {}
+class Drunk extends Distracted {
+    init(object) {
+        object.speed /= this.multiplier;
+        //Sätt inte cheater på fyllon
+    }
+}
 
 let axelimg = new Image();
 axelimg.src = "img/transparent/axel.png";
@@ -627,13 +656,9 @@ class Axel extends OmniTower {
     static get name() { return "Fjädrande Axel"; }
     static get desc() { return "Fackliga Axel älskar två saker: facklor och att festa. Han bjuder gärna alla omkring sig på Molotovcocktails, och när dessa exploderar träffar de alla ninjor inom ett visst område."; }
 
-    pathInRange() {
-        let inrange = super.pathInRange();
-        // Ja, det här uppdaterar preferredTargets även om pathinrange inte skulle uppdatera inrange på tornet
-        // Eventuella buggar som uppkommer pga det borde inte påverka gameplay nämnvärt
+    updateRange() {
         if (this.champagne)
             this.preferredTargets = Champagne.prototype.computePreferredTargets(this, inrange);
-        return inrange;
     }
 
     projectile(target) {
@@ -651,7 +676,6 @@ class Axel extends OmniTower {
                     creep.addEffect(new Drunk(this.time));
                     this.raw_hitCreep(creep);
                 }.bind(m);
-                // console.log(m)
             }
         }
         if (this.champagne) {
@@ -731,11 +755,13 @@ class Axel extends OmniTower {
         this.addUpgrade(
             Dompa, 
             "Dompa", 
-            "Axel bjuder varenda ninja på en drink. Dompa åt alla! Mest värt det när du har en överväldigande mängd ninjor att fort hantera.",
-            16990,
+            "Axel bjuder varenda ninja på en drink. Dompa åt alla! Mest värt det när du har en överväldigande mängd svaga ninjor att fort hantera.",
+            1699,
             [Champagne],
             [],
-            300);
+            300,
+            (cost, discount) => `${cost} +${Math.round(Dompa.costPerCreep * discount)}/st`
+        );
     }
 }
 
@@ -1155,6 +1181,32 @@ class BoquetWrapper extends Bouquet {
     }
 }
 
+// Flash-motsvarighet
+class BallOfLight extends BasicProjectile {
+
+    static get damage() { return 0; }
+
+    constructor(_, source, target) {
+        super(controller.map, flashimg, source, target.x, target.y, 0.05, 1 / controller.updateInterval);
+        this.angle = 0;
+        this.range = source.range + 1;
+        this.stun = 0;
+        this.weak = 0;
+    }
+    hitCreep(creep) {
+        if (this.stun > 0) {
+            let s = new Stunned(this.stun);
+            creep.addEffect(s);
+        }
+        if (this.weak > 0) {
+            let w = new Weak(this.weak);
+            creep.addEffect(w);
+        }
+
+        super.hitCreep(creep);
+    }
+}
+
 let fnoellimg = new Image();
 fnoellimg.src = "img/transparent/lillie.png";
 
@@ -1528,6 +1580,25 @@ class Fnoell extends BaseTower {
                 };
                 Fnoell.copyProjectileInfo(info, this.currentProjectileInfo, Object.keys(info));
             }
+        }
+
+        else if (closestTower instanceof MediaFadder) {
+            this.currentProjectile = BallOfLight;
+            this.currentProjectilePostprocess = b => {
+                b.stun = Flash.stunDuration;
+                if (closestTower.force)
+                    b.weak = ForceFlash.weaknessDuration;
+                if (closestTower.skvallerpress)
+                    b.damage = 1;
+                if (closestTower.flash_power > 1)
+                    b.hitpoints = 2;
+            };
+
+            let sourceinf = closestTower.projectileInfo();
+            this.currentProjectileInfo["name"] = "Blixtboll";
+            Fnoell.copyProjectileInfo(sourceinf, this.currentProjectileInfo, ["image", "Skada"]);
+            this.currentProjectileInfo["Träffar per skott"] = closestTower.flash_power > 1 ? 2 : 1;
+            this.currentProjectileInfo["Specialeffekt"] = sourceinf["Specialeffekt"];
         }
 
         else

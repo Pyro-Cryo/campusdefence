@@ -76,8 +76,7 @@ class BaseTower extends GameObject {
 
     }
 
-    addUpgrade(gadget, name, desc, cost, requires, blocked, minhits){
-
+    addUpgrade(gadget, name, desc, cost, requires, blocked, minhits, costText = null) {
         this.upgrades.push({
             type: gadget,
             name: name,
@@ -85,9 +84,9 @@ class BaseTower extends GameObject {
             cost: cost,
             requires: requires,
             blocked: blocked,
-            hits: minhits
+            hits: minhits,
+            costText: costText
         });
-
     }
 
     set targeting(t){

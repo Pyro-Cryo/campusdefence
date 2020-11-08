@@ -503,9 +503,9 @@
             imgsrc: "img/yeet.png",
             button: {
                 action: "Adjö",
-                cost: -parseInt(this.sellPriceMultiplier * this.selectedTower.value * (this.selectedTower.discount_multiplier || 1)),
+                cost: -Math.round(this.sellPriceMultiplier * this.selectedTower.value * (this.selectedTower.discount_multiplier || 1)),
                 onclick: () => {
-                    this.money += this.sellPriceMultiplier * this.selectedTower.value * (this.selectedTower.discount_multiplier || 1);
+                    this.money += Math.round(this.sellPriceMultiplier * this.selectedTower.value * (this.selectedTower.discount_multiplier || 1));
                     this.hitsFromSoldTowers[this.selectedTower.constructor.name] += this.selectedTower.hits;
                     this.selectedTower.destroy();
                     this.selectedTower = null;
@@ -521,6 +521,7 @@
             for (var i = 0; i < this.selectedTower.upgrades.length; i++) {
                 let upgrade = this.selectedTower.upgrades[i];
 
+                const truecost = Math.round(upgrade.cost * (this.selectedTower.discount_multiplier || 1));
                 let option = this.contextOption({
                     title: upgrade.name,
                     desc: upgrade.desc,
@@ -531,9 +532,9 @@
                     },
                     button: {
                         action: "Köp",
-                        cost: upgrade.cost * (this.selectedTower.discount_multiplier || 1),
+                        cost: upgrade.costText ? upgrade.costText(truecost, this.selectedTower.discount_multiplier) : truecost,
                         onclick: () => {
-                            this.money -= upgrade.cost * (this.selectedTower.discount_multiplier || 1);
+                            this.money -= truecost;
                             let gadget = new upgrade.type(this.selectedTower);
 
                             this.saveToCookie();
@@ -669,12 +670,12 @@
                 option.classList.remove("locked");
                 option.classList.remove("hideme");
             }
-            if (currentState !== "affordable" && this.money >= upgrade.cost * (this.selectedTower.discount_multiplier || 1))
+            if (currentState !== "affordable" && this.money >= Math.round(upgrade.cost * (this.selectedTower.discount_multiplier || 1)))
                 option.querySelector("button[name='actionbtn']").removeAttribute("disabled");
-            else if ((!currentState || currentState === "affordable") && this.money < upgrade.cost * (this.selectedTower.discount_multiplier || 1))
+            else if ((!currentState || currentState === "affordable") && this.money < Math.round(upgrade.cost * (this.selectedTower.discount_multiplier || 1)))
                 option.querySelector("button[name='actionbtn']").disabled = "disabled";
             
-            if (this.money >= upgrade.cost * (this.selectedTower.discount_multiplier || 1))
+            if (this.money >= Math.round(upgrade.cost * (this.selectedTower.discount_multiplier || 1)))
                 return gotAllArgs ? "affordable" : ["affordable", blocking, existingRequired];
             else
                 return gotAllArgs ? "unlocked" : ["unlocked", blocking, existingRequired];

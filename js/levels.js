@@ -362,7 +362,9 @@ function levelMessage(number) {
                 "Alla torn och uppgraderingar har en väldigt intetsägande beskrivning som utvecklarna lagt mycket tid på att hitta på.",
                 "Lillie-Fnölls uppgraderingar är baserade på gamla nØllelåtar.",
                 "Du kan byta mellan olika kartor i rullgardinsmenyn i övre högra hörnet på sidan. Vissa banor är lite svårare och andra lite lättare, det finns nånting för alla!",
-                
+                "Lillie-Fnölls uppgraderingar är baserade på gamla nØllelåtar",
+                "Fridas disciplinnämnden-attack träffar en tredjedel av alla ninjor, plus de som redan träffats av Frida. Till skillnad från Axels dompa-attack får du dock inga pengar för ninjor som träffas.",
+                "Detta är det officiella inofficiella spelet för mottagningen 2020. Det finns ett inofficiellt inofficiellt spel också - fråga webmaster eller vice ordförande om du vill spela!"
             ];
             return "Visste du att: " + tips[Math.floor(Math.random(tips.length))];
     }
@@ -417,7 +419,7 @@ function getImmuneCreep(creepType, resistance, persistent, nth) {
         "Alcohol": [Molotov, Drunk],
         "Cheats": [Wolfram, Distracted, PersistentDistracted, WolframWrapper],
         "Hugs": [Hug, JellyHeart], // Känns elakt att Jelly inkluderas. Patch är medvetet utelämnad.
-        "Light": [Flash, ForceFlash, Stunned, Weak]
+        "Light": [Flash, ForceFlash, BallOfLight, Stunned, Weak]
     }[damagetype];
     let imgInfo = {
         "Fire": [fireimg, 0.5],
