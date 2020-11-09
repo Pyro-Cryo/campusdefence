@@ -60,6 +60,8 @@ class BaseCreep extends GameObject {
 		this.pathtile = controller.map.path[0];
 		this.pathtile.add(this);
         controller.registerObject(this);
+
+        this.isdead = false;
 	}
 	onHit(projectile) {
 		this.health -= projectile.damage;
@@ -68,11 +70,11 @@ class BaseCreep extends GameObject {
 			this.onDeath();
 		}
     }
-    //Ta bort? Verkar inte användas någonstans
-	affectedBy(projectile){
-		return true;
-	}
 	onDeath() {
+        if (this.isdead){
+            return; // Vi bör dö max en gång
+        }
+        this.isdead = true;
 		this.despawnTimer = 2;
 		this.image = ninjastar;
 		this.angle = Math.PI * Math.random();
