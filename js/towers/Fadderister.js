@@ -85,10 +85,12 @@ class Zombie extends Tentacula {
 	apply(object){
 		// Sprider sig
 		let pt = controller.map.getGridAt(Math.round(object.x), Math.round(object.y));
-		let creep = pt.randomCreep();
-		if(creep === null || creep.id === object.id)
-			return;
-		creep.addEffect(new this.constructor(this.cdtime));
+		for (var i = 0; i < 2; i++) {
+			let creep = pt.randomCreep();
+			if(creep === null || creep.id === object.id)
+				return;
+			creep.addEffect(new this.constructor(this.cdtime));
+		}
 
 		// Gör skada
 		super.apply(object);
@@ -371,7 +373,7 @@ let nicoleimg = new Image();
 nicoleimg.src = "img/transparent/nicole.png";
 class Nicole extends TargetingTower {
 	static get range() { return 3; }
-	static get CDtime() { return 1000; }
+	static get CDtime() { return 1400; }
 	static get image() { return nicoleimg; }
 	static get scale() { return 0.2; }
 	static get cost() { return 300; }
@@ -381,7 +383,7 @@ class Nicole extends TargetingTower {
 	constructor(x,y){
 		super(x,y);
 		this.effects_avail = [Converted];
-		this.effect_time = 1000 / controller.updateInterval;
+		this.effect_time = 1500 / controller.updateInterval;
 		this.damage = 0;
 		this.damageChance = 0;
 		this.projectiletype = Flower;
@@ -392,7 +394,7 @@ class Nicole extends TargetingTower {
 		if (pt && pt instanceof PathTile)
 			return pt.arbitraryCreep();
 		return pt;
-    }
+	}
 
 	projectile(target) {
 		let i = parseInt(Math.random()*this.effects_avail.length);
@@ -445,28 +447,28 @@ class Nicole extends TargetingTower {
 			100
 			);
 		this.addUpgrade(
+			NightFlower,
+			"Nattblomm",
+			"Natten är rovdjurens och datalogernas tid, och med en nattblomma i håret blir vem som helst lite skygg för starkt ljus.",
+			550,
+			[],
+			[Pollen, TentaculaGadget, NightFlower, MonoCultureGadget],
+			150
+			);
+		this.addUpgrade(
 			Midsummers,
 			"Midsommarkrans",
 			"Nånting med midsommar och alkoholhets.",
-			800,
+			650,
 			[],
 			[Pollen, TentaculaGadget, Midsummers, MonoCultureGadget],
 			250
 			);
 		this.addUpgrade(
-			NightFlower,
-			"Nattblomm",
-			"Natten är rovdjurens och datalogernas tid, och med en nattblomma i håret blir vem som helst lite skygg för starkt ljus.",
-			700,
-			[],
-			[Pollen, TentaculaGadget, NightFlower, MonoCultureGadget],
-			200
-			);
-		this.addUpgrade(
 			FireFlower,
 			"Eldsblomma",
 			"Flammande orange-röda blommor i eldens färger.",
-			900,
+			700,
 			[],
 			[Pollen, TentaculaGadget, FireFlower, MonoCultureGadget],
 			250
@@ -476,43 +478,43 @@ class Nicole extends TargetingTower {
 			"Nattens drottning",
 			"'Queen of Night' är en av de mörkaste av alla tulpaner. Den har en sidenglänsande blomma i mörkt kastanjebrunt, nästan svart. Sorten är gammal, framtagen kring tidernas begynnelse 1938. Enligt legenden innehåller den en enorm, uråldrig kraft som enbart ett fåtal kan tämja...",
 			1000,
-			[Pollen, Roses, Midsummers, NightFlower, FireFlower],
+			[Roses, Midsummers, NightFlower, FireFlower],
 			[TentaculaGadget, QueenOfNightGadget, MonoCultureGadget],
 			1000
-			);
-		this.addUpgrade(
-			Pollen,
-			"Pollenallergi",
-			"Genom att noggrant välja blommor kan Nicole utnyttja att vissa ninjor har pollenallergi och tar skada istället för att vända om.",
-			100,
-			[],
-			[Pollen, Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget],
-			10
 			);
 		this.addUpgrade(
 			TentaculaGadget,
 			"Köttätande blommor",
 			"Det finns fina blommor, fula blommor och så finns det köttätande blommor.",
 			300,
-			[Nutrient, Pollen],
+			[Nutrient],
 			[TentaculaGadget, Vase, Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget, MonoCultureGadget],
 			50);
 		this.addUpgrade(
 			ZombieGadget,
 			"Zombie-plantor",
-			"Genom genmodifiering har Niclor skapat en kombination av Köttätande väster och parasiter. Dessa blommor skadar inte bara den ninja de klänger sig fast på, utan sprider sig också vidare till andra ninjor i närheten.",
+			"Genom genmodifiering har Nicole skapat en kombination av Köttätande växter och parasiter. Dessa blommor skadar inte bara den ninja de klänger sig fast på, utan sprider sig också vidare till andra ninjor i närheten.",
 			800,
-			[Nutrient, Pollen, TentaculaGadget],
+			[Nutrient, TentaculaGadget],
 			[ZombieGadget, Vase, Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget, MonoCultureGadget],
 			150);
-		this.addUpgrade(
-			MonoCultureGadget,
-			"Industriell odling",
-			"Genom att använda moderna industriella redskap kan Nicole nå en aldrig tidigare skådad effektivitet och förse nästan hela campus med blommor.",
-			2500,
-			[Nutrient, Pollen, BouquetGadget],
-			[MonoCultureGadget, Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget, TentaculaGadget],
-			500);
+		// this.addUpgrade(
+		// 	Pollen,
+		// 	"Pollenallergi",
+		// 	"Genom att noggrant välja blommor kan Nicole utnyttja att vissa ninjor har pollenallergi och tar skada istället för att vända om.",
+		// 	100,
+		// 	[],
+		// 	[Pollen, Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget],
+		// 	10
+		// 	);
+		// this.addUpgrade(
+		// 	MonoCultureGadget,
+		// 	"Industriell odling",
+		// 	"Genom att använda moderna industriella redskap kan Nicole nå en aldrig tidigare skådad effektivitet och förse nästan hela campus med blommor.",
+		// 	2500,
+		// 	[Nutrient, BouquetGadget],
+		// 	[MonoCultureGadget, Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget, TentaculaGadget],
+		// 	500);
 	}
 }
 

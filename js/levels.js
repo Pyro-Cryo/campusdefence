@@ -166,7 +166,7 @@ function getLevel(number, updateInterval) {
 
         case 25:
             return (new CreepSequence()
-                .send(100, ShieldedRed).over(20 * s)
+                .send(100, Blue).over(20 * s)
                 .interleave(new CreepSequence()
                     .send(25, Green).over(10 * s)
                     .send(15, Violet).over(10 * s))
@@ -181,7 +181,7 @@ function getLevel(number, updateInterval) {
                 .send(9, Orange).over(2 * s)
                 .wait(6 * s)
                 .send(6, Orange).over(2.7 * s)
-                .interleave(new CreepSequence().send(6, ShieldedOrange).over(3 * s)));
+                .interleave(new CreepSequence().send(6, Orange).over(3 * s)));
 
         case 27:
             return (new CreepSequence()
@@ -203,20 +203,20 @@ function getLevel(number, updateInterval) {
         case 29:
             return (new CreepSequence()
                 .send(25, Orange).over(7 * s)
-                .send(100, ShieldedRed).over(10 * s));
+                .send(100, Blue).over(10 * s));
 
         case 30:
             return (new CreepSequence()
                 .send(60, Violet).over(15 * s)
-                .interleave(new CreepSequence().send(25, ShieldedPink).over(15 * s))
+                .interleave(new CreepSequence().send(25, Pink).over(15 * s))
                 .interleave(new CreepSequence().send(25, Green).over(15 * s))
                 .wait(2 * s)
-                .send(15, ShieldedOrange).over(5 * s)
-                .send(25, ShieldedPink).over(5 * s)
+                .send(15, Orange).over(5 * s)
+                .send(25, Pink).over(5 * s)
                 .wait(2 * s)
                 .send(1, Burvagn).immediately()
-                .send(50, ShieldedBlue).over(10 * s)
-                .send(50, ShieldedPink).over(25 * s)
+                .send(50, Blue).over(10 * s)
+                .send(50, Pink).over(25 * s)
                 );
 
         default:
@@ -232,20 +232,20 @@ function autolevel(levelnumber, updateInterval){
 		.send(30, Pink).over(10 * s)
 		.interleave(new CreepSequence().send(30, Green).over(10 * s))
 		.wait(2 * s)
-		.send(2*levelnumber, ShieldedGreen).over(levelnumber/4 * s)
-		.interleave(new CreepSequence().send(2*levelnumber, ShieldedPink).over(12/levelnumber * s))
+		.send(2*levelnumber, Green).over(levelnumber/4 * s)
+		.interleave(new CreepSequence().send(2*levelnumber, Pink).over(12/levelnumber * s))
 		.wait(2 * s);
 
 	if(levelnumber >= 40){
-		cs.send(Math.floor(0.1*levelnumber*levelnumber), ShieldedOrange).over(levelnumber * s)
+		cs.send(Math.floor(0.1*levelnumber*levelnumber), Orange).over(levelnumber * s)
 		.interleave(new CreepSequence().send(levelnumber, Pink).over(10 * s));
 	}
 
     if(levelnumber % 3 == 0)
-        cs.send(Math.floor(levelnumber/5)*10, ShieldedGreen).over(5 * s).wait(1 * s);
+        cs.send(Math.floor(levelnumber/5)*10, Green).over(5 * s).wait(1 * s);
 
     if(levelnumber % 5 == 0)
-        cs.send(Math.floor(levelnumber/10)*20, ShieldedOrange).over(10 * s);
+        cs.send(Math.floor(levelnumber/10)*20, Orange).over(10 * s);
 
 	if(levelnumber % 4 == 0 || levelnumber % 6 == 0){
 		cs.send(1, TF_inf).immediately()
@@ -256,7 +256,7 @@ function autolevel(levelnumber, updateInterval){
 	}
 
 	if(levelnumber > 50){
-		cs.send(2*levelnumber, ShieldedOrange).over(10 * s);
+		cs.send(2*levelnumber, Orange).over(10 * s);
 	}
 
 	cs.send(levelnumber, Blue).over(10 * s)
@@ -290,7 +290,8 @@ function levelClearReward(number) {
             cash = 100;
             break;
     }
-    controller.money += cash;
+    // controller.money += cash;
+    return cash;
 }
 
 // Skrivs ut innan respektive nivå
@@ -409,7 +410,7 @@ function favoredDamageTypes(weights) {
 
 function getImmuneCreep(creepType, resistance, persistent, nth) {
     let favored = favoredDamageTypes({ "Hugs": 0.5, "Fire": 2 });
-    console.log("Player strategy:", Object.fromEntries(favored));
+    // console.log("Player strategy:", Object.fromEntries(favored));
     let damagetype = favored[nth || 0][0];
 
     let immunities = {

@@ -1,4 +1,5 @@
 ﻿class TDController extends Controller {
+
     constructor() {
         super(19, 16);
         controller = this;
@@ -262,7 +263,7 @@
         console.log("Cleared level " + this.levelNumber);
         this.map.clear();
 
-        levelClearReward(this.levelNumber);
+        this.money += levelClearReward(this.levelNumber);
         document.querySelectorAll(".towerInfo:not(.template)").forEach((ti, i) => {
             if (this.towerSpecs[i].unlockLevel && this.levelNumber + 1 === this.towerSpecs[i].unlockLevel)
             {
@@ -425,6 +426,9 @@
     listUpgrades(upgradeTypeList, towerUpgradesList, targetdiv) {
         for (let i = 0; i < upgradeTypeList.length; i++) {
             let upgrade = upgradeTypeList[i];
+            if (towerUpgradesList.find(u => u.type === upgrade) === undefined){
+            	continue;
+            }
             targetdiv.appendChild(new Text((i ? ", " : "") + towerUpgradesList.find(u => u.type === upgrade).name + "\xa0"));
             if (upgrade.image && upgrade.image.src && upgrade.image.src.length)
             {
@@ -994,3 +998,88 @@ class PseudoTower extends GameObject {
     }
 }
 
+function fusk(x, y){
+
+	if (x == monies_plz){
+		if (y !== undefined)
+			controller.money += y;
+		else
+			controller.money += 1000;
+	}
+
+	if (x == level_set){
+		controller.levelNumber = y-1;
+		controller.endLevel();
+	}
+
+
+	if (x == cheat_lvl){
+		fusk(level_set, y);
+		controller.money = fusk(list_value, y-1) + 500;
+	}
+
+	if (x == unlock_all){
+		for (var i = 0; i < controller.map.towers.length; i++) {
+			for (var j = 0; j < controller.map.towers[i].upgrades.length; j++) {
+				controller.map.towers[i].upgrades[j].hits = 0;
+			}
+		}
+	}
+
+	if (x == harvest_time){
+		for (var i = 0; i < controller.map.towers.length; i++) {
+			if (controller.map.towers[i] instanceof Nicole){
+				if (controller.map.towers[i].upgrades.find(u => u.type.name == MonoCultureGadget.name) !== undefined)
+					continue;
+				controller.map.towers[i].addUpgrade(
+					Pollen,
+					"Pollenallergi",
+					"Genom att noggrant välja blommor kan Nicole utnyttja att vissa ninjor har pollenallergi och tar skada istället för att vända om.",
+					100,
+					[],
+					[Pollen, Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget],
+					10
+					);
+				controller.map.towers[i].addUpgrade(
+					MonoCultureGadget,
+					"Industriell odling",
+					"Genom att använda moderna industriella redskap kan Nicole nå en aldrig tidigare skådad effektivitet och förse nästan hela campus med blommor.",
+					2500,
+					[Nutrient, Pollen, BouquetGadget],
+					[MonoCultureGadget, Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget, TentaculaGadget],
+					500);
+			}
+		}
+	}
+
+	if (x == list_value){
+
+		let value = 0;
+		for (var i = 1; i <= y; i++) {
+			let iterator = getLevel(i, 10);
+			let remaining = iterator.remaining();
+			let codebook = iterator.codebook();
+
+			for (let creepType in remaining){
+				if (codebook[creepType].prototype instanceof BaseCreep)
+					value += codebook[creepType].totalValue() * remaining[creepType];
+				else{
+					value += codebook[creepType].prototype.totalValue() * remaining[creepType];
+				}
+			}
+			value += levelClearReward(i);
+		}
+
+		return value;
+	}
+
+
+
+}
+
+let monies_plz = 6809;
+let level_set = 9539;
+let cheat_lvl = 8726;
+let harvest_time = 2602;
+let unlock_all = 3102;
+let list_value = 6673;
