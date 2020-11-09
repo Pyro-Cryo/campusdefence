@@ -1,6 +1,9 @@
-- Gör fler levels (upp till 50, sen repeteras och blir svårare) (behövs detta?)
+- Gör fler levels (upp till 30, sen repeteras och blir svårare) (behövs detta?)
 - Balansera lite
 - skala ner mängden pengar man får på högre levels
+- Skriva lite info/lore om immuna creeps
+- Flytta Föhseriet så de kommer först lite senare i levels
+
 
 - Efter lansering, DLC:
 	- Immuna creeps, FEST-utbildning (immun mot eld), Nykterist/STAD-utbildning (immun mot cocktails), Kursnämnd (immun mot fusklappar)
@@ -12,8 +15,15 @@
 	- Det borde inte gå att köpa dompa/disciplinnämnden i pausen mellan rundor (kommer kräva att man petar i contextmenycachningen dock och det vågar jag knappt)
 	- Mouseover på köpknappar med fler än två rader text gör att hela alternativet buggar lite visuellt
 	- Creeps som är immuna mot gelehjärtan går rakt igenom dem och konsumerar all deras hp, vilket kanske inte borde hända
+	- HP återställs till 191 vid page refresh
+	- 'Visste du att' visar alltid den första raden i listan
+	- 'Queen of Night'-blomman gör ingenting
+	- Fnöll och Nicole är inte kompisar just nu
 
-Torn:
+
+
+
+Torn: Nu får det räcka med torn
 
 
 Fadder:
