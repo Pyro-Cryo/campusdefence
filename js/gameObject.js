@@ -4,6 +4,8 @@ class PrerenderedObject {
 		this.image = image;
 		this.scale = scale;
 		this.angle = angle;
+		this._mirror = false;
+		// this.mirror = false;
 
 		this.imageDirty = true;
 	}
@@ -34,6 +36,15 @@ class PrerenderedObject {
 	get angle() {
 		return this._angle;
 	}
+	set mirror(v) {
+		if (this._mirror == v)
+			return;
+		this._mirror = v;
+		this.imageDirty = true;
+	}
+	get mirror() {
+		return this._mirror;
+	}
 	draw(gameArea, x, y) {
 		if(this.imageDirty)
 			this.prerender();
@@ -60,6 +71,11 @@ class PrerenderedObject {
 
 		this.imagecontext.translate(this.imagecache.width/2, this.imagecache.height/2);
 		this.imagecontext.rotate(this.angle);
+
+		// if (this.mirror){
+		// 	this.imagecontext.translate(this.imagecache.width,0);
+		// 	this.imagecontext.scale(-1,1);
+		// }
 
 		this.imagecontext.drawImage(
 			this.image, -this.image.width * this.scale/2, -this.image.height * this.scale/2,
@@ -100,7 +116,6 @@ class GameObject extends PrerenderedObject {
 
         var index = 0;
         this.effects.forEach(function(obj){
-        	console.log(obj);
 			index = obj.draw(this, gameArea, index);
 		}.bind(this));
     }
@@ -140,6 +155,7 @@ class BaseEffect extends PrerenderedObject {
 
 	// Om effecten förs över till MatryoshkaCreep-barn
 	static get persistent() { return false; }
+	static get maxInvocations(){ return 10; }
 	static get image() { return null; }
 	static get scale() { return 1; }
 
@@ -152,6 +168,8 @@ class BaseEffect extends PrerenderedObject {
 		this.cooldown = cooldown;
 		this.cdtime = this.cooldown;
 		this.timesinitialized = 0;
+
+		this.invocations = 0;
 	}
 
 	init(object){
@@ -162,6 +180,9 @@ class BaseEffect extends PrerenderedObject {
 		if(this.cdtime-- <= 0){
 			this.cdtime = this.cooldown;
 			this.apply(object);
+
+			if (++this.invocations >= this.constructor.maxInvocations)
+				this.remove(object);
 		}
 	}
 
