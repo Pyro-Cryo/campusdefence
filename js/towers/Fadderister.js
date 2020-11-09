@@ -959,7 +959,7 @@ class Axel extends OmniTower {
 
     updateRange() {
         if (this.champagne)
-            this.preferredTargets = Champagne.prototype.computePreferredTargets(this, inrange);
+            this.preferredTargets = Champagne.prototype.computePreferredTargets(this, this.inrange);
     }
 
     projectile(target) {
