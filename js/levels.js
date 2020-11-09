@@ -39,8 +39,13 @@ function getLevel(number, updateInterval) {
                 .interleave(new CreepSequence().send(8, Blue).over(20 * s)));
         case 8:
             return (new CreepSequence()
-                .send(1, TF_1).immediately());
-
+            	.send(5, Pink).over(3 * s)
+            	.wait(5 * s)
+            	.send(5, Pink).over(3 * s)
+            	.wait(5 * s)
+            	.send(25, Blue).over(15 * s)
+            	);
+                
         case 9:
             return (new CreepSequence()
                 .send(30, getImmuneCreep(Red, 0.6)).over(20 * s)
@@ -51,53 +56,59 @@ function getLevel(number, updateInterval) {
         case 10:
             return (new CreepSequence()
                 .send(30, Blue).over(15 * s)
-                .interleave(new CreepSequence().send(10, Red).over(10 * s))
+                .interleave(new CreepSequence().send(12, getImmuneCreep(Red, 0.6, true, 1)).over(10 * s))
                 .wait(5 * s)
-                .send(20, Pink).over(12 * s)
+                .send(25, Pink).over(13 * s)
                 .wait(3 * s)
-                .send(10, Blue).over(4 * s));
+                .send(12, Blue).over(4 * s));
 
         case 11:
             return (new CreepSequence() 
-                .send(1,SF_1).immediately());
+            	.send(1, TF_1).immediately());
 
         case 12:
             return (new CreepSequence()
-                .send(25, getImmuneCreep(Blue, 0.6)).over(20 * s)
-                .send(25, getImmuneCreep(Blue, 0.6, true, 1)).over(10 * s)
-                .wait(1 * s)
-                .send(10, Pink).over(10 * s));
+                .send(35, getImmuneCreep(Blue, 0.6, true)).over(20 * s)
+                .send(35, getImmuneCreep(Blue, 0.6, true, 1)).over(10 * s)
+                .wait(4 * s)
+                .send(15, Pink).over(10 * s));
 
         case 13:
             return (new CreepSequence()
-                .send(15, Pink).over(20 * s)
-                .interleave(new CreepSequence().send(10, Red).over(20 * s))
-                .send(20, Pink).over(10 * s)
+                .send(20, Pink).over(20 * s)
+                .interleave(new CreepSequence().send(20, Red).over(20 * s))
+                .send(30, Pink).over(10 * s)
                 );
 
         case 14:
             return (new CreepSequence()
-                .send(5, Green).over(12 * s)
-                .wait(1 * s)
-                .send(50, Red).over(30 * s)
-                .send(5, Green).over(7 * s));
+            	.send(50, Red).over(50 * s)
+                .interleave(new CreepSequence()
+                	.wait(10 * s)
+                	.send(2, Green).over(1 * s)
+                	.wait(5 * s)
+                	.send(2, Green).over(1 * s)
+                	.wait(5 * s)
+                	.send(3, Green).over(1 * s)
+                	.wait(15 * s)
+                	.send(4, Green).over(2 * s)
+                	)
+                );
         
         case 15:
             return (new CreepSequence()
-                .send(1, OF_1).immediately());
+            	.send(1,SF_1).immediately());
+                
 
         case 16:
             return (new CreepSequence()
                 .send(30, getImmuneCreep(Blue, 0.6, true)).over(20 * s)
                 .send(20, getImmuneCreep(Pink, 0.7, true, 1)).over(20 * s)
-                .send(5, Green).over(3 * s));
+                .send(10, Green).over(3 * s));
 
         case 17:
             return (new CreepSequence()
-                .send(1, Violet).immediately()
-                .wait(3 * s)
-                .send(20, Green).over(20 * s)
-                .send(50, Ninja).over(10 * s)
+                .send(1, OF_1).immediately()
                 );
         case 18:
             return (new CreepSequence()
@@ -112,12 +123,10 @@ function getLevel(number, updateInterval) {
 
         case 19:
             return (new CreepSequence()
-                .send(1, Orange).immediately()
+                .send(1, Violet).immediately()
                 .wait(1 * s)
                 .send(50, Blue).over(11 * s)
                 .send(3, Green).over(3 * s));
-
-        // Ta bort Föhseriet från denna level så de inte kommer så ofta?
         case 20:
             return (new CreepSequence()
                 .send(20, Blue).over(10 * s)
@@ -273,6 +282,8 @@ function autolevel(levelnumber, updateInterval){
 function levelClearReward(number) {
     let cash = 0;
     switch (number) {
+
+    	case 3:
         case 4:
         case 6:
             cash = 150; //Lite extra cash för att kompensera för de nya blåa spökena early game
