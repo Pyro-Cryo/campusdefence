@@ -33,7 +33,8 @@
             "1.1.3",
             "1.1.4",
             "1.1.5",
-			"1.1.6"
+			"1.1.6",
+            "1.1.7"
         ];
         if ((window.localStorage.getItem("campusdefence_version") || "1.0") !== this.versions[this.versions.length - 1]) {
             //window.alert("Campus Defence har uppdaterats och ditt sparade spel går tyvärr inte längre att fortsätta på.");
