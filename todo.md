@@ -19,6 +19,8 @@
 	- 'Visste du att' visar alltid den första raden i listan
 	- 'Queen of Night'-blomman gör ingenting
 	- Fnöll och Nicole är inte kompisar just nu
+	- Vi borde testa interaktionen mellan Fridas slowdown, Nicoles vändning och Mediafadderns stoppande, de lirar inte alls bra ihop just nu (ffa Mediafaddern).
+	- Om två mediafaddrar överlappar varann och har aftonbladetuppgraderingen, och deras range buffas av matberedartornet, så kommer vissa av tilesen i slutändan inte ha någon cap som de borde. Känns som ett edge case vi kanske inte måste bry oss om men listar det här ändå.
 
 
 

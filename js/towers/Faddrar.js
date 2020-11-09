@@ -376,12 +376,12 @@ class Stunned extends BaseEffect {
         this.speed = object.speed;
         object.speed = 0;
         object.timesStunned = (object.timesStunned || 0) + 1;
-        if (object.timesStunned >= 10 && Math.random() < object.timesStunned / 5)
+        if (object.timesStunned >= 10 && Math.random() < (object.timesStunned - 8) / 10)
             object.onHit({ damage: 1 });
         super.init(object);
     }
     apply(object) {
-        object.speed = this.speed; //TODO: Detta interagerar inte korrekt med Nicole
+        object.speed = this.speed;
         this.remove(object);
     }
 }
@@ -506,7 +506,6 @@ class MediaFadder extends TargetingTower {
         return p;
     }
 
-    //TODO: fixa edge caset om det finns flera matberedarbuffade aftonbladetmediafaddrar som överlappar
     enforceDistancing() {
         this.old_inrange.forEach(pt => { pt.dataCap = Number.POSITIVE_INFINITY; });
         this.inrange.forEach(pt => { pt.dataCap = this.socialDistancingLimit; });
