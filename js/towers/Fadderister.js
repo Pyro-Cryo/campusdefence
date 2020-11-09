@@ -423,7 +423,7 @@ class Nicole extends TargetingTower {
 			Vase,
 			"Vas",
 			"Ställer en blommorna i en vas med vatten kommer de klara sig längre.",
-			250,
+			180,
 			[],
 			[Vase, TentaculaGadget, ZombieGadget],
 			0);
@@ -431,7 +431,7 @@ class Nicole extends TargetingTower {
 			BouquetGadget,
 			"Bukett",
 			"Genom avancerade matematiska resonemang har Nicole kommit fram till att genom att skjuta flera blommor samtidigt kan hon träffa fler Ninjor.",
-			350,
+			300,
 			[Nutrient],
 			[BouquetGadget],
 			100
@@ -440,7 +440,7 @@ class Nicole extends TargetingTower {
 			Roses,
 			"Rosor",
 			"Inget säger 'jag älskar dig' som en ros, och när Nicole ger Ninjorna de röda blommorna kan inte ens de mest hårdnackade Ninjor säga nej till en kram.",
-			1000,
+			400,
 			[],
 			[Pollen, TentaculaGadget, Roses, MonoCultureGadget],
 			500
@@ -449,7 +449,7 @@ class Nicole extends TargetingTower {
 			Midsummers,
 			"Midsommarkrans",
 			"Nånting med midsommar och alkoholhets.",
-			900,
+			800,
 			[],
 			[Pollen, TentaculaGadget, Midsummers, MonoCultureGadget],
 			500
@@ -458,7 +458,7 @@ class Nicole extends TargetingTower {
 			NightFlower,
 			"Nattblomm",
 			"Natten är rovdjurens och datalogernas tid, och med en nattblomma i håret blir vem som helst lite skygg för starkt ljus.",
-			800,
+			700,
 			[],
 			[Pollen, TentaculaGadget, NightFlower, MonoCultureGadget],
 			500
@@ -467,7 +467,7 @@ class Nicole extends TargetingTower {
 			FireFlower,
 			"Eldsblomma",
 			"Flammande orange-röda blommor i eldens färger.",
-			1100,
+			900,
 			[],
 			[Pollen, TentaculaGadget, FireFlower, MonoCultureGadget],
 			500
@@ -502,7 +502,7 @@ class Nicole extends TargetingTower {
 			ZombieGadget,
 			"Zombie-plantor",
 			"Genom genmodifiering har Niclor skapat en kombination av Köttätande väster och parasiter. Dessa blommor skadar inte bara den ninja de klänger sig fast på, utan sprider sig också vidare till andra ninjor i närheten.",
-			1100,
+			800,
 			[Nutrient, Pollen, TentaculaGadget],
 			[ZombieGadget, Vase, Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget, MonoCultureGadget],
 			150);
@@ -510,7 +510,7 @@ class Nicole extends TargetingTower {
 			MonoCultureGadget,
 			"Industriell odling",
 			"Genom att använda moderna industriella redskap kan Nicole nå en aldrig tidigare skådad effektivitet och förse nästan hela campus med blommor.",
-			2800,
+			2500,
 			[Nutrient, Pollen, BouquetGadget],
 			[MonoCultureGadget, Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget, TentaculaGadget],
 			500);
