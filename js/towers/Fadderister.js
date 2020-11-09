@@ -52,7 +52,7 @@ class Converted extends BaseEffect {
         if (object.speed > 0)
             object.speed = -object.speed;
         object.timesConverted = (object.timesConverted || 0) + 1;
-        if (object.timesConverted >= 10 && Math.random() < object.timesConverted / 5)
+        if (object.timesConverted >= 10 && Math.random() < (object.timesConverted - 8) / 10)
             object.onHit({ damage: 1 });
         super.init(object);
     }
