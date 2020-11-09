@@ -295,6 +295,7 @@ class Burvagn extends BaseFohs {
         if(this.cdTimer > 0){
             this.cdTimer--;
         }
+        this.rotateMe(0);
         super.update();
     }
 
