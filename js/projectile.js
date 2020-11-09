@@ -107,6 +107,7 @@ class SplashProjectile extends Projectile {
 	hit(pathTile) {
 		let x = Math.round(this.x);
 		let y = Math.round(this.y);
+		let n_hits = 0;
 		for (var dx = -this.splash_range; dx <= this.splash_range; dx++) {
 			if (x + dx < 0 || this.map.gridWidth < x + dx)
 				continue;
@@ -116,9 +117,8 @@ class SplashProjectile extends Projectile {
 
 				let pt = this.map.getGridAt(x + dx, y + dy);
 				if (pt instanceof PathTile && pt.hasCreep()) {
-					let i = 0;
 					pt.data.forEach(function (creep) {
-						if (i++ < this.maxHits)
+						if (n_hits++ < this.maxHits)
 							this.hitCreep(creep);
 					}.bind(this));
 				}
