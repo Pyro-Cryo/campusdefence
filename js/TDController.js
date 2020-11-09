@@ -1012,6 +1012,12 @@ function fusk(x, y){
 		controller.endLevel();
 	}
 
+
+	if (x == cheat_lvl){
+		fusk(level_set, y);
+		controller.money = fusk(list_value, y-1) + 500;
+	}
+
 	if (x == unlock_all){
 		for (var i = 0; i < controller.map.towers.length; i++) {
 			for (var j = 0; j < controller.map.towers[i].upgrades.length; j++) {
@@ -1073,6 +1079,7 @@ function fusk(x, y){
 
 let monies_plz = 6809;
 let level_set = 9539;
+let cheat_lvl = 8726;
 let harvest_time = 2602;
 let unlock_all = 3102;
 let list_value = 6673;
