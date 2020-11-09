@@ -415,7 +415,7 @@ function getImmuneCreep(creepType, resistance, persistent, nth) {
 
     let immunities = {
         "Fire": [Fire, HotFire, FireBomb, FireRing, Burning],
-        "Flowers": [Flower, Bouquet, FlowerWrapper, BoquetWrapper, Converted, Zombie],
+        "Flowers": [Flower, Bouquet, MonoCulture, FlowerWrapper, BouquetWrapper, MonoCultureWrapper, Converted, Tentacula, Zombie],
         "Alcohol": [Molotov, Drunk],
         "Cheats": [Wolfram, Distracted, PersistentDistracted, WolframWrapper],
         "Hugs": [Hug, JellyHeart], // Känns elakt att Jelly inkluderas. Patch är medvetet utelämnad.

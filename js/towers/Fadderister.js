@@ -1457,13 +1457,18 @@ class WolframWrapper extends Wolfram {
 }
 class FlowerWrapper extends Flower {
     constructor(_, source, target) {
-        super(source, target, null, null);
+		super(target, source, effect, damage, time, image, scale);
     }
 }
-class BoquetWrapper extends Bouquet {
+class BouquetWrapper extends Bouquet {
     constructor(_, source, target) {
-        super(source, target, null, null);
+		super(target, source, effect, damage, time, image, scale);
     }
+}
+class MonoCultureWrapper extends MonoCulture {
+	constructor(_, source, target) {
+		super(target, source, null, null, null, null, null);
+	}
 }
 
 // Flash-motsvarighet
