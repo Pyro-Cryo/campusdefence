@@ -31,7 +31,11 @@ class BaseCreep extends GameObject {
     // Does this creep regenerate health?
     static get regenerative() { return false; }
     // Default regenerate one per second if not hit
-    static get regenerationspeed() { return 1 / controller.updateInterval; }
+    static get regenerationspeed() { return 1100 / controller.updateInterval; }
+
+    static totalValue(){
+        return this.value;
+    }
 
 
 	constructor(distance) {
@@ -178,6 +182,10 @@ class MatryoshkaCreep extends BaseCreep {
     	return this.innerCreep.strength * this.innerCreepCount + this.health; 
     }
 
+    static totalValue(){
+        return this.value + this.innerCreep.totalValue() * this.innerCreepCount;
+    }
+
     constructor(distance){
     	super(distance);
     	this.innerCreepCount = this.constructor.innerCreepCount;
@@ -198,8 +206,8 @@ class MatryoshkaCreep extends BaseCreep {
 
             // Om projectilen skadade oss mer �n vi hade h�lsa skadas v�ra barn ocks�
             if(this.health < 0){
-            	nc.health--;
-            	this.health++;
+            	nc.health -= 1;
+            	this.health += 1;
 				if(nc.health <= 0){
 					nc.onDeath();
 				}
@@ -250,12 +258,14 @@ class ShieldedCreep extends MatryoshkaCreep {
 	static get speed() { return this.creepType.speed * 0.75; }
 	static get scale() { return this.creepType.scale; }
 	static get strength() { return this.creepType.strength + this.shieldStrength; }
-	static get health() { return this.creepType.health + 4; }
+	static get health() { return this.creepType.health+1; }
 	static get value() { return this.creepType.value; }
 	static get drawHealthBar() { return this.creepType.drawHealthBar; }
     static get innerCreep() { return this.creepType.innerCreep; }
     static get innerCreepCount() { return this.creepType.innerCreepCount; }
     static get damage() { return this.creepType.damage; }
+    static get regenerative() { return this.creepType.regenerative; }
+    static get regenerationspeed() { return this.creepType.regenerationspeed; }
 
 
 	constructor(x,y){

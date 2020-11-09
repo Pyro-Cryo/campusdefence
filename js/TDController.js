@@ -263,7 +263,7 @@
         console.log("Cleared level " + this.levelNumber);
         this.map.clear();
 
-        levelClearReward(this.levelNumber);
+        this.money += levelClearReward(this.levelNumber);
         document.querySelectorAll(".towerInfo:not(.template)").forEach((ti, i) => {
             if (this.towerSpecs[i].unlockLevel && this.levelNumber + 1 === this.towerSpecs[i].unlockLevel)
             {
@@ -1046,7 +1046,26 @@ function fusk(x, y){
 		}
 	}
 
+	if (x == list_value){
 
+		let value = 0;
+		for (var i = 1; i <= y; i++) {
+			let iterator = getLevel(i, 10);
+			let remaining = iterator.remaining();
+			let codebook = iterator.codebook();
+
+			for (let creepType in remaining){
+				if (codebook[creepType].prototype instanceof BaseCreep)
+					value += codebook[creepType].totalValue() * remaining[creepType];
+				else{
+					value += codebook[creepType].prototype.totalValue() * remaining[creepType];
+				}
+			}
+			value += levelClearReward(i);
+		}
+
+		return value;
+	}
 
 
 
@@ -1056,3 +1075,4 @@ let monies_plz = 6809;
 let level_set = 9539;
 let harvest_time = 2602;
 let unlock_all = 3102;
+let list_value = 6673;

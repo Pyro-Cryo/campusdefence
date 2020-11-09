@@ -290,7 +290,8 @@ function levelClearReward(number) {
             cash = 100;
             break;
     }
-    controller.money += cash;
+    // controller.money += cash;
+    return cash;
 }
 
 // Skrivs ut innan respektive nivå
@@ -410,7 +411,7 @@ function favoredDamageTypes(weights) {
 
 function getImmuneCreep(creepType, resistance, persistent, nth) {
     let favored = favoredDamageTypes({ "Hugs": 0.5, "Fire": 2 });
-    console.log("Player strategy:", Object.fromEntries(favored));
+    // console.log("Player strategy:", Object.fromEntries(favored));
     let damagetype = favored[nth || 0][0];
 
     let immunities = {
