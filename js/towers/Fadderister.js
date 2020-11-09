@@ -158,7 +158,6 @@ class QueenOfNight extends AntiImmunity {
 			if (object.health <= 0)
 				object.onDeath();
 		}
-
 	}
 }
 
@@ -187,7 +186,7 @@ class Bouquet extends SplashProjectile {
 	static get maxHits() { return 10; }
 
 	constructor(target, source, effect, damage, time, image, scale) {
-		super(controller.map, image, splashimg, source, target.x, target.y, scale, 1.5, 2 / controller.updateInterval, 1);
+		super(controller.map, image, splashimg, source, target.x, target.y, scale, 1.5, 2 / controller.updateInterval, 0);
 		this.effect = effect;
 		this.time = time;	
 	}	
@@ -249,7 +248,7 @@ let vaseimg = new Image();
 vaseimg.src = "img/flowers/vase.png";
 class Vase extends Gadget {
 	static get image() { return vaseimg; }
-	static get scale() { return 0.2; }
+	static get scale() { return 0.18; }
 
 	addTo(tower){
 		tower.effect_time *= 2;
@@ -431,7 +430,7 @@ class Nicole extends TargetingTower {
 			BouquetGadget,
 			"Bukett",
 			"Genom avancerade matematiska resonemang har Nicole kommit fram till att genom att skjuta flera blommor samtidigt kan hon träffa fler Ninjor.",
-			300,
+			400,
 			[Nutrient],
 			[BouquetGadget],
 			100
@@ -440,10 +439,10 @@ class Nicole extends TargetingTower {
 			Roses,
 			"Rosor",
 			"Inget säger 'jag älskar dig' som en ros, och när Nicole ger Ninjorna de röda blommorna kan inte ens de mest hårdnackade Ninjor säga nej till en kram.",
-			400,
+			350,
 			[],
 			[Pollen, TentaculaGadget, Roses, MonoCultureGadget],
-			500
+			100
 			);
 		this.addUpgrade(
 			Midsummers,
@@ -452,7 +451,7 @@ class Nicole extends TargetingTower {
 			800,
 			[],
 			[Pollen, TentaculaGadget, Midsummers, MonoCultureGadget],
-			500
+			250
 			);
 		this.addUpgrade(
 			NightFlower,
@@ -461,7 +460,7 @@ class Nicole extends TargetingTower {
 			700,
 			[],
 			[Pollen, TentaculaGadget, NightFlower, MonoCultureGadget],
-			500
+			200
 			);
 		this.addUpgrade(
 			FireFlower,
@@ -470,7 +469,7 @@ class Nicole extends TargetingTower {
 			900,
 			[],
 			[Pollen, TentaculaGadget, FireFlower, MonoCultureGadget],
-			500
+			250
 			);
 		this.addUpgrade(
 			QueenOfNightGadget,
