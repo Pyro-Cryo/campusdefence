@@ -383,6 +383,21 @@ class PathTile {
         return this.hasCreep() ? this.data.values().next().value : null;
     }
 
+    randomCreep() {
+        if (this.data.size == 0)
+            return null;
+        if (this.data.size == 1)
+            return this.arbitraryCreep();
+
+        let index = parseInt(Math.random()*this.data.size);
+        let obj = this.data.values();
+        for (var i = 0; i<index; i++) {
+            obj.next();
+        }
+
+        return  obj.next().value;
+    }
+
     get first() {
         if(this._first === null)
             for (let it = this.data.values(), creep=null; creep=it.next().value; )

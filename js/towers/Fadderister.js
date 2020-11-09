@@ -6,7 +6,7 @@ class AntiImmunity extends BaseEffect {
 	static get persistent() { return true; }
 
 	constructor(time, immunities){
-		super(time/controller.updateInterval);
+		super(time);
 
 		this.antiImmunities = immunities;
 		this.removedImmunities = [];
@@ -15,7 +15,7 @@ class AntiImmunity extends BaseEffect {
 	init(object){
 
 		for (var it = object.effects.values(), effect=null; effect=it.next().value; ){
-			if (!effect instanceof Immunity)
+			if (!(effect instanceof Immunity))
 				continue;
 
 			let removed = [];
@@ -46,11 +46,8 @@ class AntiImmunity extends BaseEffect {
 
 class Converted extends BaseEffect {
     static get image() { return flowerimg; }
-    static get scale() { return 0.5; }
+    static get scale() { return 0.35; }
 
-    constructor(time) {
-        super(time / controller.updateInterval);
-    }
     init(object){
         if (object.speed > 0)
             object.speed = -object.speed;
@@ -67,12 +64,8 @@ class Converted extends BaseEffect {
 
 class Tentacula extends BaseEffect {
 	static get image() { return tentaculaimg; }
-	static get scale() { return 1; }
+	static get scale() { return 0.35; }
 	static get persistent() { return true; }
-
-	constructor(time) {
-		super(time / controller.updateInterval);
-	}
 
 	apply(object){
 		object.health -= 1;
@@ -87,19 +80,15 @@ let zombieimg = new Image();
 zombieimg.src = "img/flowers/gmo-tentacula.png";
 class Zombie extends Tentacula {
 	static get image() { return zombieimg; }
-	static get scale() { return 0.5; }
-
-	constructor(time) {
-		super(time / controller.updateInterval);
-	}
+	static get scale() { return 0.35; }
 
 	apply(object){
 		// Sprider sig
 		let pt = controller.map.getGridAt(Math.round(object.x), Math.round(object.y));
-		let creep = pt.any;
+		let creep = pt.randomCreep();
 		if(creep === null || creep.id === object.id)
 			return;
-		creep.addEffect(this);
+		creep.addEffect(new this.constructor(this.cdtime));
 
 		// Gör skada
 		super.apply(object);
@@ -110,7 +99,7 @@ let roseimg = new Image();
 roseimg.src = "img/flowers/ros.png";
 class Rose extends AntiImmunity {
 	static get image() { return roseimg; }
-	static get scale() { return 1; }
+	static get scale() { return 0.35; }
 	constructor(time){
 		super(time, [Hug, Distracted, PersistentDistracted]);
 	}
@@ -120,7 +109,7 @@ let firespinnerimg = new Image();
 firespinnerimg.src = "img/flowers/fire-spinner.png";
 class FireSpinner extends AntiImmunity {
 	static get image() { return firespinnerimg; }
-	static get scale() { return 1; }
+	static get scale() { return 0.35; }
 
 	constructor(time){
 		super(time, [Fire, HotFire, FireBomb, FireRing, Burning]);
@@ -131,7 +120,7 @@ let kransimg = new Image();
 kransimg.src = "img/flowers/krans.png";
 class MidsommarKrans extends AntiImmunity {
 	static get image() { return kransimg; }
-	static get scale() { return 0.3; }
+	static get scale() { return 0.1; }
 
 	constructor(time){
 		super(time, [Molotov, Drunk]);
@@ -142,7 +131,7 @@ let nattblomimg = new Image();
 nattblomimg.src = "img/flowers/nattblomma.png";
 class Nattblomm extends AntiImmunity {
 	static get image() { return nattblomimg; }
-	static get scale() { return 1; }
+	static get scale() { return 0.35; }
 
 	constructor(time){
 		super(time, [Flash, ForceFlash, Stunned, Weak]);
@@ -153,7 +142,7 @@ let qonimg = new Image();
 qonimg.src = "img/flowers/queenofnight.png";
 class QueenOfNight extends AntiImmunity {
 	static get image() { return qonimg; }
-	static get scale() { return 1; }
+	static get scale() { return 0.35; }
 
 	constructor(time){
 		// Vad ska föhseriet vara svaga mot?
@@ -198,7 +187,7 @@ class Bouquet extends SplashProjectile {
 	static get maxHits() { return 10; }
 
 	constructor(target, source, effect, damage, time, image, scale) {
-		super(controller.map, image, papersplash, source, target.x, target.y, scale, 1.5, 2 / controller.updateInterval, 1);
+		super(controller.map, image, splashimg, source, target.x, target.y, scale, 1.5, 2 / controller.updateInterval, 1);
 		this.effect = effect;
 		this.time = time;	
 	}	
@@ -213,13 +202,13 @@ class Bouquet extends SplashProjectile {
 let harvesterimg = new Image();
 harvesterimg.src = "img/flowers/harvester.png";
 class MonoCulture extends BasicProjectile {
-	static get maxHits() { return 200; }
+	static get hitpoints() { return 200; }
 	static get damage() { return 3; }
 
 	constructor(target, source, effect, damage, time, image, scale){
-		super(controller.map, image, source, target.x, target.y, scale, 0.5 / controller.updateInterval);
+		super(controller.map, harvesterimg, source, target.x, target.y, 0.4, 0.3 / controller.updateInterval);
 
-		super(source, image, scale, delay);
+		// super(source, image, scale, delay);
 		this.range = source.range * 2;
 		this.target = target;
 		this.effect = effect;
@@ -256,11 +245,23 @@ class BouquetGadget extends Gadget {
 	}
 }
 
+let vaseimg = new Image();
+vaseimg.src = "img/flowers/vase.png";
+class Vase extends Gadget {
+	static get image() { return vaseimg; }
+	static get scale() { return 0.2; }
+
+	addTo(tower){
+		tower.effect_time *= 2;
+		super.addTo(tower);
+	}
+}
+
 let rosesimg = new Image();
 rosesimg.src = "img/flowers/rosor.png";
 class Roses extends Gadget {
 	static get image() { return rosesimg; }
-	static get scale() { return 0.5; }
+	static get scale() { return 0.2; }
 
 	addTo(tower){
 		tower.effects_avail.push(Rose);
@@ -270,7 +271,7 @@ class Roses extends Gadget {
 
 class Midsummers extends Gadget {
 	static get image() { return kransimg; }
-	static get scale() { return 0.5; }
+	static get scale() { return 0.2; }
 
 	addTower(tower) {
 		tower.effects_avail.push(MidsommarKrans);
@@ -282,7 +283,7 @@ let nattblomimg2 = new Image();
 nattblomimg2.src = "img/flowers/nattblom.png";
 class NightFlower extends Gadget {
 	static get image() { return nattblomimg2; }
-	static get scale() { return 0.5; }
+	static get scale() { return 0.2; }
 
 	addTo(tower){
 		tower.effects_avail.push(Nattblomm);
@@ -294,7 +295,7 @@ let firespinnersimg = new Image();
 firespinnersimg.src = "img/flowers/fire-spinners.png";
 class FireFlower extends Gadget {
 	static get image() { return firespinnersimg; }
-	static get scale() { return 0.5; }
+	static get scale() { return 0.2; }
 
 	addTo(tower){
 		tower.effects_avail.push(FireSpinner);
@@ -331,10 +332,9 @@ let tentaculaimg = new Image();
 tentaculaimg.src = "img/flowers/tentacula.png";
 class TentaculaGadget extends Gadget {
 	static get image() { return tentaculaimg; }
-	static get scale() { return 1; }
+	static get scale() { return 0.5; }
 
 	addTo(tower){
-		tower.damage += 1;
 		tower.damageChance = 1;
 		tower.effects_avail = [Tentacula];
 		super.addTo(tower);
@@ -345,7 +345,7 @@ let gmoimg = new Image();
 gmoimg.src = "img/flowers/gmo-tentacula.png";
 class ZombieGadget extends Gadget {
 	static get image() { return gmoimg; }
-	static get scale() { return 1; }
+	static get scale() { return 0.5; }
 
 	addTo(tower){
 		tower.effects_avail = [Zombie];
@@ -363,15 +363,13 @@ class MonoCultureGadget extends Gadget {
 		tower.projectiletype = MonoCulture;
 		tower.damage = MonoCulture.damage;
 		tower.damageChance = 1;
-		tower.CDtime *= 2.5;
+		tower.CDtime *= 5;
 		super.addTo(tower);
 	} 
 }
 
-
 let nicoleimg = new Image();
 nicoleimg.src = "img/transparent/nicole.png";
-
 class Nicole extends TargetingTower {
 	static get range() { return 3; }
 	static get CDtime() { return 1000; }
@@ -384,7 +382,7 @@ class Nicole extends TargetingTower {
 	constructor(x,y){
 		super(x,y);
 		this.effects_avail = [Converted];
-		this.effect_time = 1 / controller.updateInterval;
+		this.effect_time = 1000 / controller.updateInterval;
 		this.damage = 0;
 		this.damageChance = 0;
 		this.projectiletype = Flower;
@@ -422,10 +420,18 @@ class Nicole extends TargetingTower {
 			[Nutrient],
 			0);
 		this.addUpgrade(
+			Vase,
+			"Vas",
+			"Ställer en blommorna i en vas med vatten kommer de klara sig längre.",
+			250,
+			[],
+			[Vase, TentaculaGadget, ZombieGadget],
+			0);
+		this.addUpgrade(
 			BouquetGadget,
 			"Bukett",
 			"Genom avancerade matematiska resonemang har Nicole kommit fram till att genom att skjuta flera blommor samtidigt kan hon träffa fler Ninjor.",
-			400,
+			350,
 			[Nutrient],
 			[BouquetGadget],
 			100
@@ -443,7 +449,7 @@ class Nicole extends TargetingTower {
 			Midsummers,
 			"Midsommarkrans",
 			"Nånting med midsommar och alkoholhets.",
-			1000,
+			900,
 			[],
 			[Pollen, TentaculaGadget, Midsummers, MonoCultureGadget],
 			500
@@ -452,7 +458,7 @@ class Nicole extends TargetingTower {
 			NightFlower,
 			"Nattblomm",
 			"Natten är rovdjurens och datalogernas tid, och med en nattblomma i håret blir vem som helst lite skygg för starkt ljus.",
-			1000,
+			800,
 			[],
 			[Pollen, TentaculaGadget, NightFlower, MonoCultureGadget],
 			500
@@ -461,7 +467,7 @@ class Nicole extends TargetingTower {
 			FireFlower,
 			"Eldsblomma",
 			"Flammande orange-röda blommor i eldens färger.",
-			1000,
+			1100,
 			[],
 			[Pollen, TentaculaGadget, FireFlower, MonoCultureGadget],
 			500
@@ -470,7 +476,7 @@ class Nicole extends TargetingTower {
 			QueenOfNightGadget,
 			"Nattens drottning",
 			"'Queen of Night' är en av de mörkaste av alla tulpaner. Den har en sidenglänsande blomma i mörkt kastanjebrunt, nästan svart. Sorten är gammal, framtagen kring tidernas begynnelse 1938. Enligt legenden innehåller den en enorm, uråldrig kraft som enbart ett fåtal kan tämja...",
-			1100,
+			1000,
 			[Pollen, Roses, Midsummers, NightFlower, FireFlower],
 			[TentaculaGadget, QueenOfNightGadget, MonoCultureGadget],
 			1000
@@ -481,36 +487,33 @@ class Nicole extends TargetingTower {
 			"Genom att noggrant välja blommor kan Nicole utnyttja att vissa ninjor har pollenallergi och tar skada istället för att vända om.",
 			100,
 			[],
-			[Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget],
+			[Pollen, Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget],
 			10
 			);
 		this.addUpgrade(
 			TentaculaGadget,
 			"Köttätande blommor",
 			"Det finns fina blommor, fula blommor och så finns det köttätande blommor.",
-			400,
+			300,
 			[Nutrient, Pollen],
-			[Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget, MonoCultureGadget],
+			[TentaculaGadget, Vase, Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget, MonoCultureGadget],
 			50);
 		this.addUpgrade(
 			ZombieGadget,
 			"Zombie-plantor",
 			"Genom genmodifiering har Niclor skapat en kombination av Köttätande väster och parasiter. Dessa blommor skadar inte bara den ninja de klänger sig fast på, utan sprider sig också vidare till andra ninjor i närheten.",
-			1200,
+			1100,
 			[Nutrient, Pollen, TentaculaGadget],
-			[Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget, MonoCultureGadget],
+			[ZombieGadget, Vase, Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget, MonoCultureGadget],
 			150);
 		this.addUpgrade(
 			MonoCultureGadget,
 			"Industriell odling",
 			"Genom att använda moderna industriella redskap kan Nicole nå en aldrig tidigare skådad effektivitet och förse nästan hela campus med blommor.",
-			2500,
+			2800,
 			[Nutrient, Pollen, BouquetGadget],
-			[Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget, TentaculaGadget],
+			[MonoCultureGadget, Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget, TentaculaGadget],
 			500);
-
-
-
 	}
 }
 
