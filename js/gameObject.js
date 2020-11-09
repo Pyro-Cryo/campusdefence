@@ -100,6 +100,7 @@ class GameObject extends PrerenderedObject {
 
         var index = 0;
         this.effects.forEach(function(obj){
+        	console.log(obj);
 			index = obj.draw(this, gameArea, index);
 		}.bind(this));
     }
