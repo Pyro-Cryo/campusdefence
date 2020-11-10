@@ -1,5 +1,5 @@
 function getLevel(number, updateInterval) {
-    let s = 1000 / updateInterval;
+    let s = controller.difficultyMultiplier * 1000 / updateInterval;
     switch (number) {
         case 1:
             return (new CreepSequence()
@@ -235,7 +235,7 @@ function getLevel(number, updateInterval) {
 
 function autolevel(levelnumber, updateInterval){
 
-	let s = 1000 / updateInterval;
+	let s = controller.difficultyMultiplier * 1000 / updateInterval
 
 	let cs = new CreepSequence()
 		.send(30, Pink).over(10 * s)
@@ -302,6 +302,7 @@ function levelClearReward(number) {
             break;
     }
     // controller.money += cash;
+    cash = 10 * Math.round(cash*controller.difficultyMultiplier/10);
     return cash;
 }
 

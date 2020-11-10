@@ -35,8 +35,12 @@
             "1.1.4",
             "1.1.5",
 			"1.1.6",
-            "1.1.7"
+            "1.1.7",
+            "1.1.8"
         ];
+        this.difficulty = "medium";
+        this.difficultyMultiplier = 1;
+
         if ((window.localStorage.getItem("campusdefence_version") || "1.0") !== this.versions[this.versions.length - 1]) {
             //window.alert("Campus Defence har uppdaterats och ditt sparade spel går tyvärr inte längre att fortsätta på.");
             window.localStorage.setItem("campusdefence_version", this.versions[this.versions.length - 1]);
@@ -245,6 +249,7 @@
     }
 
     startLevel() {
+        this.difficultySelect.disabled = "disabled";
         console.log("Starting level " + this.levelNumber);
         this.levelIterator = getLevel(this.levelNumber, this.updateInterval);
         this.levelCleared = false;
@@ -288,6 +293,16 @@
         for (var i = 0; i < this.levelListeners.length; i++) {
             this.levelListeners[i].onLevelUpdate(true);
         }
+    }
+
+    difficultyChange(){
+        this.difficulty = this.difficultySelect.value;
+        if (this.difficultySelect.value == "easy")
+            this.difficultyMultiplier = 1.15;
+        else if (this.difficultySelect.value == "medium")
+            this.difficultyMultiplier = 1;
+        else if (this.difficultySelect.value == "hard")
+            this.difficultyMultiplier = 0.9;
     }
 
     updateCreepSummary() {
@@ -783,6 +798,7 @@
         data.health = this.hp;
         data.money = this.money;
         data.hitsFromSoldTowers = this.hitsFromSoldTowers;
+        data.difficulty = this.difficulty;
         data.path = this.map.path.map(pt => [pt.x, pt.y]);
         data.towers = [];
 
@@ -842,6 +858,12 @@
         this.hp = data.health;
         this.money = data.money;
         this.hitsFromSoldTowers = data.hitsFromSoldTowers;
+
+        this.difficulty = data.difficulty;
+        this.difficultySelect.value = this.difficulty;
+        this.difficultyChange();
+        this.difficultySelect.disabled = true
+
         // Detta sköts i constructorn istället
         // this.path = data.path;
 

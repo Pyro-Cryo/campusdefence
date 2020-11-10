@@ -25,10 +25,12 @@ class Controller {
         this.playbutton = document.querySelector("button.controllerButton#playButton");
         this.ffbutton = document.querySelector("button.controllerButton#fastForwardButton");
         this.resetbutton = document.querySelector("button.controllerButton#resetButton");
+        this.difficultySelect = document.querySelector("select#difficultySelect");
 
         this.playbutton.onclick = this.playpause.bind(this);
         this.ffbutton.onclick = this.fastforward.bind(this);
         this.ffbutton.disabled = true;
+        this.difficultySelect.onchange = this.difficultyChange.bind(this);
 
         // Info field
         this.messagebox = document.getElementById("messagebox");
@@ -59,6 +61,9 @@ class Controller {
             this.onFF();
             this.isFF = true;
         }
+    }
+
+    difficultyChange(){
     }
 
 
