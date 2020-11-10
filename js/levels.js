@@ -228,6 +228,12 @@ function getLevel(number, updateInterval) {
                 .send(50, Pink).over(25 * s)
                 );
 
+
+        case 1337:
+            return (new CreepSequence()
+                .send(1, Cryo).immediately()
+                .wait(15 * s)
+                .send(1, Pyro).immediately());
         default:
         	return autolevel(number, updateInterval);
     }
@@ -367,6 +373,7 @@ function levelMessage(number) {
                 "Om du behöver en godtycklig siffra så har empirisk testning visat att 4 nästan alltid är det bästa valet.",
                 "Lillie-Fnöll står för ungefär 80% av alla buggar.",
                 "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>controller.money = 9999</i>.",
+                "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>fusk(monies_plz)</i>.",
                 "Föhseriets val av transportmedel påfallande ofta är burvagn.",
                 "Fadderisternas olika förmågor i spelet är baserade på deras försök att hemlighålla Fadderiets tema.",
                 "På <a href=\"https://f.kth.se/arcade\">f.kth.se/arcade</a> finns det andra spel att prokrastinera med.",
@@ -376,9 +383,13 @@ function levelMessage(number) {
                 "Du kan byta mellan olika kartor i rullgardinsmenyn i övre högra hörnet på sidan. Vissa banor är lite svårare och andra lite lättare, det finns nånting för alla!",
                 "Lillie-Fnölls uppgraderingar är baserade på gamla nØllelåtar",
                 "Fridas disciplinnämnden-attack träffar en tredjedel av alla ninjor, plus de som redan träffats av Frida. Till skillnad från Axels dompa-attack får du dock inga pengar för ninjor som träffas.",
-                "Detta är det officiella inofficiella spelet för mottagningen 2020. Det finns ett inofficiellt inofficiellt spel också - fråga webmaster eller vice ordförande om du vill spela!"
+                "Detta är det officiella inofficiella spelet för mottagningen 2020. Det finns ett inofficiellt inofficiellt spel också - fråga webmaster eller vice ordförande om du vill spela!",
+                "Nicole har två uppgraderingar som tagits bort av utrymmes-skäl. Dessa går att aktivera genom ett fusk i JavaScript-konsolen. Om du trycker på F12 (i Firefox och Chrome) och skriver <i>fusk(harvest_time)</i> så aktiveras de för alla dina Nicole-torn.",
+                "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>fusk(invincible)</i>.",
+                "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>fusk(level_set, 1337)</i>.",
+                "En av utvecklarna av detta spel var Överföhs 2019",
             ];
-            return "Visste du att: " + tips[Math.floor(Math.random(tips.length))];
+            return "Visste du att: " + tips[Math.floor(Math.random()*tips.length)];
     }
 }
 

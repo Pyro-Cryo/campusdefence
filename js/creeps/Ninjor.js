@@ -125,3 +125,88 @@ class ShieldedOrange extends ShieldedCreep {
 	static get shieldStrength() { return 25; }
 	static get creepType() { return Orange; }
 }
+
+
+let cryoimg = new Image();
+cryoimg.src = "img/jonas.png";
+class Cryo extends MatryoshkaCreep {
+	static get speed() { return 0.2; }
+	static get health() { return 1000; }
+	static get image() { return cryoimg; }
+	static get scale() { return 0.4; }
+	static get innerCreep() { return Orange; }
+	static get innerCreepCount() { return 50; }
+	static get regenerative() { return true; }
+	static get regenerationspeed() { return 750 / controller.updateInterval; }
+	static get drawHealthBar() { return true; }
+
+	constructor(distance){
+		super(distance);
+		this.angle2 = 0;
+	}
+
+	onHit(projectile){
+		super.onHit(projectile);
+
+		let N = 10;
+		this.angle2 += Math.PI/20;
+		if(this.angle2 > 2*Math.PI){
+			this.angle2 -= 2*Math.PI;
+		}
+		for (var a = 0; a < N; a++) {
+			let dx = 2 * Math.cos(a*2*Math.PI/N+this.angle2);
+			let dy = 2 * Math.sin(a*2*Math.PI/N+this.angle2);
+
+			let s = { x: this.x + dx/Math.sqrt(dx*dx+dy*dy)*2, y: this.y - 1 + dy/Math.sqrt(dx*dx+dy*dy)*2, hits: 0 };
+			let t = { x: this.x + dx*10, y: this.y + dy*10 };
+			let p = new Molotov(controller.map, s, t);
+			// p.hitpoints = 1
+			// p.damage = 0;
+			// p.hitCreep = function(creep){};
+			controller.registerObject(p);
+		}
+	}
+}
+
+
+let pyroimg = new Image();
+pyroimg.src = "img/helmer3.png";
+class Pyro extends MatryoshkaCreep {
+
+	static get speed() { return 0.2; }
+	static get health() { return 1000; }
+	static get image() { return pyroimg; }
+	static get scale() { return 0.4; }
+	static get innerCreep() { return Burvagn; }
+	static get innerCreepCount() { return 3; }
+	static get regenerative() { return true; }
+	static get regenerationspeed() { return 750 / controller.updateInterval; }
+	static get drawHealthBar() { return true; }
+
+	constructor(distance){
+		super(distance);
+		this.angle2 = 0;
+	}
+
+	onHit(projectile){
+		super.onHit(projectile);
+
+		let N = 5;
+		this.angle2 += Math.PI/20;
+		if(this.angle2 > 2*Math.PI){
+			this.angle2 -= 2*Math.PI;
+		}
+		for (var a = 0; a < N; a++) {
+			let dx = 2 * Math.cos(a*2*Math.PI/N+this.angle2);
+			let dy = 2 * Math.sin(a*2*Math.PI/N+this.angle2);
+
+			let s = { x: this.x + dx/Math.sqrt(dx*dx+dy*dy)*2, y: this.y - 1 + dy/Math.sqrt(dx*dx+dy*dy)*2, hits: 0 };
+			let t = { x: this.x + dx*10, y: this.y + dy*10 };
+			let p = new Fire(controller.map, s, t);
+			// p.hitpoints = 1
+			// p.damage = 0;
+			// p.hitCreep = function(creep){};
+			controller.registerObject(p);
+		}
+	}
+}
