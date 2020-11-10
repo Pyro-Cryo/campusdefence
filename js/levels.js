@@ -235,7 +235,7 @@ function getLevel(number, updateInterval) {
 
 function autolevel(levelnumber, updateInterval){
 
-	let s = controller.difficultyMultiplier * 1000 / updateInterval
+	let s = controller.difficultyMultiplier * 1000 / updateInterval;
 
 	let cs = new CreepSequence()
 		.send(30, Pink).over(10 * s)
