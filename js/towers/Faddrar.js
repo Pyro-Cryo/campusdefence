@@ -373,15 +373,16 @@ class Stunned extends BaseEffect {
         super(time / controller.updateInterval);
     }
     init(object){
-        this.speed = object.speed;
-        object.speed = 0;
+        object.speedModifiers.push(0);
+        
         object.timesStunned = (object.timesStunned || 0) + 1;
         if (object.timesStunned >= 10 && Math.random() < (object.timesStunned - 8) / 10)
             object.onHit({ damage: 1 });
         super.init(object);
     }
     apply(object) {
-        object.speed = this.speed;
+        let i = object.speedModifiers.indexOf(this.multiplier);
+        object.speedModifiers.splice(i, 1);
         this.remove(object);
     }
 }

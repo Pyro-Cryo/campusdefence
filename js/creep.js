@@ -44,6 +44,7 @@ class BaseCreep extends GameObject {
         this.image = this.constructor.image;
         this.scale = this.constructor.scale;
         this.speed = this.constructor.speed;
+        this.speedModifiers = [];
         this.health = this.constructor.health;
         this.initial_health = this.constructor.health;
         this.value = this.constructor.value;
@@ -110,10 +111,15 @@ class BaseCreep extends GameObject {
         this.lasty = this.y;
         this.lastdistance = this.distance;
 
+        let modified_speed = this.speed;
+        for (var i = 0; i < this.speedModifiers.length; i++) {
+            modified_speed *= this.speedModifiers[i];
+        }
+
 		if (this.pathtile.diagonality & (this.distance - Math.trunc(this.distance) < 0.5 ? DIAGONAL_OUTGOING : DIAGONAL_INCOMING))
-			this.distance += 0.7071 * this.speed / controller.updateInterval;
+			this.distance += 0.7071 * modified_speed / controller.updateInterval;
 		else
-			this.distance += this.speed / controller.updateInterval;
+			this.distance += modified_speed / controller.updateInterval;
         this.distance = Math.max(0, Math.min(this.pathlength, this.distance));
 		let pos = controller.map.getPosition(this.distance);
 		this.x = pos[0];

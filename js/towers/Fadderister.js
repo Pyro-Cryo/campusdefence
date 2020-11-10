@@ -48,16 +48,22 @@ class Converted extends BaseEffect {
     static get image() { return flowerimg; }
     static get scale() { return 0.35; }
 
+	constructor(time, _){
+		super(time);
+		this.modifier = -1;
+	}
+
     init(object){
-        if (object.speed > 0)
-            object.speed = -object.speed;
+        object.speedModifiers.push(this.modifier);
+        
         object.timesConverted = (object.timesConverted || 0) + 1;
         if (object.timesConverted >= 10 && Math.random() < (object.timesConverted - 8) / 10)
             object.onHit({ damage: 1 });
         super.init(object);
     }
     apply(object) {
-        object.speed = Math.abs(object.speed);
+        let i = object.speedModifiers.indexOf(this.modifier);
+        object.speedModifiers.splice(i, 1);
         this.remove(object);
     }
 }
@@ -67,12 +73,16 @@ class Tentacula extends BaseEffect {
 	static get scale() { return 0.35; }
 	static get persistent() { return true; }
 
+	constructor(time, source){
+		super(time);
+		this.source = source;
+	}
+
 	apply(object){
 		object.health -= 1;
-		if(object.health <= 0){
+		this.source.hits += 1;
+		if(object.health <= 0)
 			object.onDeath();
-			return;
-		}
 	}
 }
 
@@ -88,8 +98,8 @@ class Zombie extends Tentacula {
 		for (var i = 0; i < 2; i++) {
 			let creep = pt.randomCreep();
 			if(creep === null || creep.id === object.id)
-				return;
-			creep.addEffect(new this.constructor(this.cdtime));
+				continue;
+			creep.addEffect(new this.constructor(this.cdtime, this.source));
 		}
 
 		// Gör skada
@@ -102,7 +112,7 @@ roseimg.src = "img/flowers/ros.png";
 class Rose extends AntiImmunity {
 	static get image() { return roseimg; }
 	static get scale() { return 0.35; }
-	constructor(time){
+	constructor(time, _){
 		super(time, [Hug, Distracted, PersistentDistracted]);
 	}
 }
@@ -113,7 +123,7 @@ class FireSpinner extends AntiImmunity {
 	static get image() { return firespinnerimg; }
 	static get scale() { return 0.35; }
 
-	constructor(time){
+	constructor(time, _){
 		super(time, [Fire, HotFire, FireBomb, FireRing, Burning]);
 	}
 }
@@ -124,7 +134,7 @@ class MidsommarKrans extends AntiImmunity {
 	static get image() { return kransimg; }
 	static get scale() { return 0.1; }
 
-	constructor(time){
+	constructor(time, _){
 		super(time, [Molotov, Drunk]);
 	}
 }
@@ -135,7 +145,7 @@ class Nattblomm extends AntiImmunity {
 	static get image() { return nattblomimg; }
 	static get scale() { return 0.35; }
 
-	constructor(time){
+	constructor(time, _){
 		super(time, [Flash, ForceFlash, Stunned, Weak]);
 	}
 }
@@ -146,9 +156,10 @@ class QueenOfNight extends AntiImmunity {
 	static get image() { return qonimg; }
 	static get scale() { return 0.35; }
 
-	constructor(time){
+	constructor(time, source){
 		// Vad ska föhseriet vara svaga mot?
 		super(time, [Hug]);
+		this.source = source;
 	}
 
 	init(object){
@@ -157,6 +168,7 @@ class QueenOfNight extends AntiImmunity {
 			super.init(object);
 		else {
 			object.health -= 1;
+			this.source.hits += 1;
 			if (object.health <= 0)
 				object.onDeath();
 		}
@@ -175,7 +187,7 @@ class Flower extends SeekingProjectile {
 	}
 
 	hitCreep(creep){
-		let e = new this.effect(this.time);
+		let e = new this.effect(this.time, this.sourceTower);
 		creep.addEffect(e);
 		super.hitCreep(creep);
 	}
@@ -194,7 +206,7 @@ class Bouquet extends SplashProjectile {
 	}	
 
 	hitCreep(creep){
-		let e = new this.effect(this.time);
+		let e = new this.effect(this.time, this.sourceTower);
 		creep.addEffect(e);
 		super.hitCreep(creep);
 	}
@@ -376,7 +388,7 @@ class Nicole extends TargetingTower {
 	static get CDtime() { return 1400; }
 	static get image() { return nicoleimg; }
 	static get scale() { return 0.2; }
-	static get cost() { return 300; }
+	static get cost() { return 270; }
 	static get name() { return "Fjädrande Nicole"; }
 	static get desc() { return "Fina Nicole älskar blommor. När en ninja blir träffad av en blomma inser den hur fel den haft, och ger sig av hemåt igen. Insikten varar tyvärr dock bara några sekunder varpå ninjan fortsätter framåt."; }
 
@@ -432,7 +444,7 @@ class Nicole extends TargetingTower {
 			BouquetGadget,
 			"Bukett",
 			"Genom avancerade matematiska resonemang har Nicole kommit fram till att genom att skjuta flera blommor samtidigt kan hon träffa fler Ninjor.",
-			400,
+			350,
 			[Nutrient],
 			[BouquetGadget],
 			100
@@ -486,15 +498,15 @@ class Nicole extends TargetingTower {
 			TentaculaGadget,
 			"Köttätande blommor",
 			"Det finns fina blommor, fula blommor och så finns det köttätande blommor.",
-			300,
-			[Nutrient],
+			120,
+			[],
 			[TentaculaGadget, Vase, Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget, MonoCultureGadget],
 			50);
 		this.addUpgrade(
 			ZombieGadget,
 			"Zombie-plantor",
 			"Genom genmodifiering har Nicole skapat en kombination av Köttätande växter och parasiter. Dessa blommor skadar inte bara den ninja de klänger sig fast på, utan sprider sig också vidare till andra ninjor i närheten.",
-			800,
+			860,
 			[Nutrient, TentaculaGadget],
 			[ZombieGadget, Vase, Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget, MonoCultureGadget],
 			150);
@@ -527,16 +539,17 @@ class Distracted extends BaseEffect {
     static get scale() { return 0.5; }
 
     constructor(time) {
-        super(time / controller.updateInterval);
-        this.multiplier = 2;
+		super(time / controller.updateInterval);
+		this.multiplier = 1/2;
     }
     init(object) {
-        object.speed /= this.multiplier;
-        object.cheater = true;
+		object.speedModifiers.push(this.multiplier);
+		object.cheater = true;
     }
     apply(object) {
-        object.speed *= this.multiplier;
-        this.remove(object);
+		let i = object.speedModifiers.indexOf(this.multiplier);
+		object.speedModifiers.splice(i, 1);
+		this.remove(object);
     }
 }
 
@@ -689,7 +702,7 @@ class Frida extends TargetingTower {
     static get CDtime() { return 1500; }
     static get image() { return fridaimg; }
     static get scale() { return 0.2; }
-    static get cost() { return 370; }
+    static get cost() { return 340; }
     static get name() { return "Fjädrande Frida"; }
     static get desc() { return "Fuskande Frida lägger inte ifrån sig sin avstängda mobil på anvisad plats. När hon skickar lösningarna till lämnisarna till en grupp ninjor försöker de läsa och gå samtidigt, men simultanförmåga är en bristvara hos ninjor."; }
 
@@ -732,7 +745,7 @@ class Frida extends TargetingTower {
             TakeAwayCoffee,
             "Take away kaffe",
             "Ge faddern lite kaffe så jobbar den snabbare.",
-            150,
+            100,
             [],
             [TakeAwayCoffee],
             20);
@@ -764,7 +777,7 @@ class Frida extends TargetingTower {
             Errors,
             "Felaktiga lösningar",
             "Genom att smyga in små fel i lösningarna kommer de ninjor som tar emot dem inte få några bonuspoäng till tentan. Vad kunde vara värre?",
-            300,
+            200,
             [],
             [Errors],
             50);
