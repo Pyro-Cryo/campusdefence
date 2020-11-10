@@ -20,6 +20,7 @@
 
         this.initialHP = 140+51;
         this.hp = this.initialHP;
+        this.invincible = false;
         this.money = 500;
         this.sellPriceMultiplier = 0.8;
         this.healthcounter = document.getElementById("healthcounter");
@@ -154,8 +155,8 @@
         }
 
         // Hantera hälsa
-        this.healthcounter.innerText = this.hp.toString();
-        if (this.hp <= 0) {
+        if (this.hp <= 0 && !this.invincible) {
+            this.hp = 0;
             this.onPause();
             this.levelIterator = null;
             this.levelCleared = false;
@@ -165,6 +166,7 @@
             this.setMessage("<b>Game over</b><br /><br />Du nådde till nivå " + this.levelNumber.toString() + ".", false);
             this.clearState();
         }
+        this.healthcounter.innerText = this.hp.toString();
     }
 
     draw() {
@@ -183,6 +185,7 @@
 
         //Hantera pengar
         this.moneycounter.innerText = this.money.toString();
+        this.healthcounter.innerText = this.hp.toString();
         for (var i = 0; i < this.towerSpecs.length; i++) {
             // om pengar minskar kan köp-knappen disablas medan du köper tornet, men det verkar osannolikt?
             if (this.hp <= 0 || this.towerSpecs[i].cost > this.money || (this.towerSpecs[i].unlockLevel && this.levelNumber < this.towerSpecs[i].unlockLevel)) {
@@ -856,6 +859,7 @@
 
         this.levelNumber = data.level;
         this.hp = data.health;
+        // console.log(data.health);
         this.money = data.money;
         this.hitsFromSoldTowers = data.hitsFromSoldTowers;
 
@@ -1095,6 +1099,10 @@ function fusk(x, y){
 		return value;
 	}
 
+    if (x == invincible){
+        controller.invincible = true;
+    }
+
 
 
 }
@@ -1105,3 +1113,4 @@ let cheat_lvl = 8726;
 let harvest_time = 2602;
 let unlock_all = 3102;
 let list_value = 6673;
+let invincible = 4519;
