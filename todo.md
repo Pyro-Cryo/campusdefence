@@ -13,12 +13,9 @@
 
 
 - Buggar:
-	- Det borde inte gå att köpa dompa/disciplinnämnden i pausen mellan rundor (kommer kräva att man petar i contextmenycachningen dock och det vågar jag knappt)
 	- Mouseover på köpknappar med fler än två rader text gör att hela alternativet buggar lite visuellt
 	- 'Queen of Night'-blomman gör ingenting
-
 	- Om två mediafaddrar överlappar varann och har aftonbladetuppgraderingen, och deras range buffas av matberedartornet, så kommer vissa av tilesen i slutändan inte ha någon cap som de borde. Känns som ett edge case vi kanske inte måste bry oss om men listar det här ändå.
-
 	- levelMessage är ur sync med levels sedan nivåer/föhseriet flyttats runt.
 
 

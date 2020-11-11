@@ -715,10 +715,11 @@ class Diciplinary extends Gadget {
 	static get cheatingNinjasRatio() { return 1 / 3; }
 	static get costPerCreep() { return 10; }
 
-	addTo(tower) {
+    addTo(tower) {
 		// gothrough all creeps, and kill them
 		const costPerCreep = Math.round(Diciplinary.costPerCreep * (tower.discount_multiplier || 1));
-			
+
+        let kills = 0;
 		controller.map.path.forEach(pathTile => pathTile.data.forEach(creep => {
 			if (creep instanceof BaseFohs) // Föhseriet fuskar inte, de vinner på stilpoäng
 				return;
@@ -733,8 +734,13 @@ class Diciplinary extends Gadget {
 				return;
 			if (creep instanceof MatryoshkaCreep)
 				creep.innerCreepCount = 0;
-			creep.onDeath();
-		}));
+            creep.onDeath();
+            kills++;
+        }));
+        if (kills === 0) {
+            alert("Hittade inga fuskande ninjor (kostnaden har återbetalats).");
+            controller.money += Math.round(tower.upgrades.find(u => u.type === Diciplinary).cost * (tower.discount_multiplier || 1));
+        }
 	}
 }
 
@@ -957,7 +963,9 @@ class Dompa extends Gadget {
 	static get costPerCreep() { return 4; }
 
 	addTo(tower) {
-		const costPerCreep = Math.round(Dompa.costPerCreep * (tower.discount_multiplier || 1));
+        const costPerCreep = Math.round(Dompa.costPerCreep * (tower.discount_multiplier || 1));
+
+        let molotovs = 0;
 		controller.map.path.forEach(pathTile => pathTile.data.forEach(creep => {
 			if (controller.money >= costPerCreep)
 				controller.money -= costPerCreep;
@@ -978,8 +986,14 @@ class Dompa extends Gadget {
 				molotov.hit = hit;
 			}};
 
-			controller.registerObject(molotov);
-		}));
+            controller.registerObject(molotov);
+            molotovs++;
+        }));
+
+        if (molotovs === 0) {
+            alert("Hittade inga ninjor att bjuda (kostnaden har återbetalats).");
+            controller.money += Math.round(tower.upgrades.find(u => u.type === Dompa).cost * (tower.discount_multiplier || 1));
+        }
 	}
 }
 
