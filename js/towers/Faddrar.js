@@ -215,7 +215,7 @@ class Forfadder1 extends Fadder {
 let geleimg = new Image();
 geleimg.src = "img/gele.png";
 
-class JellyHeart extends BasicProjectile {
+class JellyHeart extends Projectile {
 
     static get damage() { return 1; }
     static get hitpoints() { return 20; }
@@ -234,9 +234,16 @@ class JellyHeart extends BasicProjectile {
         }
     }
 
-    hitCreep(creep) {
-        super.hitCreep(creep);
-        controller.hitsFromSoldTowers[PseudoJellyHeartTower.name]++;
+    hit(pathTile) {
+        let creep = pathTile.arbitraryCreep();
+        if (creep !== null && !(creep instanceof BaseFohs)) {
+            // Immuna creeps returnerar 1/2 om de saveat mot en projektil (1 om det var första gången),
+            // 0/undefined => vi ska träffa
+            if (creep.onHit(this) !== 2) {
+                super.hit(pathTile);
+                controller.hitsFromSoldTowers[PseudoJellyHeartTower.name]++;
+            }
+        }
     }
 }
 

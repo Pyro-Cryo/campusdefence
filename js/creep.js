@@ -343,7 +343,7 @@ function generateImmunityEffectImage(immunityImg, immunityImgScale) {
 
 function generateImmuneCreepImage(immunityEffectImage, creepType) {
     if (immunityEffectImage === null || (immunityEffectImage instanceof Image && !immunityEffectImage.complete)
-            || creepType.image == null || (creepType.image instanceof Image && !creepType.image.complete))
+            || creepType.image === null || (creepType.image instanceof Image && !creepType.image.complete))
         return null;
 
     let canvas = document.createElement("canvas");
@@ -415,13 +415,25 @@ class Immunity extends BaseEffect {
             throw new Error("Probabilities and Immunities lengths must match");
         this.image = img;
         this.persistent = !!persistent;
+        this.explicitIgnoreList = null;
 	}
 	init(object) {
         let tmp = object.onHit.bind(object);
         object.onHit = (projectile) => {
+            if (this.explicitIgnoreList !== null && this.explicitIgnoreList.indexOf(projectile.id) !== -1)
+                return 2;
+
             let ind = this.immunities.findIndex(i => i === projectile.constructor);
-            if (ind === -1 || Math.random() > this.probabilities[ind])
+            if (ind === -1 || Math.random() > this.probabilities[ind]) {
                 tmp(projectile);
+                return 0;
+            }
+            else if (projectile.hitpoints > 1) {
+                if (this.explicitIgnoreList === null)
+                    this.explicitIgnoreList = [];
+                this.explicitIgnoreList.push(projectile.id);
+            }
+            return 1;
 		};
 
         let tmp2 = object.addEffect.bind(object);
