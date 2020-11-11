@@ -72,7 +72,7 @@ class Tentacula extends BaseEffect {
 	static get image() { return tentaculaimg; }
 	static get scale() { return 0.35; }
 	static get persistent() { return true; }
-	static get maxInvocations(){ return 5; }
+	static get maxInvocations(){ return 4; }
 
 	constructor(time, source){
 		super(time);
@@ -92,7 +92,7 @@ zombieimg.src = "img/flowers/gmo-tentacula.png";
 class Zombie extends Tentacula {
 	static get image() { return zombieimg; }
 	static get scale() { return 0.35; }
-	static get maxInvocations(){ return 7; }
+	static get maxInvocations(){ return 6; }
 
 	apply(object){
 		// Sprider sig
@@ -221,6 +221,7 @@ harvesterimg.src = "img/flowers/harvester.png";
 class MonoCulture extends BasicProjectile {
 	static get hitpoints() { return 200; }
 	static get damage() { return 3; }
+	static get image() { return harvesterimg; }
 
 	constructor(target, source, effect, damage, time, image, scale){
 		super(controller.map, harvesterimg, source, target.x, target.y, 0.4, 0.3 / controller.updateInterval);
@@ -347,7 +348,7 @@ class TentaculaGadget extends Gadget {
 	static get scale() { return 0.5; }
 
 	addTo(tower){
-		tower.damageChance = 1;
+		tower.damage = 1;
 		tower.effects_avail = [Tentacula];
 		super.addTo(tower);
 	}
@@ -374,7 +375,6 @@ class MonoCultureGadget extends Gadget {
 	addTo(tower){
 		tower.projectiletype = MonoCulture;
 		tower.damage = MonoCulture.damage;
-		tower.damageChance = 1;
 		tower.CDtime *= 5;
 		super.addTo(tower);
 	} 
@@ -394,9 +394,8 @@ class Nicole extends TargetingTower {
 	constructor(x,y){
 		super(x,y);
 		this.effects_avail = [Converted];
-		this.effect_time = 1500 / controller.updateInterval;
+		this.effect_time = 1600 / controller.updateInterval;
 		this.damage = 0;
-		this.damageChance = 0;
 		this.projectiletype = Flower;
 	}
 
@@ -412,7 +411,6 @@ class Nicole extends TargetingTower {
 		let e = this.effects_avail[i];
 		let p = new this.projectiletype(target, this, e, this.damage, this.effect_time, e.image, e.scale*1.5);
 
-		// if (this.damageChance == 1 || Math.random() < this.damageChance)
 		p.damage = this.damage;
 
 		return p;
@@ -422,9 +420,9 @@ class Nicole extends TargetingTower {
 		let info = {
 			name: "Blomma",
 			image: this.projectiletype.image,
+			"Målsökande skott": "Ja",
 			"Skada": this.damage,
-			"Specialeffekt": "Ninjor vänder om",
-			"Varaktighet": (Math.round(this.effect_time*controller.updateInterval/100)/10).toString() + " s",
+			"Specialeffekt": "Ninjor vänder om"
 		};
 
 		this.effects_avail.forEach(function(e){
@@ -432,32 +430,44 @@ class Nicole extends TargetingTower {
 			if (e != Converted)
 				info["Specialeffekt"] += " eller ";
 			if (e == Rose)
-				info["Specialeffekt"] += "blir svaga för kramar";
+				info["Specialeffekt"] += "blir kramiga";
 			if (e == FireSpinner)
-				info["Specialeffekt"] += "blir svaga för eld";
+				info["Specialeffekt"] += "blir eldfängda";
 			if (e == MidsommarKrans)
-				info["Specialeffekt"] += "blir svaga för cocktails";
+				info["Specialeffekt"] += "blir salongsberusade";
 			if (e == Nattblomm) 
-				info["Specialeffekt"] += "blir svaga för blixtar";
+				info["Specialeffekt"] += "blir ljusskygga";
 			if (e == QueenOfNight)
 				info["Specialeffekt"] += "?";
 		});
 
+		info["Specialeffekt"] += " i " + (Math.round(this.effect_time*controller.updateInterval/100)/10).toString() + " s";
+
 		if (this.effects_avail.includes(Tentacula) || this.effects_avail.includes(Zombie)){
 			info.name = "Tentacula";
-			info["Specialeffekt"] = "Ninjor tar upp till" + Tentacula.maxInvocations.toString() + " skada över " + (Math.round(Tentacula.maxInvocations * this.effect_time*controller.updateInterval/100)/10).toString() + " s";
+			info.image = Tentacula.image;
+			info["Specialeffekt"] = "Ninjor tar upp till " + Tentacula.maxInvocations.toString() + " skada över " + (Math.round(Tentacula.maxInvocations * this.effect_time*controller.updateInterval/100)/10).toString() + " s";
 			if (this.effects_avail.includes(Zombie)){
+				info.name = "Zombie-plantor";
 				info["Specialeffekt"] += "och sprider effekten vidare till ninjor i närheten";
+				info.image = Zombie.image;
 			}
 			delete info["Varaktighet"];
 		}
 		else if (this.projectiletype == Bouquet){
 			info.name = "Bukett";
-			info["Splashträffar"] = this.projectiletype.maxHits;
 		}
 		else if (this.projectiletype == MonoCulture){
 			info.name = "Skördetröska";
-			info["Max träffar"] = this.projectiletype.hitpoints;
+		}
+
+		if (this.projectiletype == Bouquet){
+			info["Målsökande skott"] = "Nej";
+			info["Splashträffar"] = this.projectiletype.maxHits;
+		}
+		else if(this.projectiletype == MonoCulture){
+			info["Målsökande skott"] = "Nej";
+			info["Max träffar"] = this.projectiletype.hitpoints;		
 		}
 
 		return info;
@@ -488,7 +498,7 @@ class Nicole extends TargetingTower {
 			[Nutrient],
 			[BouquetGadget],
 			100
-			)
+			);
 		this.addUpgrade(
 			Roses,
 			"Rosor",
@@ -536,9 +546,9 @@ class Nicole extends TargetingTower {
 			);
 		this.addUpgrade(
 			TentaculaGadget,
-			"Köttätande blommor",
+			"Tentacula",
 			"Det finns fina blommor, fula blommor och så finns det köttätande blommor.",
-			120,
+			220,
 			[],
 			[TentaculaGadget, Vase, Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget, MonoCultureGadget],
 			50);
@@ -546,7 +556,7 @@ class Nicole extends TargetingTower {
 			ZombieGadget,
 			"Zombie-plantor",
 			"Genom genmodifiering har Nicole skapat en kombination av Köttätande växter och parasiter. Dessa blommor skadar inte bara den ninja de klänger sig fast på, utan sprider sig också vidare till andra ninjor i närheten.",
-			860,
+			1050,
 			[Nutrient, TentaculaGadget],
 			[ZombieGadget, Vase, Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget, MonoCultureGadget],
 			150);
@@ -626,20 +636,8 @@ class Wolfram extends SplashProjectile {
 	}
 }
 
-
-
 let pb1 = new Image();
 pb1.src = "img/pb1.png";
-let pb2 = new Image();
-pb2.src = "img/pb2.png";
-let blackboard = new Image();
-blackboard.src = "img/blackboard.png";
-let fpaper = new Image();
-fpaper.src = "img/fpaper.png";
-let paperstack = new Image();
-paperstack.src = "img/paperstack.png";
-
-
 class Envarre extends Gadget {
 
 	static get image() { return pb1; }
@@ -652,6 +650,8 @@ class Envarre extends Gadget {
 	}
 }
 
+let pb2 = new Image();
+pb2.src = "img/pb2.png";
 class Flervarre extends Gadget {
 
 	static get image() { return pb2; }
@@ -665,6 +665,8 @@ class Flervarre extends Gadget {
 	}
 }
 
+let blackboard = new Image();
+blackboard.src = "img/blackboard.png";
 class Blackboard extends Gadget {
 
 	static get image() { return blackboard; }
@@ -677,6 +679,8 @@ class Blackboard extends Gadget {
 	}
 }
 
+let fpaper = new Image();
+fpaper.src = "img/fpaper.png";
 class Errors extends Gadget {
 
 	static get image() { return fpaper; }
@@ -690,6 +694,8 @@ class Errors extends Gadget {
 
 }
 
+let paperstack = new Image();
+paperstack.src = "img/paperstack.png";
 class FullSolution extends Gadget {
 
 	static get image() { return paperstack; }
@@ -731,7 +737,6 @@ class Diciplinary extends Gadget {
 		}));
 	}
 }
-
 
 
 let fridaimg = new Image();
@@ -1138,10 +1143,10 @@ class Burning extends BaseEffect {
 	static get image() { return fireimg; }
 	static get scale() { return 0.5; }
 	static get persistent() { return true; }
+	static get maxInvocations() { return 3; }
 
 	constructor(){
 		super(2000/controller.updateInterval);
-		this.iterations = 3;
 	}
 
 	apply(creep){
@@ -1149,10 +1154,6 @@ class Burning extends BaseEffect {
 		if(creep.health <= 0){
 			this.remove(creep);
 			creep.onDeath();
-			return;
-		}
-		if(--this.iterations <= 0){
-			this.remove(creep);
 		}
 	}
 }
@@ -1163,7 +1164,7 @@ class Fire extends BasicProjectile {
 		return 2;
 	}
 	static get missChance() {
-		return 0.4;
+		return 0.3;
 	}
 
 	constructor(map, source, target) {
@@ -1182,14 +1183,6 @@ class Fire extends BasicProjectile {
 		if (!this.ignoreTile)
 			super.hit(pathTile);
 	}
-
-	// hitCreep(creep) {
-	//     if(this.type > 1){
-	//         let e = new Burning();
-	//         creep.addEffect(e);
-	//     }
-	//     super.hitCreep(creep);
-	// }
 }
 
 class HotFire extends Fire {
@@ -1241,9 +1234,7 @@ class FireRing extends OmniProjectile {
 
 		super.hitCreep(creep);
 	}
-
 }
-
 
 class Gasoline extends Gadget {
 
@@ -1511,12 +1502,12 @@ class WolframWrapper extends Wolfram {
 }
 class FlowerWrapper extends Flower {
 	constructor(_, source, target) {
-		super(target, source, effect, damage, time, image, scale);
+		super(target, source, null, null, null, null, null);
 	}
 }
 class BouquetWrapper extends Bouquet {
 	constructor(_, source, target) {
-		super(target, source, effect, damage, time, image, scale);
+		super(target, source, null, null, null, null, null);
 	}
 }
 class MonoCultureWrapper extends MonoCulture {
@@ -1813,57 +1804,37 @@ class Fnoell extends BaseTower {
 		}
 
 		else if (closestTower instanceof Nicole) {
-			if (closestTower.flesheating) {
-				if (closestTower.upgradeLevel === 2) {
-					this.currentProjectile = FleshEatingWrapper;
-					this.currentProjectilePostprocess = f => {
-						f.time = closestTower.convertedtime;
-						f.range = this.range;
-					};
-				}
-				if (closestTower.upgradeLevel === 3) {
-					this.currentProjectile = GMOWrapper;
-					this.currentProjectilePostprocess = f => {
-						f.time = closestTower.convertedtime;
-						f.range = this.range;
-					};
-				}
+			if (closestTower.projectiletype == Flower){
+				this.currentProjectile = FlowerWrapper;
+			}
+			
+			else if (closestTower.projectiletype == Bouquet){
+				this.currentProjectile = BouquetWrapper;
 			}
 
-			if (closestTower.bouquet) {
-				if (closestTower.upgradeLevel === 2) {
-					this.currentProjectile = CornWrapper;
-					this.currentProjectilePostprocess = f => {
-						f.time = closestTower.convertedtime;
-						f.range = this.range;
-						if (closestTower.flowerdamage > 0 && Math.random() < closestTower.damageChance)
-							f.damage += closestTower.flowerdamage;
-					};
-				}
-				else {
-					this.currentProjectile = BoquetWrapper;
-					this.currentProjectilePostprocess = f => {
-						f.time = closestTower.convertedtime;
-						f.range = this.range;
-						f.image = bouquet;
-						f.damage = 0;
-						if (closestTower.flowerdamage > 0 && Math.random() < closestTower.damageChance)
-							f.damage = closestTower.flowerdamage;
-					};
-				}
-			}
-			else {
-				this.currentProjectile = FlowerWrapper;
+			if (closestTower.projectiletype == MonoCulture){
+				this.currentProjectile = MonoCultureWrapper;
 				this.currentProjectilePostprocess = f => {
-					f.time = closestTower.convertedtime;
 					f.range = this.range;
-					f.damage = 0;
-					if (closestTower.flowerdamage > 0 && Math.random() < closestTower.damageChance)
-						f.damage = closestTower.flowerdamage;
+					f.speed *= 2;
 				};
 			}
+
+			else{
+				// Flower och bouquet får sammma post-process
+				this.currentProjectilePostprocess = f => {
+					f.range = this.range;
+					f.damage = closestTower.damage;
+					f.time = closestTower.effect_time;
+
+					f.effect  = closestTower.effects_avail[parseInt(Math.random()*closestTower.effects_avail.length)];
+					f.image = f.effect.image;
+					f.scale = f.effect.scale * 1.5;
+				};
+			}
+
 			Fnoell.copyProjectileInfo(closestTower.projectileInfo(), this.currentProjectileInfo, [
-				"name", "image", "Skada", "Splashträffar", "Träffar per skott", "Målsökande skott", "Specialeffekt"
+				"name", "image", "Skada", "Splashträffar", "Max träffar", "Målsökande skott", "Specialeffekt"
 			]);
 			this.currentProjectileInfo["Målsökande skott"] = "Nej"; //Står ändå med i listan ovanför för att hamna innan specialeffekt när infon enumereras
 		}

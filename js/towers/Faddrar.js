@@ -855,6 +855,7 @@ class MatBeredare extends SupportTower {
 		return null;
 	}
 
+    // Kallas av controller när en level avslutas, så att vi kan byta matlåda
 	onLevelUpdate(startlevel){
 		if(startlevel)
 			return;
