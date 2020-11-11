@@ -387,7 +387,11 @@ function levelMessage(number) {
                 "Nicole har två uppgraderingar som tagits bort av utrymmes-skäl. Dessa går att aktivera genom ett fusk i JavaScript-konsolen. Om du trycker på F12 (i Firefox och Chrome) och skriver <i>fusk(harvest_time)</i> så aktiveras de för alla dina Nicole-torn.",
                 "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>fusk(invincible)</i>.",
                 "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>fusk(level_set, 1337)</i>.",
+                "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>fusk(4)</i>.",
                 "En av utvecklarna av detta spel var Överföhs 2019",
+                "Det finns en plojlevel gömd nånstans i spelet. Håll utkik i 'Visste du att' för ledtrådar om var den finns",
+                "Hälften av alla buggar inte är utvecklarnas fel, utan JavaScripts",
+                "Det finns ett fusk för att hitta en plojlevel",
             ];
             return "Visste du att: " + tips[Math.floor(Math.random()*tips.length)];
     }

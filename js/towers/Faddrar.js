@@ -123,7 +123,7 @@ class Fadder extends TargetingTower {
             Mek1, 
             "SG1130 Mekanik I", 
             "I grundkursen i Mekanik får en lära sig om statik och partikeldynamik, vilket ger bättre förståelse för de banrörelser som faddern behöver ta för att nå fram med sina kramar. Efter avslutad kurs har faddern lite längre räckvidd.", 
-            80, 
+            75, 
             [], 
             [Mek1],
             30);
@@ -131,7 +131,7 @@ class Fadder extends TargetingTower {
             Mek2, 
             "SG1140 Mekanik II", 
             "I fortsättningskursen i Mekanik får en lära sig om dynamik och rörelse i roterande koordinatsystem. Efter avklarad kurs har faddern väldigt mycket bättre förståelse för rörelser och därför ännu längre räckvidd.",
-            120, 
+            110, 
             [Mek1],
             [Mek2], 
             50);
@@ -139,7 +139,7 @@ class Fadder extends TargetingTower {
             Regler,
             "EL1000 Regler",
             "Genom att noga justera attackvinkeln utifrån ninjornas position och hastighet blir det ännu svårare för ninjorna att undvika faddrarnas kramar.",
-            250,
+            220,
             [Mek1, Mek2],
             [Regler],
             250

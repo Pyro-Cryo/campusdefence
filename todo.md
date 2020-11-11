@@ -3,7 +3,7 @@
 - skala ner mängden pengar man får på högre levels
 - Skriva lite info/lore om immuna creeps
 - Flytta Föhseriet så de kommer först lite senare i levels
-- Se över hur föhseriet påverkas ev effekter (kanske lite out of character att ÖF/TF hängs ut i Force och blir generade?)
+- Se över hur föhseriet påverkas ev effekter (kanske lite out of character att ÖF/TF hängs ut i Force och blir generade?), $F borde vara immun mot kramar per default
 
 
 - Efter lansering, DLC:
@@ -17,10 +17,10 @@
 	- Mouseover på köpknappar med fler än två rader text gör att hela alternativet buggar lite visuellt
 	- Creeps som är immuna mot gelehjärtan går rakt igenom dem och konsumerar all deras hp, vilket kanske inte borde hända
 	- 'Queen of Night'-blomman gör ingenting
-	- Fnöll och Nicole är inte kompisar just nu
 
 	- Om två mediafaddrar överlappar varann och har aftonbladetuppgraderingen, och deras range buffas av matberedartornet, så kommer vissa av tilesen i slutändan inte ha någon cap som de borde. Känns som ett edge case vi kanske inte måste bry oss om men listar det här ändå.
 
+	- levelMessage är ur sync med levels sedan nivåer/föhseriet flyttats runt.
 
 
 

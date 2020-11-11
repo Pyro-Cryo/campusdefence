@@ -1103,10 +1103,17 @@ function fusk(x, y){
         controller.invincible = true;
     }
 
+    if (x == magic_constant){
+        fusk(level_set, 1337);
+        fusk(monies_plz, 1337);
+        fusk(harvest_time);
+    }
+
 
 
 }
 
+let magic_constant = 4;
 let monies_plz = 6809;
 let level_set = 9539;
 let cheat_lvl = 8726;

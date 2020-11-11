@@ -494,7 +494,7 @@ class Nicole extends TargetingTower {
 			BouquetGadget,
 			"Bukett",
 			"Genom avancerade matematiska resonemang har Nicole kommit fram till att genom att skjuta flera blommor samtidigt kan hon träffa fler Ninjor.",
-			350,
+			550,
 			[Nutrient],
 			[BouquetGadget],
 			100
@@ -1961,7 +1961,7 @@ class Fnoell extends BaseTower {
 		this.addUpgrade(
 			Virus, 
 			"Virus och Bakterier", 
-			"Lillie-Fnöll har så lätt för att smittas av förskylningar och annat som faddrar i närheten har. En konstigt symtom hon får är att hennes projektiler blir av samma typ som faddern hon är närmast.", 
+			"Lillie-Fnöll har så lätt för att smittas av förkylningar och annat som faddrar i närheten har. En konstigt symtom hon får är att hennes projektiler blir av samma typ som faddern hon är närmast.", 
 			2700, 
 			[], 
 			[Kaerleken, Stuffa, Virus],
