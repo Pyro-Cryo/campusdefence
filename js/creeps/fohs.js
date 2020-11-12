@@ -286,7 +286,7 @@ class Burvagn extends BaseFohs {
 
     constructor(distance){
         super(distance);
-        this.despawnTime = 0
+        this.despawnTime = 0;
         this.fudge = 0;
 
         this.cooldown = Math.floor(this.innerFohs()[1].cooldown / controller.updateInterval)*1.75;
@@ -336,10 +336,9 @@ class Burvagn extends BaseFohs {
         if(this.cdTimer > 0){
             this.cdTimer--;
         }
-        let a = this.angle;
         this.rotateMe(Math.PI/2);
-        if(this.angle != a)
-            console.log(this.angle);
+        if (this.angle > Math.PI / 2)
+            this.angle -= Math.PI;
         super.update();
     }
 

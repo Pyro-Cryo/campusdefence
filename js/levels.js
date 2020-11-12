@@ -262,6 +262,8 @@ function getLevel(number, updateInterval) {
 
         case 1337:
             return (new CreepSequence()
+                .send(1, Burvagn).immediately()
+                .wait(5 * s)
                 .send(1, Cryo).immediately()
                 .wait(15 * s)
                 .send(1, Pyro).immediately());
