@@ -314,6 +314,7 @@ function levelClearReward(number) {
 
 // Skrivs ut innan respektive nivå
 function levelMessage(number) {
+    const typesSwe = { "Fire": "eld", "Flowers": "blom", "Alcohol": "alkohol", "Cheats": "fusk", "Hugs": "kram", "Light": "blixt" };
     switch (number) {
         case 1: return "Välkommen! Välj en fadder i menyn och placera ut det nära vägen. Ringen och prickarna visar hur långt faddern ser.<br /><br /><i>nØllan sitter glatt och tuggar pastasallad i Konsulatet när plötsligt ninjorna från Föhsarkrocketen visar sig igen, denna gång med ännu ondare avsikter. Nu är det upp till faddrarna att stoppa dem!</i>";
 
@@ -323,33 +324,40 @@ function levelMessage(number) {
             else
                 return "Aj då, nu slank det igenom " + (controller.initialHP - controller.hp === 1 ? "en" : "ett par") + ". Prova att placera ut fler faddrar, eller att sätta dem mer strategiskt! Du kan sälja eller uppgradera dina faddrar genom att klicka på dem.<br /><br /><i>Någon nØllan strök med, men lite svinn får man räkna med. Det är dock än fler ninjor på väg...</i>";
             
-        case 3: return "Det finns olika typer av ninjor, vilket man kan se på deras färg. De med röd huva har två stycken med svart huva i sig.<br /><br /><i>Föhseriet inser att faddrarna utgör ett starkare försvar än väntat - som väntat. Taktikföhs sätter in de specialtränade trojanska ninjorna.</i>";
+        case 3: return "Det finns olika typer av ninjor, vilket man kan se på deras färg. De med röd huva har en med svart huva i sig.<br /><br /><i>Föhseriet inser att faddrarna utgör ett starkare försvar än väntat - som väntat. Taktikföhs sätter in de specialtränade trojanska ninjorna.</i>";
         
         case 4: return "Du har nu låst upp två nya sorters faddrar! I menyn kan du se hur mycket varje fadder kostar samt en vag beskrivning av vad de gör.<br /><br /><i>Fjädrande Fadderiet har har fått nys om Föhseriets planer och sällar sig till fadderförsvaret.</i>";
 
-        case 5: return "Fadderisterna har lite olika förmågor - testa dig fram och se vilka du föredrar!<br /><br /><i>Att fadderisterna skulle ansluta sig var väntat - Föhseriet står redo att skicka ut de nästlade trojanska ninjorna.</i>";
+        case 5: return "Blåa ninjor har en röd ninja i sig och kräver flera kramar för att ge med sig. Varje ninja du kramar klart ger en peng, förutom extrapengarna du får efter varje nivå.<br /><br /><i>Att fadderisterna skulle ansluta sig var väntat - Föhseriet står redo att skicka ut de nästlade trojanska ninjorna.</i>";
 
-        case 6: return "Blåa ninjor har två röda ninjor i sig - mycket att hantera men det klirrar dödsskönt i kassakistan. Varje ninja du kramar ger en peng, förutom extrapengarna du får efter varje nivå.<br /><br /><i>Trots ninjornas upprepade anfall finns inte minsta antydan till tvekan hos faddrarna - ingen ninja kommer fram okramad.</i>";
+        case 6: return "Vissa ninjor är resistenta eller helt immuna mot en viss typ av skada. Det är därför bra att ha variation på faddrarna man placerar ut.<br /><br /><i>Föhseriet analyserar strategin och lägger upp en taktik: \"Vi tränar " + typesSwe[favoredDamageTypes({ "Hugs": 0.5, "Fire": 2 })[0][0]] + "-resistenta ninjor!\"</i>";
 
-        case 7: return "Förhoppningsvis har du redan hittat informationslisten ovanför spelplanen - där kan du pausa, snabbspola och återställa spelet samt se din fikabudget och hur många nØllan som finns kvar. Du kan också se vad nästa nivå har att bjuda på.<br /><br /><i>Föhseriet gör sig redo att ta i med hårdhanskarna.</i>";
+        case 7: return "Förhoppningsvis har du redan hittat informationslisten ovanför spelplanen - där kan du pausa, snabbspola och återställa spelet samt se din fikabudget och hur många nØllan som finns kvar. Du kan också se vad nästa nivå har att bjuda på.";
 
-        case 8: return "ÖF, $F och TF kräver många kramar innan de ger med sig. De har dessutom olika förmågor som gör dem ännu svårare att besegra!<br /><br /><i>\"Ska det bli bra får man göra det själv. JUBLA, nØLLAN!\"</i>";
+        case 8: return "Fadderisterna har lite olika förmågor - testa dig fram och se vilka du föredrar!<br /><br /><i>Trots ninjornas upprepade anfall finns inte minsta antydan till tvekan hos faddrarna - ingen ninja kommer fram okramad.</i>";
 
-        case 9: return "Glöm inte att uppgradera dina torn. Ett väl uppgraderat torn är ofta starkare än flera svaga.";
+        case 9: return "Glöm inte att uppgradera dina faddrar. En väl uppgraderad fadder är ofta starkare än flera svaga.";
 
-        case 10: return "Några torn har specialattacker som måste aktiveras manuellt. Dessa är ofta väldigt dyra, och varje gång du använder den behöver du betala igen. Men nöden har ingen lag, och ibland kan de vara räddningen från säker förlust.";
+        case 10: return "Några faddrar har specialattacker som måste aktiveras manuellt. Dessa är ofta väldigt dyra, och varje gång du använder den behöver du betala igen. Men nöden har ingen lag, och ibland kan de vara räddningen från säker förlust.<br /><br /><i>Föhseriet gör sig redo att ta i med hårdhanskarna.</i>";
 
-        case 11: return "$nålföhs största svaghet är kramar. Hon verkligen avskyr dem. Förutom det är det inte mycket som kan få henne att ändra sig när hon väl satt ett mål för sig själv.<br/><br/><i>$nålföhs kramas inte!</i>";
+        case 11: return "ÖF, $F och TF kräver många kramar innan de ger med sig. De har dessutom olika förmågor som gör dem ännu svårare att besegra!<br /><br /><i>\"Ska det bli bra får man göra det själv. JUBLA, nØLLAN!\"</i>";
 
-        // case 12: return "";
+        case 12: return "Nicoles olika blommor kan tillfälligt åsidosätta ninjornas immuniteter.<br /><br /><i>TF slår till taktisk reträtt.</i>";
+
+        case 13: return "Det kan vara klokt att lägga en hög gelehjärtan i slutet. Pengar kan du tjäna in, men när en nØllan väl har kidnappats går de inte att få tillbaka.";
 
         case 14: return "Behöver du lite pengar? Här kommer en enkel omgång.";
 
-        case 15: return "Överföhs accepterar inte några motgångar, och om någon försöker hindra honom höjer han glasögonen och släpper lös sin ljungeldsblick. Den kan få vem som helst att frysa av rädsla.<br/><br/><i>ÖF måste själv se vad för oväsen faddrarna har ställt till med. \"Hälsa på Överföhs, nØllan!\"</i>";
+        // TODO: se till att detta överensstämmer med gameplay
+        case 15: return "$F kramas inte och är nästan helt immun mot faddrarnas \"motbjudande 'charm'\".<br /><br /><i>Efter att Föhseriets rekryteringsbudget skjutit i höjden måste $F med egna solglasögon se vart pengarna egentligen tar vägen.</i>";
 
-        case 16: return "Föhseriets olika förmågor kompletterar varandra och de är som starkast när de är tillsammans. Lycka till!<br /><br /><i>Efter att ÖF själv har sett med vilken beslutsamhet faddrarna försvarar nØllan beslutar föhseriet att göra gemensam sak. \"Nu får det vara nog med daltandet. JUBLA, nØLLAN!\"</i>";
+        // case 16: return "";
+
+        case 17: return "Överföhs accepterar inte några motgångar, och om någon försöker hindra honom höjer han glasögonen och släpper lös sin ljungeldsblick. Den kan få vem som helst att frysa av rädsla.<br/><br/><i>ÖF måste själv se vad för oväsen faddrarna har ställt till med. \"Hälsa på Överföhs, nØllan!\"</i>";
+
+        case 20: return "Föhseriets olika förmågor kompletterar varandra och de är som starkast när de är tillsammans. Lycka till!<br /><br /><i>Efter att ÖF själv har sett med vilken beslutsamhet faddrarna försvarar nØllan beslutar Föhseriet att göra gemensam sak. \"Nu får det vara nog med daltandet. JUBLA, nØLLAN!\"</i>";
         
-        case 17: return "<br/><br/><i>Föhseriet drar sig tillbaka och observerar faddrarnas kamp från behörigt avstånd. Deras beslutsamhet är, liksom deras tålamod, oändligt.</i>";
+        case 21: return "<i>Föhseriet drar sig tillbaka och observerar faddrarnas kamp från behörigt avstånd. Deras beslutsamhet är, liksom deras tålamod, oändligt.</i>";
 
         case 30: return "<i>Föhseriet har tröttnat på Fadderisternas dumheter, och bestämmer sig för att ta sig förbi deras försvar en gång för alla. Ett ohyggligt oväsen varnar om att Föhseriet dammat av stridsvagnen och kommer inskumpandes i full fart.</i>";
 
@@ -359,11 +367,7 @@ function levelMessage(number) {
 
         case 50: return "Hur mår datorn? Svettigt?";
 
-        case 55: return "Det finns ett liv utanför campus också.";
-
-        case 420: return "";
-
-        case 1337: return "LEET";
+        case 55: return "Har inte du inlämningar eller nåt att göra?";
 
         default:
             const tips = [
@@ -372,26 +376,22 @@ function levelMessage(number) {
                 "Båda utvecklarna borde ha tagit examen vid det här laget och kanske inte lägga så mycket tid på webbläsarspel.",
                 "Om du behöver en godtycklig siffra så har empirisk testning visat att 4 nästan alltid är det bästa valet.",
                 "Lillie-Fnöll står för ungefär 80% av alla buggar.",
-                "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>controller.money = 9999</i>.",
-                "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>fusk(monies_plz)</i>.",
                 "Föhseriets val av transportmedel påfallande ofta är burvagn.",
                 "Fadderisternas olika förmågor i spelet är baserade på deras försök att hemlighålla Fadderiets tema.",
-                "På <a href=\"https://f.kth.se/arcade\">f.kth.se/arcade</a> finns det andra spel att prokrastinera med.",
+                "Om f.dev hunnit bygga klart den så finns det på sidan <a href=\"https://f.kth.se/arcade\">f.kth.se/arcade</a> andra spel att prokrastinera med.",
                 "Nämnden Mottagningen ska skrivs med stort M medan händelsen mottagningen med litet.",
-                "Alla torn och uppgraderingar har en väldigt intetsägande beskrivning som utvecklarna lagt mycket tid på att hitta på.",
+                "Alla faddrar och uppgraderingar har väldigt intetsägande beskrivningar som utvecklarna lagt mycket tid på att hitta på. Framförallt för att ingen av dem kan stava ordentligt.",
                 "Lillie-Fnölls uppgraderingar är baserade på gamla nØllelåtar.",
                 "Du kan byta mellan olika kartor i rullgardinsmenyn i övre högra hörnet på sidan. Vissa banor är lite svårare och andra lite lättare, det finns nånting för alla!",
-                "Lillie-Fnölls uppgraderingar är baserade på gamla nØllelåtar",
                 "Fridas disciplinnämnden-attack träffar en tredjedel av alla ninjor, plus de som redan träffats av Frida. Till skillnad från Axels dompa-attack får du dock inga pengar för ninjor som träffas.",
                 "Detta är det officiella inofficiella spelet för mottagningen 2020. Det finns ett inofficiellt inofficiellt spel också - fråga webmaster eller vice ordförande om du vill spela!",
                 "Nicole har två uppgraderingar som tagits bort av utrymmes-skäl. Dessa går att aktivera genom ett fusk i JavaScript-konsolen. Om du trycker på F12 (i Firefox och Chrome) och skriver <i>fusk(harvest_time)</i> så aktiveras de för alla dina Nicole-torn.",
                 "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>fusk(invincible)</i>.",
-                "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>fusk(level_set, 1337)</i>.",
+                "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>fusk(motherlode)</i>.",
+                "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>fusk(level_set, 20)</i>.",
                 "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>fusk(4)</i>.",
-                "En av utvecklarna av detta spel var Överföhs 2019",
                 "Det finns en plojlevel gömd nånstans i spelet. Håll utkik i 'Visste du att' för ledtrådar om var den finns",
-                "Hälften av alla buggar inte är utvecklarnas fel, utan JavaScripts",
-                "Det finns ett fusk för att hitta en plojlevel",
+                "Hälften av alla buggar inte är utvecklarnas fel, utan JavaScripts"
             ];
             return "Visste du att: " + tips[Math.floor(Math.random()*tips.length)];
     }

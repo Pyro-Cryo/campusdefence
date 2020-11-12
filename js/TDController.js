@@ -1026,25 +1026,21 @@ class PseudoTower extends GameObject {
 
 function fusk(x, y){
 
-	if (x == monies_plz){
-		if (y !== undefined)
-			controller.money += y;
-		else
-			controller.money += 1000;
-	}
+	if (x === motherlode)
+		controller.money += y || 5000;
 
-	if (x == level_set){
+	if (x === level_set){
 		controller.levelNumber = y-1;
 		controller.endLevel();
 	}
 
 
-	if (x == cheat_lvl){
+	if (x === cheat_lvl){
 		fusk(level_set, y);
 		controller.money = fusk(list_value, y-1) + 500;
 	}
 
-	if (x == unlock_all){
+	if (x === unlock_all){
 		for (var i = 0; i < controller.map.towers.length; i++) {
 			for (var j = 0; j < controller.map.towers[i].upgrades.length; j++) {
 				controller.map.towers[i].upgrades[j].hits = 0;
@@ -1052,8 +1048,8 @@ function fusk(x, y){
 		}
 	}
 
-	if (x == harvest_time){
-		for (var i = 0; i < controller.map.towers.length; i++) {
+	if (x === harvest_time){
+		for (let i = 0; i < controller.map.towers.length; i++) {
 			if (controller.map.towers[i] instanceof Nicole){
 				if (controller.map.towers[i].upgrades.find(u => u.type.name == MonoCultureGadget.name) !== undefined)
 					continue;
@@ -1078,10 +1074,10 @@ function fusk(x, y){
 		}
 	}
 
-	if (x == list_value){
+	if (x === list_value){
 
 		let value = 0;
-		for (var i = 1; i <= y; i++) {
+		for (let i = 1; i <= y; i++) {
 			let iterator = getLevel(i, 10);
 			let remaining = iterator.remaining();
 			let codebook = iterator.codebook();
@@ -1099,13 +1095,13 @@ function fusk(x, y){
 		return value;
 	}
 
-    if (x == invincible){
+    if (x === invincible){
         controller.invincible = true;
     }
 
-    if (x == magic_constant){
+    if (x === magic_constant){
         fusk(level_set, 1337);
-        fusk(monies_plz, 1337);
+        fusk(motherlode, 1337);
         fusk(harvest_time);
     }
 
@@ -1114,7 +1110,7 @@ function fusk(x, y){
 }
 
 let magic_constant = 4;
-let monies_plz = 6809;
+let motherlode = 6809; // Sims 2 någon?
 let level_set = 9539;
 let cheat_lvl = 8726;
 let harvest_time = 2602;

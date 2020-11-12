@@ -505,7 +505,7 @@ class Nicole extends TargetingTower {
 			"Inget säger 'jag älskar dig' som en ros, och när Nicole ger Ninjorna de röda blommorna kan inte ens de mest hårdnackade Ninjor säga nej till en kram.",
 			350,
 			[],
-			[Pollen, TentaculaGadget, Roses, MonoCultureGadget],
+			[/*Pollen, */TentaculaGadget, Roses, MonoCultureGadget], //Det dyker upp ett extra kommatecken om pollen står med
 			100
 			);
 		this.addUpgrade(
@@ -514,7 +514,7 @@ class Nicole extends TargetingTower {
 			"Natten är rovdjurens och datalogernas tid, och med en nattblomma i håret blir vem som helst lite skygg för starkt ljus.",
 			550,
 			[],
-			[Pollen, TentaculaGadget, NightFlower, MonoCultureGadget],
+            [/*Pollen, */TentaculaGadget, NightFlower, MonoCultureGadget],
 			150
 			);
 		this.addUpgrade(
@@ -523,7 +523,7 @@ class Nicole extends TargetingTower {
 			"Nånting med midsommar och alkoholhets.",
 			650,
 			[],
-			[Pollen, TentaculaGadget, Midsummers, MonoCultureGadget],
+            [/*Pollen, */TentaculaGadget, Midsummers, MonoCultureGadget],
 			250
 			);
 		this.addUpgrade(
@@ -532,7 +532,7 @@ class Nicole extends TargetingTower {
 			"Flammande orange-röda blommor i eldens färger.",
 			700,
 			[],
-			[Pollen, TentaculaGadget, FireFlower, MonoCultureGadget],
+            [/*Pollen, */TentaculaGadget, FireFlower, MonoCultureGadget],
 			250
 			);
 		this.addUpgrade(
