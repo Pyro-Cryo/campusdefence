@@ -710,7 +710,7 @@ class MatBeredare extends SupportTower {
             600,
             [Snackbar],
             [Delicato, Pasta, CoffeMaker],
-            250
+            100
             );
         this.addUpgrade(
             ExpressDelivery,
@@ -719,7 +719,7 @@ class MatBeredare extends SupportTower {
             750,
             [Snackbar],
             [ExpressDelivery],
-            250
+            150
             );
 		this.addUpgrade(
 			CoffeMaker,

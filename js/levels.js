@@ -283,50 +283,122 @@ function autolevel(levelnumber, updateInterval){
         cs.interleave(new CreepSequence().send(20, Green).over(10 * s));
     if (levelnumber % 3)
         cs.send(15, Violet).over(10 * s);
-    cs.send(100, Red).over(5 * s);
 
-    cs.wait(1 * s);
+    cs.send(5, ShieldedViolet).over(2 * s);
+
+    cs.wait(5 * s);
 
     if (levelnumber >= 40){
-        let s = new CreepSequence();
+        let c = new CreepSequence();
         if (levelnumber % 2)
-            s.send(Math.round(levelnumber/5), Violet).over(levelnumber/10 * s);
+            c.send(Math.round(levelnumber/5), Violet).over(levelnumber/10 * s);
         else
-            s.send(Math.round(levelnumber/5), ShieldedGreen).over(levelnumber/10 * s);
-        s.interleave(new CreepSequence().send(Math.round(levelnumber/3), getImmuneCreep(Green, 0.7, true)).over(10 * s));
-        s.wait(3 * s);
+            c.send(Math.round(levelnumber/5), ShieldedGreen).over(levelnumber/10 * s);
+        c.interleave(new CreepSequence().send(Math.round(levelnumber/3), getImmuneCreep(Green, 0.7, true)).over(10 * s));
+        c.wait(3 * s);
 
         if (levelnumber % 3)
-            s.append(new CreepSequence().send(10, Orange).over(5 * s));
+            c.append(new CreepSequence().send(10, Orange).over(5 * s));
 
-        cs.append(s);
+        cs.append(c);
     }
 
+    cs.send(5, ShieldedGreen).over(5 * s);
+
     for (var i = 0; i < levelnumber % 5; i++) {
-        cs.wait(4 * s);
+        cs.do(() => console.log("l1"));
+        cs.wait(5 * s);
         cs.append(new CreepSequence()
-            .send(Math.round(Math.pow(levelnumber, 1.2)), Violet).over(levelnumber/(i+1) * s)
-            .send(Math.round(levelnumber/10)*2+1, getImmuneCreep(Orange, 0.6, false, 1)).over(5 * s));
+            .send(Math.round(Math.pow(levelnumber-25, 1.2)), Violet).over(levelnumber/(i+2) * s)
+            .send(Math.round(levelnumber/20)*2+1, getImmuneCreep(Orange, 0.6, false, 1)).over(5 * s));
+
+    }
+
+    // cs.do(() => console.log("p1"));
+
+    if (levelnumber > 50){
+        cs.send(Math.round(levelnumber/5), ShieldedOrange).over(Math.round(Math.sqrt(levelnumber/2))*s);
+    }
+    if (levelnumber > 45 && levelnumber-1 % 4){
+        cs.append(new CreepSequence()
+            .send(levelnumber-40, getImmuneCreep(Orange, 0.6, false, 1)).over((levelnumber-40)/1.5 * s)
+            .interleave(new CreepSequence()
+                .send(levelnumber-40, ShieldedOrange).over((levelnumber-40)/1.5 * s))
+            );
+    }
+
+    cs.wait(5 * s);
+
+    if(levelnumber > 60){
+
+        cs.append(new CreepSequence()
+            .send(Math.round(levelnumber/5), getImmuneCreep(ShieldedOrange, 0.6, true, 3)).over(Math.sqrt(levelnumber) * s)
+            .send(Math.round(levelnumber/5), getImmuneCreep(ShieldedViolet, 0.6, true, 2)).over(Math.sqrt(levelnumber) * s)
+            );
+
+    }
+
+    if (!(levelnumber % 3)){
+        cs.append(new CreepSequence()
+            .wait(5 * s)
+            .send(levelnumber-29, ShieldedOrange).over((levelnumber-29)/5 * s)
+            .append(new CreepSequence()
+                .send(levelnumber * 4, Blue).over(levelnumber/5 * s)
+                .send(levelnumber * 6, Red).over(levelnumber/5 * s)
+                )
+            );
+    }
+
+
+    // cs.do(() => console.log("p2"));
+    for (var i = 0; i < levelnumber/10; i++) {
+        cs.do(() => console.log("l2"));
+
+        cs.append(new CreepSequence()
+            .send(Math.round(Math.pow(levelnumber/10, 1.4)), ShieldedOrange).over(levelnumber/3 * s)
+            .interleave(new CreepSequence()
+                .send(levelnumber, getImmuneCreep(ShieldedGreen, 0.7, true, 0)).over(10 * s))
+            );
+        cs.wait(5 * s);
+
     }
 
     if (levelnumber % 9 == 0){
-        let s = new CreepSequence()
+        let c = new CreepSequence()
             .send(1, Burvagn_inf).immediately();
-        cs.append(s);
+        cs.append(c);
     }
-
     else if (levelnumber % 4 == 0 && levelnumber > 35){
-        let s = new CreepSequence()
+        let c = new CreepSequence()
             .wait(2 * s)
             .send(1, TF_inf).immediately()
             .wait(1.5 * s)
             .send(1, OF_inf).immediately()
             .wait(1.5 * s)
             .send(1, SF_inf).immediately();
-        cs.append(s);
+        cs.append(c);
                 
     }
 
+    // cs.do(() => console.log("p3"));
+
+    for (var i = 0; i < 3; i++) {
+        cs.do(() => console.log("l3"));
+        let c = new CreepSequence()
+            .wait(5 * s);
+        if(levelnumber >= 35){
+            c.send(levelnumber * 2, Green).over(Math.sqrt(levelnumber) * 2 * s);
+        }
+
+        if(levelnumber % 2)
+            c.send(Math.round(Math.pow(levelnumber-25, 1.5))+1, getImmuneCreep(Green, 0.6, false)).over(levelnumber/3 * s);
+        if(levelnumber % 3)
+            c.send(Math.round(Math.pow(levelnumber-29, 1.5))+1, Orange).over(levelnumber/2 * s);
+
+        c.send(Math.round(levelnumber/10), Orange).over(levelnumber/3 * s);
+
+        cs.append(c);
+    }
 
 
 	return cs.do(() => console.log("All creeps sent"));

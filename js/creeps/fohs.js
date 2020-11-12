@@ -280,7 +280,7 @@ class Burvagn extends BaseFohs {
     static get speed() { return 0.18; }
     static get image() { return burvagnimg; }
     static get scale() { return 0.3; }
-    static get health() { return 90; }
+    static get health() { return 80; }
     static get drawHealthBar() { return true; }
     static get value() { return 200; }
 
@@ -336,10 +336,10 @@ class Burvagn extends BaseFohs {
         if(this.cdTimer > 0){
             this.cdTimer--;
         }
-        let a = this.angle;
+        // let a = this.angle;
         this.rotateMe(Math.PI/2);
-        if(this.angle != a)
-            console.log(this.angle);
+        // if(this.angle != a)
+        //     console.log(this.angle);
         super.update();
     }
 
@@ -351,8 +351,8 @@ class Burvagn extends BaseFohs {
 class Burvagn_inf extends Burvagn {
     constructor(distance){
         super(distance);
-        this.health += (controller.levelNumber - 30) * 2;
-        this.initial_health += (controller.levelNumber - 30) * 2;
+        this.health += Math.round(Math.pow(controller.levelNumber - 30, 1.2)) * 2;
+        this.initial_health += Math.round(Math.pow(controller.levelNumber - 30, 1.2)) * 2;
     }
     innerFohs(){
         return [TF_inf, OF_inf, SF_inf];
