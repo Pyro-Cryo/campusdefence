@@ -979,6 +979,7 @@ class PseudoTower extends GameObject {
             t.discount_multiplier = pc[0];
             t.CDpenalty_multiplier = pc[1];
             t.CDtime *= pc[1];
+            controller.difficultySelect.disabled = true;
             this.done(true);
         }
     }
