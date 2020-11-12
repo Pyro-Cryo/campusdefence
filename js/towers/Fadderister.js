@@ -419,14 +419,15 @@ class Nicole extends TargetingTower {
 		return pt;
 	}
 
-	projectile(target) {
-		let i = parseInt(Math.random()*this.effects_avail.length);
-		let e = this.effects_avail[i];
-		let p = new this.projectiletype(target, this, e, this.damage, this.effect_time, e.image, e.scale*1.5);
+    projectile(target) {
+        return this.effects_avail.map(e => {
+            let p = new this.projectiletype(target, this, e, this.damage, this.effect_time, e.image, e.scale*1.5);
 
-		p.damage = this.damage;
-
-		return p;
+            p.damage = this.damage;
+            p.dx = (Math.random() - 0.5) * 0.2;
+            p.dy = (Math.random() - 0.5) * 0.2;
+            return p;
+        });
 	}
 
 	projectileInfo() {
@@ -450,7 +451,7 @@ class Nicole extends TargetingTower {
 			if (e == Nattblomm) 
 				info["Specialeffekt"] += "blir ljusskygga";
 			if (e == QueenOfNight)
-				info["Specialeffekt"] += "?";
+				info["Specialeffekt"] += "tappar masken helt";
 		});
 
 		info["Specialeffekt"] += " i " + (Math.round(this.effect_time*controller.updateInterval/100)/10).toString() + " s";
