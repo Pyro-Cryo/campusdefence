@@ -86,6 +86,29 @@
         this.towerSpecs.forEach(ts => {
             this.hitsFromSoldTowers[ts.type.name] = 0;
         });
+
+        const cancel = () => {
+            if (this.buyingTower !== null)
+                this.buyTower(this.buyingTower.type, null, null);
+            if (this.selectedTower !== null) {
+                this.selectedTower = null;
+                this.contextMenuRefresh = null;
+                this.destroyContextMenu();
+            }
+        };
+        document.onkeydown = (e) => {
+            if ((e || window.event).keyCode === 27)
+                cancel();
+            if ((e || window.event).keyCode === 32) {
+                this.playpause();
+                e.preventDefault();
+            }
+        };
+        this.gameArea.canvas.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            cancel();
+            return false;
+        }, false);
     }
 
     begin(){
