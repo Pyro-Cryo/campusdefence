@@ -69,7 +69,7 @@ class BaseFohs extends BaseCreep {
 							val.probabilities.push(effect.probabilities[i]);
 						}
 						else{
-							val.probabilities[index] = effect.immunities[i];
+							val.probabilities[index] = effect.probabilities[i];
 						}
 					}
 
