@@ -66,9 +66,9 @@ function getLevel(number, updateInterval) {
 
         case 12:
             return (new CreepSequence()
-                .send(35, getImmuneCreep(Blue, 0.6, true)).over(20 * s)
-                .send(35, getImmuneCreep(Blue, 0.6, true, 1)).over(10 * s)
-                .wait(4 * s)
+                .send(35, getImmuneCreep(Blue, 0.6, true)).over(25 * s)
+                .send(35, getImmuneCreep(Blue, 0.6, true, 1)).over(25 * s)
+                .wait(5 * s)
                 .send(25, Pink).over(20 * s));
 
         case 13:
@@ -133,14 +133,16 @@ function getLevel(number, updateInterval) {
                 .wait(2.5 * s)
                 .send(15, Green).over(15 * s)
                 .wait(6 * s)
-                .send(3, Violet).over(6 * s)
+                .send(3, Violet).over(10 * s)
                 .interleave(new CreepSequence()
                     .wait(2 * s)
-                    .send(30, Red).over(25 * s)));
+                    .send(75, Red).over(40 * s))
+                .send(20, Blue).over(15 * s));
 
         case 20:
             return (new CreepSequence()
                 .send(200, Red).over(45 * s)
+                .send(50, Blue).over(10 * s)
                 .interleave(new CreepSequence()
                     .wait(5 * s)
                     .send(25, Pink).over(20 * s)
@@ -248,7 +250,7 @@ function getLevel(number, updateInterval) {
                 .send(15, getImmuneCreep(Green, 0.6, true, 1)).over(10 * s)
                 .send(15, getImmuneCreep(Green, 0.6, true, 2)).over(10 * s)
                 .send(15, getImmuneCreep(Green, 0.6, true, 4)).over(10 * s)
-                .interleave(new CreepSequence().send(400, Red).over(90 * s))
+                .interleave(new CreepSequence().send(300, Red).over(90 * s))
                 .wait(5 * s)
                 .send(1, Burvagn).immediately()
                 .wait(12 * s)
@@ -272,41 +274,59 @@ function autolevel(levelnumber, updateInterval){
 
 	let s = controller.difficultyMultiplier * 1000 / updateInterval;
 
-	let cs = new CreepSequence()
-		.send(30, Pink).over(10 * s)
-		.interleave(new CreepSequence().send(30, Green).over(10 * s))
-		.wait(2 * s)
-		.send(2*levelnumber, Green).over(levelnumber/4 * s)
-		.interleave(new CreepSequence().send(2*levelnumber, Pink).over(12/levelnumber * s))
-		.wait(2 * s);
+	let cs = new CreepSequence();
 
-	if(levelnumber >= 40){
-		cs.send(Math.floor(0.1*levelnumber*levelnumber), Orange).over(levelnumber * s)
-		.interleave(new CreepSequence().send(levelnumber, Pink).over(10 * s));
-	}
 
-    if(levelnumber % 3 == 0)
-        cs.send(Math.floor(levelnumber/5)*10, Green).over(5 * s).wait(1 * s);
+    if (levelnumber % 2)
+        cs.send(50, Pink).over(10 * s);
+    if (levelnumber % 4)
+        cs.interleave(new CreepSequence().send(20, Green).over(10 * s));
+    if (levelnumber % 3)
+        cs.send(15, Violet).over(10 * s);
+    cs.send(100, Red).over(5 * s);
 
-    if(levelnumber % 5 == 0)
-        cs.send(Math.floor(levelnumber/10)*20, Orange).over(10 * s);
+    cs.wait(1 * s);
 
-	if(levelnumber % 4 == 0 || levelnumber % 6 == 0){
-		cs.send(1, TF_inf).immediately()
-		.wait(1.2 * s)
-		.send(1, OF_inf).immediately()
-		.wait(1.2 * s)
-		.send(1, SF_inf).immediately()
-	}
+    if (levelnumber >= 40){
+        let s = new CreepSequence();
+        if (levelnumber % 2)
+            s.send(Math.round(levelnumber/5), Violet).over(levelnumber/10 * s);
+        else
+            s.send(Math.round(levelnumber/5), ShieldedGreen).over(levelnumber/10 * s);
+        s.interleave(new CreepSequence().send(Math.round(levelnumber/3), getImmuneCreep(Green, 0.7, true)).over(10 * s));
+        s.wait(3 * s);
 
-	if(levelnumber > 50){
-		cs.send(2*levelnumber, Orange).over(10 * s);
-	}
+        if (levelnumber % 3)
+            s.append(new CreepSequence().send(10, Orange).over(5 * s));
 
-	cs.send(levelnumber, Blue).over(10 * s)
-		.interleave(new CreepSequence().send(40, Violet).over(10 * s))
-		.interleave(new CreepSequence().send(40, Pink).over(10 * s))
-        .interleave(new CreepSequence().send(levelnumber, Green).over(10 * s));
+        cs.append(s);
+    }
+
+    for (var i = 0; i < levelnumber % 5; i++) {
+        cs.wait(4 * s);
+        cs.append(new CreepSequence()
+            .send(Math.round(Math.pow(levelnumber, 1.2)), Violet).over(levelnumber/(i+1) * s)
+            .send(Math.round(levelnumber/10)*2+1, getImmuneCreep(Orange, 0.6, false, 1)).over(5 * s));
+    }
+
+    if (levelnumber % 9 == 0){
+        let s = new CreepSequence()
+            .send(1, Burvagn_inf).immediately();
+        cs.append(s);
+    }
+
+    else if (levelnumber % 4 == 0 && levelnumber > 35){
+        let s = new CreepSequence()
+            .wait(2 * s)
+            .send(1, TF_inf).immediately()
+            .wait(1.5 * s)
+            .send(1, OF_inf).immediately()
+            .wait(1.5 * s)
+            .send(1, SF_inf).immediately();
+        cs.append(s);
+                
+    }
+
 
 
 	return cs.do(() => console.log("All creeps sent"));
@@ -389,6 +409,9 @@ function levelMessage(number) {
         
         case 22: return "<i>Föhseriet drar sig tillbaka och observerar faddrarnas kamp från behörigt avstånd. Deras beslutsamhet är, liksom deras tålamod, oändligt.</i>";
 
+        case 23: return "Orange-huvade Ninjor är de mest vältränade i Föhseriets arsenal. De återfår sin beslutsamhet och har lila ninjor i sig. Hu!";
+
+
         case 30: return "<i>Föhseriet har tröttnat på Fadderisternas dumheter, och bestämmer sig för att ta fram storsläggan. Ett ohyggligt oväsen varnar om att Föhseriet dammat av stridsvagnen och kommer inskumpandes i full fart.</i>";
 
         case 31: return "Du har lyckats försvara nØllan från Föhseriet förvånansvärt länge, bra gjort. Härifrån kommer nivåerna snabbt bli svårare och tunga för datorn att köra. Ha så kul!<br/><br/><i>Föhseriet är nedslagna, men långtifrån besegrade. \"Brute Force\", säger TF. \"Vi blir tvungna att överväldiga dem.\"</i>";
@@ -420,8 +443,10 @@ function levelMessage(number) {
                 "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>fusk(motherlode)</i>.",
                 "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>fusk(level_set, 20)</i>.",
                 "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>fusk(4)</i>.",
-                "Det finns en plojlevel gömd nånstans i spelet. Håll utkik i 'Visste du att' för ledtrådar om var den finns",
-                "Hälften av alla buggar inte är utvecklarnas fel, utan JavaScripts"
+                "Det finns en plojlevel gömd nånstans i spelet. Håll utkik i 'Visste du att' för ledtrådar om var den finns.",
+                "Hälften av alla buggar inte är utvecklarnas fel, utan JavaScripts.",
+                "Överföhs har varit föremål för en ohälsosam personkult, och har som ett resultat fått en gasque och ett kapitel i äldre fysikers sångböcker tillägnad sig.",
+                "Mikael Lyth fyller år idag! Glöm inte att sjunga för honom om han råkar vara i närheten.",
             ];
             return "Visste du att: " + tips[Math.floor(Math.random()*tips.length)];
     }
@@ -596,6 +621,14 @@ class CreepSequence {
             throw new Error("Invalid number " + number);
         this.currentSequence = this.currentSequence.concat(new Array(number).fill(creepType));
 
+        return this;
+    }
+
+    append(sequence) {
+        this._checks();
+        sequence._checks();
+
+        this.totalSequence = this.totalSequence.concat(sequence.totalSequence);
         return this;
     }
 

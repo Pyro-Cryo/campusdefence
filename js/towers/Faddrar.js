@@ -598,7 +598,7 @@ class MatBeredare extends SupportTower {
 	static get CDtime() {return  7500;}
 	static get image() { return foodmakerimg; }
 	static get scale() { return 0.1; }
-	static get cost() { return 150; }
+	static get cost() { return 110; }
 	static get name() { return "Matberedare"; }
 	static get desc() { return "Inte ens Fadderiet orkar kramas på fastande mage. Tack och lov för matberedarna, som lyckas försörja hela mottagningen med energi."; }
 
@@ -698,7 +698,7 @@ class MatBeredare extends SupportTower {
 			Snackbar,
 			"Godisskåpet",
 			"I konsulatets godisskåp finns alltid nånting sött att finna. Matberedaren köper gelehjärtan för Mottagningens internrep-pengar och bjuder alla ninjor hen ser.",
-			750,
+			650,
 			[],
 			[Snackbar, CoffeMaker, Pasta, Wraps, Leftovers],
 			0
@@ -707,7 +707,7 @@ class MatBeredare extends SupportTower {
             Delicato,
             "Delicatobollar",
             "Delicatobollarna är tveklöst det mest åtråvärda i godisskåpet. De går åt dubbelt så fort som vanliga gelehjärtan.",
-            800,
+            600,
             [Snackbar],
             [Delicato, Pasta, CoffeMaker],
             250
@@ -716,7 +716,7 @@ class MatBeredare extends SupportTower {
             ExpressDelivery,
             "Expressleverans",
             "Istället för att åka och handla själv beställer CdA godis med expressleverans, så att godisskåpet kan sälja mångdubbelt mer godis.",
-            1000,
+            750,
             [Snackbar],
             [ExpressDelivery],
             250
@@ -725,7 +725,7 @@ class MatBeredare extends SupportTower {
 			CoffeMaker,
 			"Kaffekokare",
 			"Inget får fysiker att studsa upp så snabbt från sina stolar som Konsulatets kaffekokare, och när matberedaren kommer med kaffe jobbar alla faddrar i närheten mycket snabbare.",
-			750,
+			580,
 			[],
 			[Snackbar, CoffeMaker, Chili, Leftovers],
 			0

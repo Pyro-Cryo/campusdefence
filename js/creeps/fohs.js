@@ -137,14 +137,14 @@ class SF_1 extends BaseFohs {
     static get speed() { return 0.7; }
     static get image() { return sfimg; }
     static get scale() { return 0.2; }
-    static get health() { return 20; }
+    static get health() { return 40; }
     static get drawHealthBar() { return true; }
     static get value() { return 50; }
 
     constructor(distance){
     	super(distance);
 
-    	this.addEffect(new Immunity([Hug, Patch], null, 1, false));
+    	this.addEffect(new Immunity([Hug, Patch], null, 0.9, false));
     }
 
     onHit(projectile) {
@@ -153,9 +153,9 @@ class SF_1 extends BaseFohs {
             // SF kramas inte!
             projectile.damage *= 4;
         }
-        else if(projectile.damage >= 1){
-            projectile.damage /= 2;
-        }
+        // else if(projectile.damage >= 1){
+        //     projectile.damage /= 2;
+        // }
         super.onHit(projectile);
         projectile.damage = original_damage;
     }
@@ -168,7 +168,7 @@ class OF_1 extends BaseFohs {
     static get health() { return 30; }
     static get drawHealthBar() { return true; }
     static get value() { return 75; }
-    static get cooldown() { return 1500; }
+    static get cooldown() { return 1400; }
 
     constructor(distance) {
     	super(distance);
@@ -208,7 +208,7 @@ class SF_2 extends SF_1 {
 
 class OF_2 extends OF_1 {
     // static get health() { return OF_1.health + 8; }
-    static get cooldown() { return 1650; }
+    static get cooldown() { return 1850; }
     static get speed(){ return 0.5; }
 }
 
@@ -280,7 +280,7 @@ class Burvagn extends BaseFohs {
     static get speed() { return 0.18; }
     static get image() { return burvagnimg; }
     static get scale() { return 0.3; }
-    static get health() { return 40; }
+    static get health() { return 90; }
     static get drawHealthBar() { return true; }
     static get value() { return 200; }
 
@@ -289,7 +289,7 @@ class Burvagn extends BaseFohs {
         this.despawnTime = 0
         this.fudge = 0;
 
-        this.cooldown = Math.floor(this.innerFohs()[1].cooldown / controller.updateInterval)*1.5;
+        this.cooldown = Math.floor(this.innerFohs()[1].cooldown / controller.updateInterval)*1.75;
         this.cdTimer = 0;
 
         // this.addEffect(new Immunity([Tentacula, Zombie, Burning], null, 1, false));
@@ -298,7 +298,7 @@ class Burvagn extends BaseFohs {
     onDeath(){
         super.onDeath();
 
-        let dl = -0.2;
+        let dl = -1.2;
         let fohs = this.innerFohs();
 
         for (var i = 0; i < fohs.length; i++) {
@@ -326,22 +326,36 @@ class Burvagn extends BaseFohs {
         }
 
         // Burvagn är bepansrad
-        let original_damage = projectile.damage;
-        projectile.damage /= 2;
+        // let original_damage = projectile.damage;
+        // projectile.damage /= 2;
         super.onHit(projectile);
-        projectile.damage = original_damage;
+        // projectile.damage = original_damage;
     }
 
     update() {
         if(this.cdTimer > 0){
             this.cdTimer--;
         }
+        let a = this.angle;
         this.rotateMe(Math.PI/2);
+        if(this.angle != a)
+            console.log(this.angle);
         super.update();
     }
 
     innerFohs(){
         return [TF_3, OF_3, SF_3];
+    }
+}
+
+class Burvagn_inf extends Burvagn {
+    constructor(distance){
+        super(distance);
+        this.health += (controller.levelNumber - 30) * 2;
+        this.initial_health += (controller.levelNumber - 30) * 2;
+    }
+    innerFohs(){
+        return [TF_inf, OF_inf, SF_inf];
     }
 }
 

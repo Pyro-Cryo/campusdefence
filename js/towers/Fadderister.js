@@ -77,6 +77,12 @@ class Tentacula extends BaseEffect {
 	constructor(time, source){
 		super(time);
 		this.source = source;
+
+		if (source.immune !== undefined && source.immune){
+			this.remove(source);
+			return;
+		}
+		source.immune = true;
 	}
 
 	apply(object){
@@ -92,15 +98,19 @@ zombieimg.src = "img/flowers/gmo-tentacula.png";
 class Zombie extends Tentacula {
 	static get image() { return zombieimg; }
 	static get scale() { return 0.35; }
-	static get maxInvocations(){ return 6; }
+	static get maxInvocations(){ return 7; }
 
 	apply(object){
 		// Sprider sig
 		let pt = controller.map.getGridAt(Math.round(object.x), Math.round(object.y));
-		for (var i = 0; i < 2; i++) {
+		// Sprider sig snabbare om det är tätt mellan creeps
+		for (var i = 0; i < pt.data.size / 4 + 1; i++) {
 			let creep = pt.randomCreep();
-			if(creep === null || creep.id === object.id)
+			if (creep === null || creep.id === object.id)
 				continue;
+			if (creep.immune)
+				continue;
+			
 			creep.addEffect(new this.constructor(this.cdtime, this.source));
 		}
 
@@ -200,7 +210,7 @@ let bouquet = new Image();
 bouquet.src = "img/flowers/bouquet.png";
 class Bouquet extends SplashProjectile {
 	static get damage() { return 0; }
-	static get maxHits() { return 10; }
+	static get maxHits() { return 6; }
 	static get image()  { return bouquet; }
 
 	constructor(target, source, effect, damage, time, image, scale) {
@@ -397,6 +407,8 @@ class Nicole extends TargetingTower {
 		this.effect_time = 1600 / controller.updateInterval;
 		this.damage = 0;
 		this.projectiletype = Flower;
+
+		this._targeting = BaseTower.TARGET_STRONG;
 	}
 
 	target() {
@@ -426,7 +438,6 @@ class Nicole extends TargetingTower {
 		};
 
 		this.effects_avail.forEach(function(e){
-			console.log(e, e.prototype);
 			if (e != Converted)
 				info["Specialeffekt"] += " eller ";
 			if (e == Rose)
@@ -503,10 +514,10 @@ class Nicole extends TargetingTower {
 			Roses,
 			"Rosor",
 			"Inget säger 'jag älskar dig' som en ros, och när Nicole ger Ninjorna de röda blommorna kan inte ens de mest hårdnackade Ninjor säga nej till en kram.",
-			300,
+			250,
 			[],
 			[/*Pollen, */TentaculaGadget, Roses, MonoCultureGadget], //Det dyker upp ett extra kommatecken om pollen står med
-			100
+			50
 			);
 		this.addUpgrade(
 			NightFlower,
@@ -515,7 +526,7 @@ class Nicole extends TargetingTower {
 			350,
 			[],
             [/*Pollen, */TentaculaGadget, NightFlower, MonoCultureGadget],
-			150
+			50
 			);
 		this.addUpgrade(
 			Midsummers,
@@ -524,7 +535,7 @@ class Nicole extends TargetingTower {
 			380,
 			[],
             [/*Pollen, */TentaculaGadget, Midsummers, MonoCultureGadget],
-			250
+			50
 			);
 		this.addUpgrade(
 			FireFlower,
@@ -533,16 +544,16 @@ class Nicole extends TargetingTower {
 			450,
 			[],
             [/*Pollen, */TentaculaGadget, FireFlower, MonoCultureGadget],
-			250
+			50
 			);
 		this.addUpgrade(
 			QueenOfNightGadget,
 			"Nattens drottning",
 			"'Queen of Night' är en av de mörkaste av alla tulpaner. Den har en sidenglänsande blomma i mörkt kastanjebrunt, nästan svart. Sorten är gammal, framtagen kring tidernas begynnelse 1938. Enligt legenden innehåller den en enorm, uråldrig kraft som enbart ett fåtal kan tämja...",
-			700,
+			500,
 			[Roses, Midsummers, NightFlower, FireFlower],
 			[TentaculaGadget, QueenOfNightGadget, MonoCultureGadget],
-			1000
+			500
 			);
 		this.addUpgrade(
 			TentaculaGadget,
@@ -551,7 +562,7 @@ class Nicole extends TargetingTower {
 			200,
 			[],
 			[TentaculaGadget, Vase, Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget, MonoCultureGadget],
-			50);
+			20);
 		this.addUpgrade(
 			ZombieGadget,
 			"Zombie-plantor",
@@ -559,7 +570,7 @@ class Nicole extends TargetingTower {
 			800,
 			[Nutrient, TentaculaGadget],
 			[ZombieGadget, Vase, Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget, MonoCultureGadget],
-			350);
+			250);
 		// this.addUpgrade(
 		// 	Pollen,
 		// 	"Pollenallergi",
@@ -1006,7 +1017,7 @@ class Molotov extends SplashProjectile {
 	static get maxHits() { return 4; }
 	constructor(map, source, target) {
 		super(map, molotovimg, explosionimg, source, target.x, target.y, 0.5, 1, 2 / controller.updateInterval, 0);
-		this.range = 3;
+		this.range = source.range+0.1;
 	}
 }
 
@@ -1388,7 +1399,7 @@ class Becca extends TargetingTower {
 			Gasoline,
 			"Bensinbomb",
 			"Bensin brinner också bra, och när ninjorna träffas av den brinnande strålen tar de inte bara skada, utan de börjar också brinna själva. Detta fortsätter att skada dem även efter att de undkommit Becca.",
-			800,
+			700,
 			[Propane],
 			[Gasoline],
 			250
@@ -1397,7 +1408,7 @@ class Becca extends TargetingTower {
 			RingOfFire,
 			"Ring of Fire",
 			"Det är kul att leka med elden, och när Becca extatiskt svingar eldkastaren över huvudet sätter hon eld på alla ninjor i närheten.",
-			4500,
+			2500,
 			[Propane, Gasoline],
 			[RingOfFire, DoubleBarell],
 			1000
@@ -1406,7 +1417,7 @@ class Becca extends TargetingTower {
 			DoubleBarell,
 			"Dubbelpipa",
 			"Vad kan vara bättre än en eldkastare? Två eldkastare såklart.",
-			1400,
+			1100,
 			[Propane],
 			[DoubleBarell, RingOfFire],
 			400
@@ -1612,6 +1623,7 @@ class Fnoell extends BaseTower {
 			};
 			if (this.symmetry)
 				info["Kramriktningar"] = 2;
+			return info;
 		}
 	}
 
