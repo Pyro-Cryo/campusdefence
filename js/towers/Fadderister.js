@@ -12,7 +12,7 @@ class AntiImmunity extends BaseEffect {
 		this.removedImmunities = [];
 	}
 
-	init(object){
+    init(object) {
 
 		for (var it = object.effects.values(), effect=null; effect=it.next().value; ){
 			if (!(effect instanceof Immunity))
@@ -169,22 +169,23 @@ class QueenOfNight extends AntiImmunity {
 	static get scale() { return 0.35; }
 
 	constructor(time, source){
-		// Vad ska föhseriet vara svaga mot?
-		super(time, [Hug]);
+        super(time, [Hug, Patch, Distracted, PersistentDistracted, Fire, HotFire, FireBomb, FireRing, Burning, Molotov, Drunk, Flash, ForceFlash, Stunned, Weak]);
 		this.source = source;
 	}
 
-	init(object){
-		// påverkar bara föhseriet, annars ger skada. Kanske är dåligt?
-		if (object instanceof BaseFohs)
-			super.init(object);
-		else {
-			object.health -= 1;
-			this.source.hits += 1;
-			if (object.health <= 0)
-				object.onDeath();
-		}
-	}
+    init(object) {
+        // Applicera alla antiimmuniteter
+		super.init(object);
+        if (object instanceof BaseFohs)
+            object.nullified = true;
+        console.log(object);
+    }
+
+    apply(object) {
+        if (object instanceof BaseFohs)
+            object.nullified = false;
+        super.apply(object);
+    }
 }
 
 let flowerimg = new Image();
