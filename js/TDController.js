@@ -1122,11 +1122,12 @@ function fusk(x, y){
     }
 
 
-
+    if (x === sverigetoppen)
+        controller.map.towers.forEach(t => { t.hits = 20000; });
 }
 
 let magic_constant = 4;
-let motherlode = 6809; // Sims 2 någon? - Funkar väl i alla Sims?
+let motherlode = 6809; // Sims 2 någon? - Funkar väl i alla Sims? - Ja säkert, har bara spelat tvåan dock
 let level_set = 9539;
 let cheat_lvl = 8726;
 let harvest_time = 2602;
@@ -1135,3 +1136,4 @@ let list_value = 6673;
 let level_value = 1077;
 let invincible = 4519;
 let replay = 7143;
+let sverigetoppen = 9437;

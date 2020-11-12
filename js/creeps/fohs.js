@@ -25,6 +25,7 @@ class BaseFohs extends BaseCreep {
         super(distance);
         this.despawnTime = doors.length*3;
         this.fudge = 7;
+        this.nullified = false;
 
 		this.addEffect(new Immunity(
 			[JellyHeart, Converted, Stunned, Weak, Distracted, PersistentDistracted, Drunk],
@@ -65,7 +66,7 @@ class BaseFohs extends BaseCreep {
 						let index = val.immunities.indexOf(e => e.constructor == effect.immunities[i].constructor);
 						if (index == -1){
 							val.immunities.push(effect.immunities[i]);
-							val.probabilities.push(effect.immunities[i]);
+							val.probabilities.push(effect.probabilities[i]);
 						}
 						else{
 							val.probabilities[index] = effect.immunities[i];
@@ -116,8 +117,9 @@ class TF_1 extends BaseFohs {
     static get spread() { return 1.2; }
     static get ninjaType() { return Ninja; }
 
-    onHit(projectile){
-        this.spawnNinja();
+    onHit(projectile) {
+        if (!this.nullified)
+            this.spawnNinja();
     	super.onHit(projectile);
     }
 
@@ -185,7 +187,7 @@ class OF_1 extends BaseFohs {
 
     onHit(projectile) {
         // ÖF slår tillbaka! 
-        if(this.cdTimer <= 0){
+        if (!this.nullified && this.cdTimer <= 0) {
 	        let proj = new Payback(this, projectile.sourceTower);
 	        controller.registerObject(proj);
 	        this.cdTimer = this.cooldown;
@@ -286,7 +288,7 @@ class Burvagn extends BaseFohs {
 
     constructor(distance){
         super(distance);
-        this.despawnTime = 0
+        this.despawnTime = 0;
         this.fudge = 0;
 
         this.cooldown = Math.floor(this.innerFohs()[1].cooldown / controller.updateInterval)*1.75;
@@ -312,8 +314,9 @@ class Burvagn extends BaseFohs {
         let tf_type = this.innerFohs()[0];
 
         const maxdist = controller.map.path.length - 1;
-        let low = -Math.floor(tf_type.creepCount/2);
-        let high = Math.ceil(tf_type.creepCount/2);
+        let creepCount = this.nullified ? 1 : tf_type.creepCount;
+        let low = -Math.floor(creepCount / 2);
+        let high = Math.ceil(creepCount / 2);
         for (var i = low; i < high; i++) {
             new tf_type.ninjaType(Math.max(0, Math.min(maxdist, this.distance+i*tf_type.spread)));
         }
@@ -322,8 +325,11 @@ class Burvagn extends BaseFohs {
         if(this.cdTimer <= 0){
             let proj = new Payback(this, projectile.sourceTower);
             controller.registerObject(proj);
-            this.cdTimer = this.cooldown;
+            this.cdTimer = this.cooldown * (this.nullified ? 3 : 1);
         }
+
+        if (this.nullified && projectile instanceof Hug && !(projectile instanceof Patch))
+            projectile.damage *= 3;
 
         // Burvagn är bepansrad
         // let original_damage = projectile.damage;
@@ -336,10 +342,10 @@ class Burvagn extends BaseFohs {
         if(this.cdTimer > 0){
             this.cdTimer--;
         }
-        // let a = this.angle;
+
         this.rotateMe(Math.PI/2);
-        // if(this.angle != a)
-        //     console.log(this.angle);
+        if (this.angle > Math.PI / 2)
+            this.angle -= Math.PI;
         super.update();
     }
 
