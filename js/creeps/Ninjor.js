@@ -102,6 +102,7 @@ class Violet extends ColorNinja {
 	static get innerCreep() { return Green; }
 	static get innerCreepCount() { return 2; }
 	static get regenerative() { return true; }
+	static get regenerationspeed() { return 1400 / controller.updateInterval; }
 }
 class Orange extends ColorNinja {
 	static get speed() { return 0.95; }
@@ -110,7 +111,7 @@ class Orange extends ColorNinja {
 	static get innerCreep() { return Violet; }
 	static get innerCreepCount() { return 3; }
 	static get regenerative() { return true; }
-	static get regenerationspeed() { return 750 / controller.updateInterval; }
+	static get regenerationspeed() { return 1100 / controller.updateInterval; }
 }
 
 class ShieldedGreen extends ShieldedCreep {

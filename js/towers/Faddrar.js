@@ -777,7 +777,7 @@ class MatBeredare extends SupportTower {
 		
 		this.randomize = false;
 
-		this.multiplier = 0.9;
+		this.multiplier = 0.85;
 		this.extrarange = 0.6;
 		this.pricecut = 0.4;
 		this.CDchange = 1.3;

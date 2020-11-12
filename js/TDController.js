@@ -306,6 +306,7 @@
             this.difficultyMultiplier = 1;
         else if (this.difficultySelect.value == "hard")
             this.difficultyMultiplier = 0.9;
+        this.money = Math.round(50*Math.pow(this.difficultyMultiplier, 2))*10;
     }
 
     updateCreepSummary() {
@@ -479,7 +480,7 @@
         contextMenu.querySelector("h3[name='name']").innerText = name;
         contextMenu.querySelector(".infofield img[name='image']").src = this.selectedTower.image.src;
         contextMenu.querySelector(".infofield span[name='hits']").innerText = this.selectedTower.hits;
-        contextMenu.querySelector(".infofield span[name='range']").innerText = this.selectedTower.range;
+        contextMenu.querySelector(".infofield span[name='range']").innerText = Math.round(this.selectedTower.range*10)/10;
         let cdtime_ms = Math.round(this.selectedTower.CDtime * this.updateInterval);
         contextMenu.querySelector(".infofield span[name='CDtime']").innerText = cdtime_ms < Math.pow(10, 2.5) ? cdtime_ms + " ms" : (cdtime_ms / 1000) + " s";
 
@@ -856,6 +857,10 @@
             return;
 
 
+        this.difficulty = data.difficulty;
+        this.difficultySelect.value = this.difficulty;
+        this.difficultyChange();
+        this.difficultySelect.disabled = true
 
         this.levelNumber = data.level;
         this.hp = data.health;
@@ -863,10 +868,6 @@
         this.money = data.money;
         this.hitsFromSoldTowers = data.hitsFromSoldTowers;
 
-        this.difficulty = data.difficulty;
-        this.difficultySelect.value = this.difficulty;
-        this.difficultyChange();
-        this.difficultySelect.disabled = true
 
         // Detta sköts i constructorn istället
         // this.path = data.path;
@@ -1032,6 +1033,7 @@ function fusk(x, y){
 	if (x === level_set){
 		controller.levelNumber = y-1;
 		controller.endLevel();
+        controller.money -= levelClearReward(controller.levelNumber);
 	}
 
 
@@ -1074,22 +1076,31 @@ function fusk(x, y){
 		}
 	}
 
+    if (x === level_value){
+
+        y = y || controller.levelNumber;
+
+        let value = 0;
+        let iterator = getLevel(y, 10);
+        let remaining = iterator.remaining();
+        let codebook = iterator.codebook();
+
+        for (let creepType in remaining){
+            if (codebook[creepType].prototype instanceof BaseCreep)
+                value += codebook[creepType].totalValue() * remaining[creepType];
+            else{
+                value += codebook[creepType].prototype.totalValue() * remaining[creepType];
+            }
+        }
+        value += levelClearReward(y);
+        return value;
+    }
+
 	if (x === list_value){
 
 		let value = 0;
 		for (let i = 1; i <= y; i++) {
-			let iterator = getLevel(i, 10);
-			let remaining = iterator.remaining();
-			let codebook = iterator.codebook();
-
-			for (let creepType in remaining){
-				if (codebook[creepType].prototype instanceof BaseCreep)
-					value += codebook[creepType].totalValue() * remaining[creepType];
-				else{
-					value += codebook[creepType].prototype.totalValue() * remaining[creepType];
-				}
-			}
-			value += levelClearReward(i);
+            value += fusk(level_value, i);
 		}
 
 		return value;
@@ -1105,15 +1116,22 @@ function fusk(x, y){
         fusk(harvest_time);
     }
 
+    if (x === replay){
+        controller.money -= fusk(level_value, controller.levelNumber-1);
+        fusk(level_set, controller.levelNumber-1);
+    }
+
 
 
 }
 
 let magic_constant = 4;
-let motherlode = 6809; // Sims 2 någon?
+let motherlode = 6809; // Sims 2 någon? - Funkar väl i alla Sims?
 let level_set = 9539;
 let cheat_lvl = 8726;
 let harvest_time = 2602;
 let unlock_all = 3102;
 let list_value = 6673;
+let level_value = 1077;
 let invincible = 4519;
+let replay = 7143;

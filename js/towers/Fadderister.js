@@ -383,11 +383,11 @@ class MonoCultureGadget extends Gadget {
 let nicoleimg = new Image();
 nicoleimg.src = "img/transparent/nicole.png";
 class Nicole extends TargetingTower {
-	static get range() { return 3; }
+	static get range() { return 2.7; }
 	static get CDtime() { return 1400; }
 	static get image() { return nicoleimg; }
 	static get scale() { return 0.2; }
-	static get cost() { return 270; }
+	static get cost() { return 300; }
 	static get name() { return "Fjädrande Nicole"; }
 	static get desc() { return "Fina Nicole älskar blommor. När en ninja blir träffad av en blomma inser den hur fel den haft, och ger sig av hemåt igen. Insikten varar tyvärr dock bara några sekunder varpå ninjan fortsätter framåt."; }
 
@@ -503,7 +503,7 @@ class Nicole extends TargetingTower {
 			Roses,
 			"Rosor",
 			"Inget säger 'jag älskar dig' som en ros, och när Nicole ger Ninjorna de röda blommorna kan inte ens de mest hårdnackade Ninjor säga nej till en kram.",
-			350,
+			300,
 			[],
 			[/*Pollen, */TentaculaGadget, Roses, MonoCultureGadget], //Det dyker upp ett extra kommatecken om pollen står med
 			100
@@ -512,7 +512,7 @@ class Nicole extends TargetingTower {
 			NightFlower,
 			"Nattblomm",
 			"Natten är rovdjurens och datalogernas tid, och med en nattblomma i håret blir vem som helst lite skygg för starkt ljus.",
-			550,
+			350,
 			[],
             [/*Pollen, */TentaculaGadget, NightFlower, MonoCultureGadget],
 			150
@@ -521,7 +521,7 @@ class Nicole extends TargetingTower {
 			Midsummers,
 			"Midsommarkrans",
 			"Nånting med midsommar och alkoholhets.",
-			650,
+			380,
 			[],
             [/*Pollen, */TentaculaGadget, Midsummers, MonoCultureGadget],
 			250
@@ -530,7 +530,7 @@ class Nicole extends TargetingTower {
 			FireFlower,
 			"Eldsblomma",
 			"Flammande orange-röda blommor i eldens färger.",
-			700,
+			450,
 			[],
             [/*Pollen, */TentaculaGadget, FireFlower, MonoCultureGadget],
 			250
@@ -539,7 +539,7 @@ class Nicole extends TargetingTower {
 			QueenOfNightGadget,
 			"Nattens drottning",
 			"'Queen of Night' är en av de mörkaste av alla tulpaner. Den har en sidenglänsande blomma i mörkt kastanjebrunt, nästan svart. Sorten är gammal, framtagen kring tidernas begynnelse 1938. Enligt legenden innehåller den en enorm, uråldrig kraft som enbart ett fåtal kan tämja...",
-			1000,
+			700,
 			[Roses, Midsummers, NightFlower, FireFlower],
 			[TentaculaGadget, QueenOfNightGadget, MonoCultureGadget],
 			1000
@@ -548,7 +548,7 @@ class Nicole extends TargetingTower {
 			TentaculaGadget,
 			"Tentacula",
 			"Det finns fina blommor, fula blommor och så finns det köttätande blommor.",
-			220,
+			200,
 			[],
 			[TentaculaGadget, Vase, Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget, MonoCultureGadget],
 			50);
@@ -556,10 +556,10 @@ class Nicole extends TargetingTower {
 			ZombieGadget,
 			"Zombie-plantor",
 			"Genom genmodifiering har Nicole skapat en kombination av Köttätande växter och parasiter. Dessa blommor skadar inte bara den ninja de klänger sig fast på, utan sprider sig också vidare till andra ninjor i närheten.",
-			1050,
+			800,
 			[Nutrient, TentaculaGadget],
 			[ZombieGadget, Vase, Roses, Midsummers, NightFlower, FireFlower, QueenOfNightGadget, MonoCultureGadget],
-			150);
+			350);
 		// this.addUpgrade(
 		// 	Pollen,
 		// 	"Pollenallergi",
@@ -1012,7 +1012,7 @@ class Molotov extends SplashProjectile {
 
 class Drunk extends Distracted {
 	init(object) {
-		this.speedModifiers.push(this.multiplier);
+		object.speedModifiers.push(this.multiplier);
 		//Sätt inte cheater på fyllon
 	}
 }
@@ -1178,7 +1178,7 @@ class Fire extends BasicProjectile {
 		return 2;
 	}
 	static get missChance() {
-		return 0.3;
+		return 0.6;
 	}
 
 	constructor(map, source, target) {

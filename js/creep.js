@@ -70,7 +70,6 @@ class BaseCreep extends GameObject {
 	}
 	onHit(projectile) {
 		this.health -= projectile.damage;
-        this.regenerationtimer = this.regenerationspeed;
 		if(this.health <= 0){
 			this.onDeath();
 		}
@@ -90,7 +89,7 @@ class BaseCreep extends GameObject {
 		}
 	}
 	onGoal() {
-        controller.hp -= this.constructor.damage;
+        controller.hp -= Math.ceil(this.constructor.damage);
         this.despawn();
     }
     //Call this on update if you want the creep to rotate its sprite according to the path

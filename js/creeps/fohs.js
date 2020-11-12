@@ -14,7 +14,8 @@ for (var i = 0; i < 5; i++) {
     doors.push(img);
 }
 
-
+let fohslogo = new Image();
+fohslogo.src = "img/shield0.png";
 class BaseFohs extends BaseCreep {
 
     static get value() { return 100; }
@@ -24,6 +25,13 @@ class BaseFohs extends BaseCreep {
         super(distance);
         this.despawnTime = doors.length*3;
         this.fudge = 7;
+
+		this.addEffect(new Immunity(
+			[JellyHeart, Converted, Stunned, Weak, Distracted, PersistentDistracted, Drunk],
+			null,
+			[0.95, 1, 1, 1, 0.5, 0.5, 1],
+			false
+			));
     }
 
     update(){
@@ -40,15 +48,35 @@ class BaseFohs extends BaseCreep {
     }
 
     onGoal(){
-        controller.hp -= this.health;
+        controller.hp -= Math.ceil(this.health);
         this.despawn();
     }
 
     addEffect(effect) {
-        if(effect instanceof Converted){
+        if(effect instanceof Converted)
             effect = new Distracted(effect.cooldown*controller.updateInterval*0.8);
-            effect.multiplier = Math.sqrt(effect.multiplier);
+        if (effect instanceof Distracted)
+        	effect.multiplier = Math.sqrt(effect.multiplier);
+
+        if (effect instanceof Immunity){
+        	for (var it = this.effects.values(), val=null; val=it.next().value; ) {
+				if (val.constructor == effect.constructor){
+					for (var i = 0; i < effect.immunities.length; i++) {
+						let index = val.immunities.indexOf(e => e.constructor == effect.immunities[i].constructor);
+						if (index == -1){
+							val.immunities.push(effect.immunities[i]);
+							val.probabilities.push(effect.immunities[i]);
+						}
+						else{
+							val.probabilities[index] = effect.immunities[i];
+						}
+					}
+
+					return;
+				}
+			}
         }
+        
         super.addEffect(effect);
     }
 
@@ -65,9 +93,15 @@ class TF_1 extends BaseFohs {
     static get speed() { return 0.35; }
     static get image() { return tfimg; }
     static get scale() { return 0.2; }
-    static get health() { return 23; }
+    static get health() { return 32; }
     static get drawHealthBar() { return true; }
     static get value() { return 50; }
+
+    constructor(distance){
+    	super(distance);
+
+    	this.addEffect(new Immunity([Distracted, PersistentDistracted], null, 1, false));
+    }
 
     addEffect(effect) {
         // TF har oändlig fokus
@@ -79,7 +113,7 @@ class TF_1 extends BaseFohs {
     }
 
     static get creepCount() { return 3; }
-    static get spread() { return 1; }
+    static get spread() { return 1.2; }
     static get ninjaType() { return Ninja; }
 
     onHit(projectile){
@@ -103,21 +137,25 @@ class SF_1 extends BaseFohs {
     static get speed() { return 0.7; }
     static get image() { return sfimg; }
     static get scale() { return 0.2; }
-    static get health() { return 85; }
+    static get health() { return 20; }
     static get drawHealthBar() { return true; }
     static get value() { return 50; }
+
+    constructor(distance){
+    	super(distance);
+
+    	this.addEffect(new Immunity([Hug, Patch], null, 1, false));
+    }
 
     onHit(projectile) {
         let original_damage = projectile.damage;
         if(projectile instanceof Hug && !(projectile instanceof Patch)){
             // SF kramas inte!
-            projectile.damage *= 2;
+            projectile.damage *= 4;
         }
         else if(projectile.damage >= 1){
-            projectile.damage = 1;
+            projectile.damage /= 2;
         }
-        // SF tar skatt
-        // controller.money -= 1;
         super.onHit(projectile);
         projectile.damage = original_damage;
     }
@@ -127,10 +165,10 @@ class OF_1 extends BaseFohs {
     static get speed() { return 0.5; }
     static get image() { return ofimg; }
     static get scale() { return 0.2; }
-    static get health() { return 22; }
+    static get health() { return 30; }
     static get drawHealthBar() { return true; }
     static get value() { return 75; }
-    static get cooldown() { return 1000; }
+    static get cooldown() { return 1500; }
 
     constructor(distance) {
     	super(distance);
@@ -157,20 +195,20 @@ class OF_1 extends BaseFohs {
 }
 
 class TF_2 extends TF_1 {
-    static get health() { return TF_1.health + 8; }
+    static get health() { return TF_1.health + 6; }
     static get speed(){ return 0.5; }
     static get creepCount() { return TF_1.creepCount+1; }
     static get ninjaType() { return Red; }
 }
 
 class SF_2 extends SF_1 {
-    static get health() { return Math.floor(SF_1.health*1.2); }
+    static get health() { return SF_1.health - 4; }
     static get speed(){ return 0.5; }
 }
 
 class OF_2 extends OF_1 {
-    static get health() { return OF_1.health + 8; }
-    static get cooldown() { return 1050; }
+    // static get health() { return OF_1.health + 8; }
+    static get cooldown() { return 1650; }
     static get speed(){ return 0.5; }
 }
 
@@ -181,12 +219,12 @@ class TF_3 extends TF_2 {
 }
 
 class SF_3 extends SF_2 {
-    static get health() { return Math.floor(SF_2.health*1.4); }
+    static get health() { return Math.floor(SF_2.health*1.3); }
 }
 
 class OF_3 extends OF_2 {
     static get health() { return OF_2.health + 14; }
-    static get cooldown() { return 650; }
+    static get cooldown() { return 1200; }
 }
 
 class TF_inf extends TF_1 {
@@ -239,20 +277,22 @@ let burvagnimg = new Image();
 burvagnimg.src = "img/transparent/burvagn.png";
 class Burvagn extends BaseFohs {
 
-    static get speed() { return 0.2; }
+    static get speed() { return 0.18; }
     static get image() { return burvagnimg; }
     static get scale() { return 0.3; }
-    static get health() { return 175; }
+    static get health() { return 40; }
     static get drawHealthBar() { return true; }
-    static get value() { return 100; }
+    static get value() { return 200; }
 
     constructor(distance){
         super(distance);
         this.despawnTime = 0
         this.fudge = 0;
 
-        this.cooldown = Math.floor(this.innerFohs()[1].cooldown / controller.updateInterval);
+        this.cooldown = Math.floor(this.innerFohs()[1].cooldown / controller.updateInterval)*1.5;
         this.cdTimer = 0;
+
+        // this.addEffect(new Immunity([Tentacula, Zombie, Burning], null, 1, false));
     }
 
     onDeath(){
@@ -278,15 +318,16 @@ class Burvagn extends BaseFohs {
             new tf_type.ninjaType(Math.max(0, Math.min(maxdist, this.distance+i*tf_type.spread)));
         }
 
-        // ÖF slår tillbaka! 
+        // ÖF slår tillbaka
         if(this.cdTimer <= 0){
             let proj = new Payback(this, projectile.sourceTower);
             controller.registerObject(proj);
             this.cdTimer = this.cooldown;
         }
 
+        // Burvagn är bepansrad
         let original_damage = projectile.damage;
-        projectile.damage /=2;
+        projectile.damage /= 2;
         super.onHit(projectile);
         projectile.damage = original_damage;
     }
@@ -295,16 +336,12 @@ class Burvagn extends BaseFohs {
         if(this.cdTimer > 0){
             this.cdTimer--;
         }
-        this.rotateMe(0);
+        this.rotateMe(Math.PI/2);
         super.update();
     }
 
-    addEffect(effect) {
-        // Burvagn är immun mot allt?
-    }
-
     innerFohs(){
-        return [TF_1, OF_1, SF_1];
+        return [TF_3, OF_3, SF_3];
     }
 }
 

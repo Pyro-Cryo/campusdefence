@@ -27,7 +27,7 @@ function getLevel(number, updateInterval) {
                 .send(5, Blue).over(3 * s));
         case 6:
             return (new CreepSequence()
-                .send(5, getImmuneCreep(Red, 0.5)).over(2 * s)
+                .send(7, getImmuneCreep(Red, 0.6)).over(2.5 * s)
                 .wait(5 * s)
                 .send(30, Red).over(20 * s)
                 .interleave(new CreepSequence()
@@ -48,19 +48,17 @@ function getLevel(number, updateInterval) {
                 
         case 9:
             return (new CreepSequence()
-                .send(30, getImmuneCreep(Red, 0.6)).over(20 * s)
+                .send(30, getImmuneCreep(Red, 0.7)).over(20 * s)
                 .interleave(new CreepSequence().send(20, Blue).over(20 * s))
-                .wait(10 * s)
+                .wait(5 * s)
                 .send(10, Pink).over(5 * s));
 
         case 10:
             return (new CreepSequence()
-                .send(30, Blue).over(15 * s)
-                .interleave(new CreepSequence().send(12, getImmuneCreep(Red, 0.6, true, 1)).over(10 * s))
+                .send(30, getImmuneCreep(Blue, 0.6, true, 2)).over(20 * s)
+                .interleave(new CreepSequence().send(12, getImmuneCreep(Red, 0.6, true, 1)).over(20 * s))
                 .wait(5 * s)
-                .send(25, Pink).over(13 * s)
-                .wait(3 * s)
-                .send(12, Blue).over(4 * s));
+                .send(20, Pink).over(12 * s));
 
         case 11:
             return (new CreepSequence() 
@@ -71,45 +69,51 @@ function getLevel(number, updateInterval) {
                 .send(35, getImmuneCreep(Blue, 0.6, true)).over(20 * s)
                 .send(35, getImmuneCreep(Blue, 0.6, true, 1)).over(10 * s)
                 .wait(4 * s)
-                .send(15, Pink).over(10 * s));
+                .send(25, Pink).over(20 * s));
 
         case 13:
             return (new CreepSequence()
                 .send(20, Pink).over(20 * s)
                 .interleave(new CreepSequence().send(20, Red).over(20 * s))
                 .send(30, Pink).over(10 * s)
+                .send(30, Red).over(10 * s)
                 );
 
         case 14:
             return (new CreepSequence()
-            	.send(50, Red).over(50 * s)
+            	.send(1,SF_1).immediately());
+        
+        case 15:
+            return (new CreepSequence()
+            	.send(50, Red).over(35 * s)
+                .send(100, Ninja).over(35 * s)
                 .interleave(new CreepSequence()
                 	.wait(10 * s)
                 	.send(2, Green).over(1 * s)
                 	.wait(5 * s)
                 	.send(2, Green).over(1 * s)
                 	.wait(5 * s)
-                	.send(3, Green).over(1 * s)
+                	.send(2, Green).over(1 * s)
                 	.wait(15 * s)
-                	.send(4, Green).over(2 * s)
+                	.send(3, Green).over(2 * s)
                 	)
                 );
-        
-        case 15:
-            return (new CreepSequence()
-            	.send(1,SF_1).immediately());
-                
 
         case 16:
             return (new CreepSequence()
-                .send(30, getImmuneCreep(Blue, 0.6, true)).over(20 * s)
-                .send(20, getImmuneCreep(Pink, 0.7, true, 1)).over(20 * s)
-                .send(10, Green).over(3 * s));
-
+                .send(50, Red).over(60 * s)
+                .interleave(new CreepSequence()
+                    .wait(5 * s)
+                    .send(30, getImmuneCreep(Blue, 0.6, true)).over(20 * s)
+                    .send(20, getImmuneCreep(Pink, 0.7, true, 1)).over(20 * s)
+                    .send(10, Green).over(3 * s))
+                );
+                
         case 17:
             return (new CreepSequence()
                 .send(1, OF_1).immediately()
                 );
+
         case 18:
             return (new CreepSequence()
                 .send(20, getImmuneCreep(Pink, 0.6, true)).over(20 * s)
@@ -119,113 +123,138 @@ function getLevel(number, updateInterval) {
                 .interleave(new CreepSequence()
                     .wait(2/3 * s)
                     .send(10, getImmuneCreep(Pink, 0.6, true, 2)).over(20 * s))
+                .wait(3 * s)
+                .send(10, Pink).over(7.5 * s)
                 );
 
         case 19:
             return (new CreepSequence()
                 .send(1, Violet).immediately()
-                .wait(1 * s)
-                .send(50, Blue).over(11 * s)
-                .send(3, Green).over(3 * s));
+                .wait(2.5 * s)
+                .send(15, Green).over(15 * s)
+                .wait(6 * s)
+                .send(3, Violet).over(6 * s)
+                .interleave(new CreepSequence()
+                    .wait(2 * s)
+                    .send(30, Red).over(25 * s)));
+
         case 20:
             return (new CreepSequence()
-                .send(20, Blue).over(10 * s)
-                .send(10, getImmuneCreep(Pink, 0.8, true)).over(4 * s)
+                .send(200, Red).over(45 * s)
                 .interleave(new CreepSequence()
-                    .wait(11 * s)
-                    .send(1, TF_2).immediately()
-                    .wait(1.4 * s)
-                    .send(1, OF_2).immediately()
-                    .wait(1.4 * s)
-                    .send(1, SF_2).immediately())
-                .send(10, Blue).over(10 * s));
+                    .wait(5 * s)
+                    .send(25, Pink).over(20 * s)
+                    .wait(5 * s)
+                    .send(10, Green).over(7 * s)
+                    .wait(3 * s)
+                    .send(15, Pink).over(8 * s))
+                );
 
         case 21:
             return (new CreepSequence()
-                .send(150, Red).over(20 * s)
-                .interleave(new CreepSequence().wait(5 * s)
-                    .send(25, Green).over(15 * s))
-                .send(10, Violet).over(5 * s));
+                .send(40, Red).over(15 * s)
+                .send(50, Blue).over(25 * s)
+                .send(5, Green).over(15 * s)
+                .send(10, getImmuneCreep(Pink, 0.7, true)).over(4 * s)
+                .wait(10 * s)
+                .send(10, Red).over(5 * s)
+                .interleave(new CreepSequence()
+                    .wait(45 * s)
+                    .send(1, TF_2).immediately()
+                    .wait(1.7 * s)
+                    .send(1, OF_2).immediately()
+                    .wait(1.7 * s)
+                    .send(1, SF_2).immediately())
+                );
 
         case 22:
             return (new CreepSequence()
-                .send(20, Violet).over(20 * s)
-                .send(20, Violet).over(8 * s));
+                .send(10, Violet).over(25 * s)
+                .send(50, Green).over(35 * s)
+                .send(50, Blue).over(40 * s));
 
         case 23:
             return (new CreepSequence()
-                .send(30, Violet).over(25 * s)
-                .interleave(new CreepSequence()
-                    .wait(10 * s)
-                    .send(1, TF_2).immediately()
-                    .wait(1.5 * s)
-                    .send(1, OF_2).immediately()
-                    .wait(1.5 * s)
-                    .send(1, SF_2).immediately())
+                .send(2, Orange).over(3 * s)
+                .wait(10 * s)
+                .send(100, Blue).over(50 * s)
                 );
 
         case 24:
             return (new CreepSequence()
-                .send(5, Orange).over(2 * s)
-                .wait(6 * s)
-                .send(5, Orange).over(2 * s)
-                .wait(9 * s)
-                .send(14, Orange).over(7 * s)
+                .send(100, Blue).over(25 * s)
+                .send(5, Violet).over(10 * s)
+                .interleave(new CreepSequence()
+                    .wait(30 * s)
+                    .send(1, TF_2).immediately()
+                    .wait(1.5 * s)
+                    .send(1, OF_2).immediately()
+                    .wait(1.5 * s)
+                    .send(1, SF_2).immediately())
                 );
 
         case 25:
             return (new CreepSequence()
-                .send(100, Blue).over(20 * s)
+                .send(150, Blue).over(40 * s)
                 .interleave(new CreepSequence()
-                    .send(25, Green).over(10 * s)
-                    .send(15, Violet).over(10 * s))
+                    .send(50, Red).over(10 * s)
+                    .send(15, Green).over(10 * s)
+                    .send(5, Violet).over(10 * s))
                 .wait(5 * s)
                 .send(2, Orange).over(2 * s)
                 );
 
         case 26:
             return (new CreepSequence()
-                .send(9, Orange).over(2 * s)
-                .wait(6 * s)
-                .send(9, Orange).over(2 * s)
-                .wait(6 * s)
-                .send(6, Orange).over(2.7 * s)
-                .interleave(new CreepSequence().send(6, Orange).over(3 * s)));
+                .send(60, Green).over(69 * s));
 
         case 27:
             return (new CreepSequence()
-                .send(3, Ninja).over(2 * s)
-                .send(5, Red).over(3 * s)
-                .send(7, Blue).over(5 * s)
-                .send(11, Pink).over(7 * s)
-                .send(13, Green).over(11 * s)
-                .send(17, Violet).over(13 * s)
-                .send(23, Orange).over(17 * s));
+                .send(8, Green).over(3 * s)
+                .wait(10 * s)
+                .send(10, Green).over(3 * s)
+                .wait(10 * s)
+                .send(12, Green).over(3 * s)
+                .wait(10 * s)
+                .send(100, Blue).over(15 * s)
+                );
 
         case 28:
             return (new CreepSequence()
-                .send(20, Violet).over(10 * s)
+                .wait(5 * s)
+                .send(10, getImmuneCreep(Green, 0.65, false, 0)).over(10 * s)
+                .send(10, getImmuneCreep(Green, 0.65, false, 1)).over(10 * s)
+                .send(10, getImmuneCreep(Green, 0.65, false, 2)).over(10 * s)
                 .interleave(new CreepSequence()
-                    .send(5, Pink).over(5 * s)
-                    .send(10, Orange).over(5 * s)));
+                    .send(50, Pink).over(40 * s)
+                    )
+                .interleave(new CreepSequence()
+                    .send(100, Red).over(40 * s))
+                );
 
         case 29:
             return (new CreepSequence()
-                .send(25, Orange).over(7 * s)
-                .send(100, Blue).over(10 * s));
+                .send(350, Blue).over(45 * s)
+                .send(150, Pink).over(35 * s)
+                .wait(5 * s)
+                .send(10, Violet).over(10 * s)
+                .send(5, getImmuneCreep(Violet, 0.65, false, 0)).over(6 * s)
+                );
 
         case 30:
             return (new CreepSequence()
-                .send(60, Violet).over(15 * s)
-                .interleave(new CreepSequence().send(25, Pink).over(15 * s))
-                .interleave(new CreepSequence().send(25, Green).over(15 * s))
-                .wait(2 * s)
-                .send(15, Orange).over(5 * s)
-                .send(25, Pink).over(5 * s)
-                .wait(2 * s)
+                .send(100, Pink).over(40 * s)
+                .send(15, getImmuneCreep(Green, 0.6, true, 0)).over(10 * s)
+                .send(15, getImmuneCreep(Green, 0.6, true, 1)).over(10 * s)
+                .send(15, getImmuneCreep(Green, 0.6, true, 2)).over(10 * s)
+                .send(15, getImmuneCreep(Green, 0.6, true, 4)).over(10 * s)
+                .interleave(new CreepSequence().send(400, Red).over(90 * s))
+                .wait(5 * s)
                 .send(1, Burvagn).immediately()
-                .send(50, Blue).over(10 * s)
-                .send(50, Pink).over(25 * s)
+                .wait(12 * s)
+                .send(5, Violet).over(10 * s)
+                .wait(5 * s)
+                .send(100, Pink).over(60 * s)
                 );
 
 
@@ -346,20 +375,21 @@ function levelMessage(number) {
 
         case 13: return "Det kan vara klokt att lägga en hög gelehjärtan i slutet. Pengar kan du tjäna in, men när en nØllan väl har kidnappats går de inte att få tillbaka.";
 
-        case 14: return "Behöver du lite pengar? Här kommer en enkel omgång.";
+        case 14: return "$F kramas inte och är nästan helt immun mot faddrarnas \"motbjudande 'charm'\".<br /><br /><i>Efter att Föhseriets rekryteringsbudget skjutit i höjden måste $F med egna solglasögon se vart pengarna egentligen tar vägen.</i>";
 
-        // TODO: se till att detta överensstämmer med gameplay
-        case 15: return "$F kramas inte och är nästan helt immun mot faddrarnas \"motbjudande 'charm'\".<br /><br /><i>Efter att Föhseriets rekryteringsbudget skjutit i höjden måste $F med egna solglasögon se vart pengarna egentligen tar vägen.</i>";
+        case 15: return "Behöver du lite pengar? Här kommer en enkel omgång.";
 
         // case 16: return "";
 
         case 17: return "Överföhs accepterar inte några motgångar, och om någon försöker hindra honom höjer han glasögonen och släpper lös sin ljungeldsblick. Den kan få vem som helst att frysa av rädsla.<br/><br/><i>ÖF måste själv se vad för oväsen faddrarna har ställt till med. \"Hälsa på Överföhs, nØllan!\"</i>";
 
-        case 20: return "Föhseriets olika förmågor kompletterar varandra och de är som starkast när de är tillsammans. Lycka till!<br /><br /><i>Efter att ÖF själv har sett med vilken beslutsamhet faddrarna försvarar nØllan beslutar Föhseriet att göra gemensam sak. \"Nu får det vara nog med daltandet. JUBLA, nØLLAN!\"</i>";
-        
-        case 21: return "<i>Föhseriet drar sig tillbaka och observerar faddrarnas kamp från behörigt avstånd. Deras beslutsamhet är, liksom deras tålamod, oändligt.</i>";
+        case 19: return "Lila-huvade ninjor återfår sakta sin ondska efter att de blivit kramade, så det gäller att krama de snabbt så de inte hinner återfå sin beslutsamhet."
 
-        case 30: return "<i>Föhseriet har tröttnat på Fadderisternas dumheter, och bestämmer sig för att ta sig förbi deras försvar en gång för alla. Ett ohyggligt oväsen varnar om att Föhseriet dammat av stridsvagnen och kommer inskumpandes i full fart.</i>";
+        case 21: return "Föhseriets olika förmågor kompletterar varandra och de är som starkast när de är tillsammans. Lycka till!<br /><br /><i>Efter att ÖF själv har sett med vilken beslutsamhet faddrarna försvarar nØllan beslutar Föhseriet att göra gemensam sak. \"Nu får det vara nog med daltandet. JUBLA, nØLLAN!\"</i>";
+        
+        case 22: return "<i>Föhseriet drar sig tillbaka och observerar faddrarnas kamp från behörigt avstånd. Deras beslutsamhet är, liksom deras tålamod, oändligt.</i>";
+
+        case 30: return "<i>Föhseriet har tröttnat på Fadderisternas dumheter, och bestämmer sig för att ta fram storsläggan. Ett ohyggligt oväsen varnar om att Föhseriet dammat av stridsvagnen och kommer inskumpandes i full fart.</i>";
 
         case 31: return "Du har lyckats försvara nØllan från Föhseriet förvånansvärt länge, bra gjort. Härifrån kommer nivåerna snabbt bli svårare och tunga för datorn att köra. Ha så kul!<br/><br/><i>Föhseriet är nedslagna, men långtifrån besegrade. \"Brute Force\", säger TF. \"Vi blir tvungna att överväldiga dem.\"</i>";
 
