@@ -37,7 +37,8 @@
             "1.1.5",
 			"1.1.6",
             "1.1.7",
-            "1.1.8"
+            "1.1.8",
+            "1.1.9"
         ];
         this.difficulty = "medium";
         this.difficultyMultiplier = 1;
@@ -206,9 +207,11 @@
     }
 
     onPlay() {
-        if(this.levelCleared)
+        if (this.levelCleared)
             this.startLevel();
-        if (music.readyState === 4)
+        if (this.isFF && music_speedy.readyState === 4)
+            music_speedy.play()
+        if (!this.isFF && music.readyState === 4)
             music.play();
         super.onPlay();
     }
