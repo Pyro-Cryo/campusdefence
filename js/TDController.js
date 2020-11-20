@@ -1007,21 +1007,17 @@ class PseudoTower extends GameObject {
         }
     }
 
-    // update() {
-    //     super.update();
-    // }
-
     draw(gameArea) {
         gameArea.disc(this.x, this.y, this.type.range+this.extrarange, this.posOK ? "rgba(0, 212, 0, 0.5)" : "rgba(212, 0, 0, 0.5)");
         if (this.posOK)
             controller.map.path.filter(pt =>
-                Math.sqrt(Math.pow(this.x - pt.x, 2) + Math.pow(this.y - pt.y, 2)) < this.type.range + 0.1
+                Math.sqrt(Math.pow(this.x - pt.x, 2) + Math.pow(this.y - pt.y, 2)) < this.type.range+this.extrarange + 0.1
             ).forEach(pt =>
                 gameArea.disc(pt.x, pt.y, 0.25, "rgba(255, 255, 255, 0.7)")
             );
         if(this.posOK && this.type.prototype instanceof SupportTower)
             controller.map.towers.filter(pt =>
-                Math.sqrt(Math.pow(this.x - pt.x, 2) + Math.pow(this.y - pt.y, 2)) < this.type.range + 0.1
+                Math.sqrt(Math.pow(this.x - pt.x, 2) + Math.pow(this.y - pt.y, 2)) < this.type.range+this.extrarange + 0.1
             ).forEach(pt =>
                 gameArea.disc(pt.x, pt.y, 0.25, "rgba(255, 255, 100, 0.7)")
             );

@@ -216,8 +216,13 @@ class Bouquet extends SplashProjectile {
 
 	constructor(target, source, effect, damage, time, image, scale) {
 		super(controller.map, image, splashimg, source, target.x, target.y, scale, 1.5, 2 / controller.updateInterval, 0);
+		this.time = time;
 		this.effect = effect;
-		this.time = time;	
+
+		// Här har vi mer fulkod, kombinera två projectile-typer genom att stjäla funktionaliteten.
+		this.target = target;
+		this.radius = 1/25;
+		this.update = Flower.prototype.update.bind(this);
 	}	
 
 	hitCreep(creep){
@@ -1067,7 +1072,7 @@ class Axel extends OmniTower {
 		if (this.champagne) {
 			// Håhå det här är en klar contender för det fulaste jag nånsin skrivit
 			// Vi basically snor funktionaliteten från en SeekingProjectile
-			m.source = {target: Nicole.prototype.target.bind(this)};
+			m.sourceTower = {target: Nicole.prototype.target.bind(this)};
 			if (this.preferredTargets)
 			{
 				let preferredTarget = this.preferredTargets.find(arr => Math.abs((target.x - this.x)/this.range - arr[0]) < 0.1 && Math.abs((target.y - this.y)/this.range - arr[1]) < 0.1);
@@ -1075,7 +1080,7 @@ class Axel extends OmniTower {
 					m.target = preferredTarget[2].arbitraryCreep();
 			}
 			if (!m.target)
-				m.target = m.source.target;
+				m.target = m.sourceTower.target;
 			m.range *= 1.5;
 			m.radius = 1/10;
 			m.update = SeekingProjectile.prototype.update.bind(m);
@@ -1266,7 +1271,7 @@ class FireRing extends OmniProjectile {
 class Gasoline extends Gadget {
 
 	static get image() { return gasoline; }
-	static get scale() { return 0.5; }
+	static get scale() { return 0.4; }
 
 	addTo(tower){
 		tower.upgradeLevel = 2;
@@ -1277,7 +1282,7 @@ class Gasoline extends Gadget {
 class Propane extends Gadget {
 
 	static get image() { return propane; }
-	static get scale() { return 0.5; }
+	static get scale() { return 0.4; }
 
 	addTo(tower){
 		tower.projectiletype = 2;

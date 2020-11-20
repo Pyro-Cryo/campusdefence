@@ -144,17 +144,16 @@ class SeekingProjectile extends Projectile{
 	constructor(image, scale, source, target, speed){
 		super(controller.map, image, source, target.x, target.y, scale, speed);
 		this.target = target;
-		this.source = source;
 		this.range = 10;
 
 		// Hur skarpt vi kan sv�nga som mest, andel per tick
-		this.radius = 1/10;
+		this.radius = 1/12;
 	}
 
 	update(){
 		if(this.target == null || this.target.id == null){
 			// M�let har despawnat, be om ett nytt
-			this.target = this.source.target();
+			this.target = this.sourceTower.target();
 		}
 		else{
 			// R�kna ut ny riktning mot m�let
