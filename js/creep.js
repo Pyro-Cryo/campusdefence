@@ -43,7 +43,8 @@ class BaseCreep extends GameObject {
         super(undefined, pos[0], pos[1], 0, undefined);
         this.image = this.constructor.image;
         this.scale = this.constructor.scale;
-        this.speed = this.constructor.speed;
+        this._speed = this.constructor.speed;
+        this.speedModifiers = [];
         this.health = this.constructor.health;
         this.initial_health = this.constructor.health;
         this.value = this.constructor.value;
@@ -67,9 +68,21 @@ class BaseCreep extends GameObject {
 
         this.isdead = false;
 	}
+
+    set speed(v){
+        this.speedModifiers.push(v/this.speed);
+    }
+
+    get speed(){
+        let modified_speed = this._speed;
+        for (var i = 0; i < this.speedModifiers.length; i++) {
+            modified_speed *= this.speedModifiers[i];
+        }
+        return modified_speed;
+    }
+
 	onHit(projectile) {
 		this.health -= projectile.damage;
-        this.regenerationtimer = this.regenerationspeed;
 		if(this.health <= 0){
 			this.onDeath();
 		}
@@ -89,7 +102,7 @@ class BaseCreep extends GameObject {
 		}
 	}
 	onGoal() {
-        controller.hp -= this.constructor.damage;
+        controller.hp -= Math.ceil(this.constructor.damage);
         this.despawn();
     }
     //Call this on update if you want the creep to rotate its sprite according to the path
@@ -109,6 +122,8 @@ class BaseCreep extends GameObject {
 		this.lastx = this.x;
         this.lasty = this.y;
         this.lastdistance = this.distance;
+
+
 
 		if (this.pathtile.diagonality & (this.distance - Math.trunc(this.distance) < 0.5 ? DIAGONAL_OUTGOING : DIAGONAL_INCOMING))
 			this.distance += 0.7071 * this.speed / controller.updateInterval;
@@ -337,7 +352,7 @@ function generateImmunityEffectImage(immunityImg, immunityImgScale) {
 
 function generateImmuneCreepImage(immunityEffectImage, creepType) {
     if (immunityEffectImage === null || (immunityEffectImage instanceof Image && !immunityEffectImage.complete)
-            || creepType.image == null || (creepType.image instanceof Image && !creepType.image.complete))
+            || creepType.image === null || (creepType.image instanceof Image && !creepType.image.complete))
         return null;
 
     let canvas = document.createElement("canvas");
@@ -409,13 +424,25 @@ class Immunity extends BaseEffect {
             throw new Error("Probabilities and Immunities lengths must match");
         this.image = img;
         this.persistent = !!persistent;
+        this.explicitIgnoreList = null;
 	}
 	init(object) {
         let tmp = object.onHit.bind(object);
         object.onHit = (projectile) => {
+            if (this.explicitIgnoreList !== null && this.explicitIgnoreList.indexOf(projectile.id) !== -1)
+                return 2;
+
             let ind = this.immunities.findIndex(i => i === projectile.constructor);
-            if (ind === -1 || Math.random() > this.probabilities[ind])
+            if (ind === -1 || Math.random() > this.probabilities[ind]) {
                 tmp(projectile);
+                return 0;
+            }
+            else if (projectile.hitpoints > 1) {
+                if (this.explicitIgnoreList === null)
+                    this.explicitIgnoreList = [];
+                this.explicitIgnoreList.push(projectile.id);
+            }
+            return 1;
 		};
 
         let tmp2 = object.addEffect.bind(object);

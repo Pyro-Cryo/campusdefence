@@ -20,6 +20,7 @@
 
         this.initialHP = 140+51;
         this.hp = this.initialHP;
+        this.invincible = false;
         this.money = 500;
         this.sellPriceMultiplier = 0.8;
         this.healthcounter = document.getElementById("healthcounter");
@@ -35,8 +36,13 @@
             "1.1.4",
             "1.1.5",
 			"1.1.6",
-            "1.1.7"
+            "1.1.7",
+            "1.1.8",
+            "1.1.9"
         ];
+        this.difficulty = "medium";
+        this.difficultyMultiplier = 1;
+
         if ((window.localStorage.getItem("campusdefence_version") || "1.0") !== this.versions[this.versions.length - 1]) {
             //window.alert("Campus Defence har uppdaterats och ditt sparade spel går tyvärr inte längre att fortsätta på.");
             window.localStorage.setItem("campusdefence_version", this.versions[this.versions.length - 1]);
@@ -80,6 +86,29 @@
         this.towerSpecs.forEach(ts => {
             this.hitsFromSoldTowers[ts.type.name] = 0;
         });
+
+        const cancel = () => {
+            if (this.buyingTower !== null)
+                this.buyTower(this.buyingTower.type, null, null);
+            if (this.selectedTower !== null) {
+                this.selectedTower = null;
+                this.contextMenuRefresh = null;
+                this.destroyContextMenu();
+            }
+        };
+        document.onkeydown = (e) => {
+            if ((e || window.event).keyCode === 27)
+                cancel();
+            if ((e || window.event).keyCode === 32) {
+                this.playpause();
+                e.preventDefault();
+            }
+        };
+        this.gameArea.canvas.addEventListener('contextmenu', (e) => {
+            e.preventDefault();
+            cancel();
+            return false;
+        }, false);
     }
 
     begin(){
@@ -150,8 +179,8 @@
         }
 
         // Hantera hälsa
-        this.healthcounter.innerText = this.hp.toString();
-        if (this.hp <= 0) {
+        if (this.hp <= 0 && !this.invincible) {
+            this.hp = 0;
             this.onPause();
             this.levelIterator = null;
             this.levelCleared = false;
@@ -161,6 +190,7 @@
             this.setMessage("<b>Game over</b><br /><br />Du nådde till nivå " + this.levelNumber.toString() + ".", false);
             this.clearState();
         }
+        this.healthcounter.innerText = this.hp.toString();
     }
 
     draw() {
@@ -179,6 +209,7 @@
 
         //Hantera pengar
         this.moneycounter.innerText = this.money.toString();
+        this.healthcounter.innerText = this.hp.toString();
         for (var i = 0; i < this.towerSpecs.length; i++) {
             // om pengar minskar kan köp-knappen disablas medan du köper tornet, men det verkar osannolikt?
             if (this.hp <= 0 || this.towerSpecs[i].cost > this.money || (this.towerSpecs[i].unlockLevel && this.levelNumber < this.towerSpecs[i].unlockLevel)) {
@@ -199,9 +230,11 @@
     }
 
     onPlay() {
-        if(this.levelCleared)
+        if (this.levelCleared)
             this.startLevel();
-        if (music.readyState === 4)
+        if (this.isFF && music_speedy.readyState === 4)
+            music_speedy.play()
+        if (!this.isFF && music.readyState === 4)
             music.play();
         super.onPlay();
     }
@@ -245,6 +278,7 @@
     }
 
     startLevel() {
+        this.difficultySelect.disabled = "disabled";
         console.log("Starting level " + this.levelNumber);
         this.levelIterator = getLevel(this.levelNumber, this.updateInterval);
         this.levelCleared = false;
@@ -288,6 +322,17 @@
         for (var i = 0; i < this.levelListeners.length; i++) {
             this.levelListeners[i].onLevelUpdate(true);
         }
+    }
+
+    difficultyChange(){
+        this.difficulty = this.difficultySelect.value;
+        if (this.difficultySelect.value == "easy")
+            this.difficultyMultiplier = 1.15;
+        else if (this.difficultySelect.value == "medium")
+            this.difficultyMultiplier = 1;
+        else if (this.difficultySelect.value == "hard")
+            this.difficultyMultiplier = 0.9;
+        this.money = Math.round(50*Math.pow(this.difficultyMultiplier, 2))*10;
     }
 
     updateCreepSummary() {
@@ -461,7 +506,7 @@
         contextMenu.querySelector("h3[name='name']").innerText = name;
         contextMenu.querySelector(".infofield img[name='image']").src = this.selectedTower.image.src;
         contextMenu.querySelector(".infofield span[name='hits']").innerText = this.selectedTower.hits;
-        contextMenu.querySelector(".infofield span[name='range']").innerText = this.selectedTower.range;
+        contextMenu.querySelector(".infofield span[name='range']").innerText = Math.round(this.selectedTower.range*10)/10;
         let cdtime_ms = Math.round(this.selectedTower.CDtime * this.updateInterval);
         contextMenu.querySelector(".infofield span[name='CDtime']").innerText = cdtime_ms < Math.pow(10, 2.5) ? cdtime_ms + " ms" : (cdtime_ms / 1000) + " s";
 
@@ -783,6 +828,7 @@
         data.health = this.hp;
         data.money = this.money;
         data.hitsFromSoldTowers = this.hitsFromSoldTowers;
+        data.difficulty = this.difficulty;
         data.path = this.map.path.map(pt => [pt.x, pt.y]);
         data.towers = [];
 
@@ -837,11 +883,18 @@
             return;
 
 
+        this.difficulty = data.difficulty;
+        this.difficultySelect.value = this.difficulty;
+        this.difficultyChange();
+        this.difficultySelect.disabled = true
 
         this.levelNumber = data.level;
         this.hp = data.health;
+        // console.log(data.health);
         this.money = data.money;
         this.hitsFromSoldTowers = data.hitsFromSoldTowers;
+
+
         // Detta sköts i constructorn istället
         // this.path = data.path;
 
@@ -949,25 +1002,22 @@ class PseudoTower extends GameObject {
             t.discount_multiplier = pc[0];
             t.CDpenalty_multiplier = pc[1];
             t.CDtime *= pc[1];
+            controller.difficultySelect.disabled = true;
             this.done(true);
         }
     }
-
-    // update() {
-    //     super.update();
-    // }
 
     draw(gameArea) {
         gameArea.disc(this.x, this.y, this.type.range+this.extrarange, this.posOK ? "rgba(0, 212, 0, 0.5)" : "rgba(212, 0, 0, 0.5)");
         if (this.posOK)
             controller.map.path.filter(pt =>
-                Math.sqrt(Math.pow(this.x - pt.x, 2) + Math.pow(this.y - pt.y, 2)) < this.type.range + 0.1
+                Math.sqrt(Math.pow(this.x - pt.x, 2) + Math.pow(this.y - pt.y, 2)) < this.type.range+this.extrarange + 0.1
             ).forEach(pt =>
                 gameArea.disc(pt.x, pt.y, 0.25, "rgba(255, 255, 255, 0.7)")
             );
         if(this.posOK && this.type.prototype instanceof SupportTower)
             controller.map.towers.filter(pt =>
-                Math.sqrt(Math.pow(this.x - pt.x, 2) + Math.pow(this.y - pt.y, 2)) < this.type.range + 0.1
+                Math.sqrt(Math.pow(this.x - pt.x, 2) + Math.pow(this.y - pt.y, 2)) < this.type.range+this.extrarange + 0.1
             ).forEach(pt =>
                 gameArea.disc(pt.x, pt.y, 0.25, "rgba(255, 255, 100, 0.7)")
             );
@@ -1000,25 +1050,22 @@ class PseudoTower extends GameObject {
 
 function fusk(x, y){
 
-	if (x == monies_plz){
-		if (y !== undefined)
-			controller.money += y;
-		else
-			controller.money += 1000;
-	}
+	if (x === motherlode)
+		controller.money += y || 5000;
 
-	if (x == level_set){
+	if (x === level_set){
 		controller.levelNumber = y-1;
 		controller.endLevel();
+        controller.money -= levelClearReward(controller.levelNumber);
 	}
 
 
-	if (x == cheat_lvl){
+	if (x === cheat_lvl){
 		fusk(level_set, y);
 		controller.money = fusk(list_value, y-1) + 500;
 	}
 
-	if (x == unlock_all){
+	if (x === unlock_all){
 		for (var i = 0; i < controller.map.towers.length; i++) {
 			for (var j = 0; j < controller.map.towers[i].upgrades.length; j++) {
 				controller.map.towers[i].upgrades[j].hits = 0;
@@ -1026,8 +1073,8 @@ function fusk(x, y){
 		}
 	}
 
-	if (x == harvest_time){
-		for (var i = 0; i < controller.map.towers.length; i++) {
+	if (x === harvest_time){
+		for (let i = 0; i < controller.map.towers.length; i++) {
 			if (controller.map.towers[i] instanceof Nicole){
 				if (controller.map.towers[i].upgrades.find(u => u.type.name == MonoCultureGadget.name) !== undefined)
 					continue;
@@ -1052,34 +1099,64 @@ function fusk(x, y){
 		}
 	}
 
-	if (x == list_value){
+    if (x === level_value){
+
+        y = y || controller.levelNumber;
+
+        let value = 0;
+        let iterator = getLevel(y, 10);
+        let remaining = iterator.remaining();
+        let codebook = iterator.codebook();
+
+        for (let creepType in remaining){
+            if (codebook[creepType].prototype instanceof BaseCreep)
+                value += codebook[creepType].totalValue() * remaining[creepType];
+            else{
+                value += codebook[creepType].prototype.totalValue() * remaining[creepType];
+            }
+        }
+        value += levelClearReward(y);
+        return value;
+    }
+
+	if (x === list_value){
 
 		let value = 0;
-		for (var i = 1; i <= y; i++) {
-			let iterator = getLevel(i, 10);
-			let remaining = iterator.remaining();
-			let codebook = iterator.codebook();
-
-			for (let creepType in remaining){
-				if (codebook[creepType].prototype instanceof BaseCreep)
-					value += codebook[creepType].totalValue() * remaining[creepType];
-				else{
-					value += codebook[creepType].prototype.totalValue() * remaining[creepType];
-				}
-			}
-			value += levelClearReward(i);
+		for (let i = 1; i <= y; i++) {
+            value += fusk(level_value, i);
 		}
 
 		return value;
 	}
 
+    if (x === invincible){
+        controller.invincible = true;
+    }
+
+    if (x === magic_constant){
+        fusk(level_set, 1337);
+        fusk(motherlode, 1337);
+        fusk(harvest_time);
+    }
+
+    if (x === replay){
+        controller.money -= fusk(level_value, controller.levelNumber-1);
+        fusk(level_set, controller.levelNumber-1);
+    }
 
 
+    if (x === sverigetoppen)
+        controller.map.towers.forEach(t => { t.hits = 20000; });
 }
 
-let monies_plz = 6809;
+let magic_constant = 4;
+let motherlode = 6809; // Sims 2 någon? - Funkar väl i alla Sims? - Ja säkert, har bara spelat tvåan dock
 let level_set = 9539;
 let cheat_lvl = 8726;
 let harvest_time = 2602;
 let unlock_all = 3102;
 let list_value = 6673;
+let level_value = 1077;
+let invincible = 4519;
+let replay = 7143;
+let sverigetoppen = 9437;

@@ -14,7 +14,7 @@ class BaseTower extends GameObject {
         if(value == this.TARGET_STRONG)
             return "strong";
         if(value == this.TARGET_WEAK)
-            return weak;
+            return "weak";
         return null;
     }
 

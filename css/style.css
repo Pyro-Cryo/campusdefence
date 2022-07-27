@@ -39,6 +39,10 @@ a {
         font-weight: bold;
         outline: none;
     }
+    .header select:disabled {
+        text-decoration: line-through;
+        /*background-color: #069080;*/
+    }
     .header > label {
         font-size: 16px;
     }

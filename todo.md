@@ -3,6 +3,7 @@
 - skala ner mängden pengar man får på högre levels
 - Skriva lite info/lore om immuna creeps
 - Flytta Föhseriet så de kommer först lite senare i levels
+- Se över hur föhseriet påverkas ev effekter (kanske lite out of character att ÖF/TF hängs ut i Force och blir generade?), $F borde vara immun mot kramar per default
 
 
 - Efter lansering, DLC:
@@ -12,16 +13,9 @@
 
 
 - Buggar:
-	- Det borde inte gå att köpa dompa/disciplinnämnden i pausen mellan rundor (kommer kräva att man petar i contextmenycachningen dock och det vågar jag knappt)
 	- Mouseover på köpknappar med fler än två rader text gör att hela alternativet buggar lite visuellt
-	- Creeps som är immuna mot gelehjärtan går rakt igenom dem och konsumerar all deras hp, vilket kanske inte borde hända
-	- HP återställs till 191 vid page refresh
-	- 'Visste du att' visar alltid den första raden i listan
 	- 'Queen of Night'-blomman gör ingenting
-	- Fnöll och Nicole är inte kompisar just nu
-	- Vi borde testa interaktionen mellan Fridas slowdown, Nicoles vändning och Mediafadderns stoppande, de lirar inte alls bra ihop just nu (ffa Mediafaddern).
 	- Om två mediafaddrar överlappar varann och har aftonbladetuppgraderingen, och deras range buffas av matberedartornet, så kommer vissa av tilesen i slutändan inte ha någon cap som de borde. Känns som ett edge case vi kanske inte måste bry oss om men listar det här ändå.
-
 
 
 

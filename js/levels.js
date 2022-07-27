@@ -1,5 +1,5 @@
 function getLevel(number, updateInterval) {
-    let s = 1000 / updateInterval;
+    let s = controller.difficultyMultiplier * 1000 / updateInterval;
     switch (number) {
         case 1:
             return (new CreepSequence()
@@ -27,7 +27,7 @@ function getLevel(number, updateInterval) {
                 .send(5, Blue).over(3 * s));
         case 6:
             return (new CreepSequence()
-                .send(5, getImmuneCreep(Red, 0.5)).over(2 * s)
+                .send(7, getImmuneCreep(Red, 0.6)).over(2.5 * s)
                 .wait(5 * s)
                 .send(30, Red).over(20 * s)
                 .interleave(new CreepSequence()
@@ -39,66 +39,81 @@ function getLevel(number, updateInterval) {
                 .interleave(new CreepSequence().send(8, Blue).over(20 * s)));
         case 8:
             return (new CreepSequence()
-                .send(1, TF_1).immediately());
-
+            	.send(5, Pink).over(3 * s)
+            	.wait(5 * s)
+            	.send(5, Pink).over(3 * s)
+            	.wait(5 * s)
+            	.send(25, Blue).over(15 * s)
+            	);
+                
         case 9:
             return (new CreepSequence()
-                .send(30, getImmuneCreep(Red, 0.6)).over(20 * s)
+                .send(30, getImmuneCreep(Red, 0.7)).over(20 * s)
                 .interleave(new CreepSequence().send(20, Blue).over(20 * s))
-                .wait(10 * s)
+                .wait(5 * s)
                 .send(10, Pink).over(5 * s));
 
         case 10:
             return (new CreepSequence()
-                .send(30, Blue).over(15 * s)
-                .interleave(new CreepSequence().send(10, Red).over(10 * s))
+                .send(30, getImmuneCreep(Blue, 0.6, true, 2)).over(20 * s)
+                .interleave(new CreepSequence().send(12, getImmuneCreep(Red, 0.6, true, 1)).over(20 * s))
                 .wait(5 * s)
-                .send(20, Pink).over(12 * s)
-                .wait(3 * s)
-                .send(10, Blue).over(4 * s));
+                .send(20, Pink).over(12 * s));
 
         case 11:
             return (new CreepSequence() 
-                .send(1,SF_1).immediately());
+            	.send(1, TF_1).immediately());
 
         case 12:
             return (new CreepSequence()
-                .send(25, getImmuneCreep(Blue, 0.6)).over(20 * s)
-                .send(25, getImmuneCreep(Blue, 0.6, true, 1)).over(10 * s)
-                .wait(1 * s)
-                .send(10, Pink).over(10 * s));
+                .send(35, getImmuneCreep(Blue, 0.6, true)).over(25 * s)
+                .send(35, getImmuneCreep(Blue, 0.6, true, 1)).over(25 * s)
+                .wait(5 * s)
+                .send(25, Pink).over(20 * s));
 
         case 13:
             return (new CreepSequence()
-                .send(15, Pink).over(20 * s)
-                .interleave(new CreepSequence().send(10, Red).over(20 * s))
-                .send(20, Pink).over(10 * s)
+                .send(20, Pink).over(20 * s)
+                .interleave(new CreepSequence().send(20, Red).over(20 * s))
+                .send(30, Pink).over(10 * s)
+                .send(30, Red).over(10 * s)
                 );
 
         case 14:
             return (new CreepSequence()
-                .send(5, Green).over(12 * s)
-                .wait(1 * s)
-                .send(50, Red).over(30 * s)
-                .send(5, Green).over(7 * s));
+            	.send(1,SF_1).immediately());
         
         case 15:
             return (new CreepSequence()
-                .send(1, OF_1).immediately());
+            	.send(50, Red).over(35 * s)
+                .send(100, Ninja).over(35 * s)
+                .interleave(new CreepSequence()
+                	.wait(10 * s)
+                	.send(2, Green).over(1 * s)
+                	.wait(5 * s)
+                	.send(2, Green).over(1 * s)
+                	.wait(5 * s)
+                	.send(2, Green).over(1 * s)
+                	.wait(15 * s)
+                	.send(3, Green).over(2 * s)
+                	)
+                );
 
         case 16:
             return (new CreepSequence()
-                .send(30, getImmuneCreep(Blue, 0.6, true)).over(20 * s)
-                .send(20, getImmuneCreep(Pink, 0.7, true, 1)).over(20 * s)
-                .send(5, Green).over(3 * s));
-
+                .send(50, Red).over(60 * s)
+                .interleave(new CreepSequence()
+                    .wait(5 * s)
+                    .send(30, getImmuneCreep(Blue, 0.6, true)).over(20 * s)
+                    .send(20, getImmuneCreep(Pink, 0.7, true, 1)).over(20 * s)
+                    .send(10, Green).over(3 * s))
+                );
+                
         case 17:
             return (new CreepSequence()
-                .send(1, Violet).immediately()
-                .wait(3 * s)
-                .send(20, Green).over(20 * s)
-                .send(50, Ninja).over(10 * s)
+                .send(1, OF_1).immediately()
                 );
+
         case 18:
             return (new CreepSequence()
                 .send(20, getImmuneCreep(Pink, 0.6, true)).over(20 * s)
@@ -108,117 +123,155 @@ function getLevel(number, updateInterval) {
                 .interleave(new CreepSequence()
                     .wait(2/3 * s)
                     .send(10, getImmuneCreep(Pink, 0.6, true, 2)).over(20 * s))
+                .wait(3 * s)
+                .send(10, Pink).over(7.5 * s)
                 );
 
         case 19:
             return (new CreepSequence()
-                .send(1, Orange).immediately()
-                .wait(1 * s)
-                .send(50, Blue).over(11 * s)
-                .send(3, Green).over(3 * s));
+                .send(1, Violet).immediately()
+                .wait(2.5 * s)
+                .send(15, Green).over(15 * s)
+                .wait(6 * s)
+                .send(3, Violet).over(10 * s)
+                .interleave(new CreepSequence()
+                    .wait(2 * s)
+                    .send(75, Red).over(40 * s))
+                .send(20, Blue).over(15 * s));
 
-        // Ta bort Föhseriet från denna level så de inte kommer så ofta?
         case 20:
             return (new CreepSequence()
-                .send(20, Blue).over(10 * s)
-                .send(10, getImmuneCreep(Pink, 0.8, true)).over(4 * s)
+                .send(200, Red).over(45 * s)
+                .send(50, Blue).over(10 * s)
                 .interleave(new CreepSequence()
-                    .wait(11 * s)
-                    .send(1, TF_2).immediately()
-                    .wait(1.4 * s)
-                    .send(1, OF_2).immediately()
-                    .wait(1.4 * s)
-                    .send(1, SF_2).immediately())
-                .send(10, Blue).over(10 * s));
+                    .wait(5 * s)
+                    .send(25, Pink).over(20 * s)
+                    .wait(5 * s)
+                    .send(10, Green).over(7 * s)
+                    .wait(3 * s)
+                    .send(15, Pink).over(8 * s))
+                );
 
         case 21:
             return (new CreepSequence()
-                .send(150, Red).over(20 * s)
-                .interleave(new CreepSequence().wait(5 * s)
-                    .send(25, Green).over(15 * s))
-                .send(10, Violet).over(5 * s));
+                .send(40, Red).over(15 * s)
+                .send(50, Blue).over(25 * s)
+                .send(5, Green).over(15 * s)
+                .send(10, getImmuneCreep(Pink, 0.7, true)).over(4 * s)
+                .wait(10 * s)
+                .send(10, Red).over(5 * s)
+                .interleave(new CreepSequence()
+                    .wait(45 * s)
+                    .send(1, TF_2).immediately()
+                    .wait(1.7 * s)
+                    .send(1, OF_2).immediately()
+                    .wait(1.7 * s)
+                    .send(1, SF_2).immediately())
+                );
 
         case 22:
             return (new CreepSequence()
-                .send(20, Violet).over(20 * s)
-                .send(20, Violet).over(8 * s));
+                .send(10, Violet).over(25 * s)
+                .send(50, Green).over(35 * s)
+                .send(50, Blue).over(40 * s));
 
         case 23:
             return (new CreepSequence()
-                .send(30, Violet).over(25 * s)
-                .interleave(new CreepSequence()
-                    .wait(10 * s)
-                    .send(1, TF_2).immediately()
-                    .wait(1.5 * s)
-                    .send(1, OF_2).immediately()
-                    .wait(1.5 * s)
-                    .send(1, SF_2).immediately())
+                .send(2, Orange).over(3 * s)
+                .wait(10 * s)
+                .send(100, Blue).over(50 * s)
                 );
 
         case 24:
             return (new CreepSequence()
-                .send(5, Orange).over(2 * s)
-                .wait(6 * s)
-                .send(5, Orange).over(2 * s)
-                .wait(9 * s)
-                .send(14, Orange).over(7 * s)
+                .send(100, Blue).over(25 * s)
+                .send(5, Violet).over(10 * s)
+                .interleave(new CreepSequence()
+                    .wait(30 * s)
+                    .send(1, TF_2).immediately()
+                    .wait(1.5 * s)
+                    .send(1, OF_2).immediately()
+                    .wait(1.5 * s)
+                    .send(1, SF_2).immediately())
                 );
 
         case 25:
             return (new CreepSequence()
-                .send(100, Blue).over(20 * s)
+                .send(150, Blue).over(40 * s)
                 .interleave(new CreepSequence()
-                    .send(25, Green).over(10 * s)
-                    .send(15, Violet).over(10 * s))
+                    .send(50, Red).over(10 * s)
+                    .send(15, Green).over(10 * s)
+                    .send(5, Violet).over(10 * s))
                 .wait(5 * s)
                 .send(2, Orange).over(2 * s)
                 );
 
         case 26:
             return (new CreepSequence()
-                .send(9, Orange).over(2 * s)
-                .wait(6 * s)
-                .send(9, Orange).over(2 * s)
-                .wait(6 * s)
-                .send(6, Orange).over(2.7 * s)
-                .interleave(new CreepSequence().send(6, Orange).over(3 * s)));
+                .send(60, Green).over(69 * s));
 
         case 27:
             return (new CreepSequence()
-                .send(3, Ninja).over(2 * s)
-                .send(5, Red).over(3 * s)
-                .send(7, Blue).over(5 * s)
-                .send(11, Pink).over(7 * s)
-                .send(13, Green).over(11 * s)
-                .send(17, Violet).over(13 * s)
-                .send(23, Orange).over(17 * s));
+                .send(8, Green).over(3 * s)
+                .wait(10 * s)
+                .send(10, Green).over(3 * s)
+                .wait(10 * s)
+                .send(12, Green).over(3 * s)
+                .wait(10 * s)
+                .send(100, Blue).over(15 * s)
+                );
 
         case 28:
             return (new CreepSequence()
-                .send(20, Violet).over(10 * s)
+                .wait(5 * s)
+                .send(10, getImmuneCreep(Green, 0.65, false, 0)).over(10 * s)
+                .send(10, getImmuneCreep(Green, 0.65, false, 1)).over(10 * s)
+                .send(10, getImmuneCreep(Green, 0.65, false, 2)).over(10 * s)
                 .interleave(new CreepSequence()
-                    .send(5, Pink).over(5 * s)
-                    .send(10, Orange).over(5 * s)));
+                    .send(50, Pink).over(40 * s)
+                    )
+                .interleave(new CreepSequence()
+                    .send(100, Red).over(40 * s))
+                );
 
         case 29:
             return (new CreepSequence()
-                .send(25, Orange).over(7 * s)
-                .send(100, Blue).over(10 * s));
+                .send(350, Blue).over(45 * s)
+                .send(150, Pink).over(35 * s)
+                .wait(5 * s)
+                .send(10, Violet).over(10 * s)
+                .send(5, getImmuneCreep(Violet, 0.65, false, 0)).over(6 * s)
+                );
 
         case 30:
             return (new CreepSequence()
-                .send(60, Violet).over(15 * s)
-                .interleave(new CreepSequence().send(25, Pink).over(15 * s))
-                .interleave(new CreepSequence().send(25, Green).over(15 * s))
-                .wait(2 * s)
-                .send(15, Orange).over(5 * s)
-                .send(25, Pink).over(5 * s)
-                .wait(2 * s)
+                .send(100, Pink).over(40 * s)
+                .send(15, getImmuneCreep(Green, 0.6, true, 0)).over(10 * s)
+                .send(15, getImmuneCreep(Green, 0.6, true, 1)).over(10 * s)
+                .send(15, getImmuneCreep(Green, 0.6, true, 2)).over(10 * s)
+                .send(15, getImmuneCreep(Green, 0.6, true, 4)).over(10 * s)
+                .interleave(new CreepSequence().send(300, Red).over(90 * s))
+                .wait(5 * s)
                 .send(1, Burvagn).immediately()
-                .send(50, Blue).over(10 * s)
-                .send(50, Pink).over(25 * s)
+                .wait(12 * s)
+                .send(5, Violet).over(10 * s)
+                .wait(5 * s)
+                .send(100, Pink).over(60 * s)
                 );
 
+        case 121:
+            return (new CreepSequence()
+                .send(1, SF_1).immediately()
+                .wait(15 * s)
+                .send(1, TF_1).immediately()
+                .wait(15 * s)
+                .send(1, OF_1).immediately());
+
+        case 1337:
+            return (new CreepSequence()
+                .send(1, Cryo).immediately()
+                .wait(15 * s)
+                .send(1, Pyro).immediately());
         default:
         	return autolevel(number, updateInterval);
     }
@@ -226,43 +279,133 @@ function getLevel(number, updateInterval) {
 
 function autolevel(levelnumber, updateInterval){
 
-	let s = 1000 / updateInterval;
+	let s = controller.difficultyMultiplier * 1000 / updateInterval;
 
-	let cs = new CreepSequence()
-		.send(30, Pink).over(10 * s)
-		.interleave(new CreepSequence().send(30, Green).over(10 * s))
-		.wait(2 * s)
-		.send(2*levelnumber, Green).over(levelnumber/4 * s)
-		.interleave(new CreepSequence().send(2*levelnumber, Pink).over(12/levelnumber * s))
-		.wait(2 * s);
+	let cs = new CreepSequence();
 
-	if(levelnumber >= 40){
-		cs.send(Math.floor(0.1*levelnumber*levelnumber), Orange).over(levelnumber * s)
-		.interleave(new CreepSequence().send(levelnumber, Pink).over(10 * s));
-	}
 
-    if(levelnumber % 3 == 0)
-        cs.send(Math.floor(levelnumber/5)*10, Green).over(5 * s).wait(1 * s);
+    if (levelnumber % 2)
+        cs.send(50, Pink).over(10 * s);
+    if (levelnumber % 4)
+        cs.interleave(new CreepSequence().send(20, Green).over(10 * s));
+    if (levelnumber % 3)
+        cs.send(15, Violet).over(10 * s);
 
-    if(levelnumber % 5 == 0)
-        cs.send(Math.floor(levelnumber/10)*20, Orange).over(10 * s);
+    cs.send(5, ShieldedViolet).over(2 * s);
 
-	if(levelnumber % 4 == 0 || levelnumber % 6 == 0){
-		cs.send(1, TF_inf).immediately()
-		.wait(1.2 * s)
-		.send(1, OF_inf).immediately()
-		.wait(1.2 * s)
-		.send(1, SF_inf).immediately()
-	}
+    cs.wait(5 * s);
 
-	if(levelnumber > 50){
-		cs.send(2*levelnumber, Orange).over(10 * s);
-	}
+    if (levelnumber >= 40){
+        let c = new CreepSequence();
+        if (levelnumber % 2)
+            c.send(Math.round(levelnumber/5), Violet).over(levelnumber/10 * s);
+        else
+            c.send(Math.round(levelnumber/5), ShieldedGreen).over(levelnumber/10 * s);
+        c.interleave(new CreepSequence().send(Math.round(levelnumber/3), getImmuneCreep(Green, 0.7, true)).over(10 * s));
+        c.wait(3 * s);
 
-	cs.send(levelnumber, Blue).over(10 * s)
-		.interleave(new CreepSequence().send(40, Violet).over(10 * s))
-		.interleave(new CreepSequence().send(40, Pink).over(10 * s))
-        .interleave(new CreepSequence().send(levelnumber, Green).over(10 * s));
+        if (levelnumber % 3)
+            c.append(new CreepSequence().send(10, Orange).over(5 * s));
+
+        cs.append(c);
+    }
+
+    cs.send(5, ShieldedGreen).over(5 * s);
+
+    for (var i = 0; i < levelnumber % 5; i++) {
+        cs.do(() => console.log("l1"));
+        cs.wait(5 * s);
+        cs.append(new CreepSequence()
+            .send(Math.round(Math.pow(levelnumber-25, 1.2)), Violet).over(levelnumber/(i+2) * s)
+            .send(Math.round(levelnumber/20)*2+1, getImmuneCreep(Orange, 0.6, false, 1)).over(5 * s));
+
+    }
+
+    // cs.do(() => console.log("p1"));
+
+    if (levelnumber > 50){
+        cs.send(Math.round(levelnumber/5), ShieldedOrange).over(Math.round(Math.sqrt(levelnumber/2))*s);
+    }
+    if (levelnumber > 45 && levelnumber-1 % 4){
+        cs.append(new CreepSequence()
+            .send(levelnumber-40, getImmuneCreep(Orange, 0.6, false, 1)).over((levelnumber-40)/1.5 * s)
+            .interleave(new CreepSequence()
+                .send(levelnumber-40, ShieldedOrange).over((levelnumber-40)/1.5 * s))
+            );
+    }
+
+    cs.wait(5 * s);
+
+    if(levelnumber > 60){
+
+        cs.append(new CreepSequence()
+            .send(Math.round(levelnumber/5), getImmuneCreep(ShieldedOrange, 0.6, true, 3)).over(Math.sqrt(levelnumber) * s)
+            .send(Math.round(levelnumber/5), getImmuneCreep(ShieldedViolet, 0.6, true, 2)).over(Math.sqrt(levelnumber) * s)
+            );
+
+    }
+
+    if (!(levelnumber % 3)){
+        cs.append(new CreepSequence()
+            .wait(5 * s)
+            .send(levelnumber-29, ShieldedOrange).over((levelnumber-29)/5 * s)
+            .append(new CreepSequence()
+                .send(levelnumber * 4, Blue).over(levelnumber/5 * s)
+                .send(levelnumber * 6, Red).over(levelnumber/5 * s)
+                )
+            );
+    }
+
+
+    // cs.do(() => console.log("p2"));
+    for (var i = 0; i < levelnumber/10; i++) {
+        cs.do(() => console.log("l2"));
+
+        cs.append(new CreepSequence()
+            .send(Math.round(Math.pow(levelnumber/10, 1.4)), ShieldedOrange).over(levelnumber/3 * s)
+            .interleave(new CreepSequence()
+                .send(levelnumber, getImmuneCreep(ShieldedGreen, 0.7, true, 0)).over(10 * s))
+            );
+        cs.wait(5 * s);
+
+    }
+
+    if (levelnumber % 9 == 0){
+        let c = new CreepSequence()
+            .send(1, Burvagn_inf).immediately();
+        cs.append(c);
+    }
+    else if (levelnumber % 4 == 0 && levelnumber > 35){
+        let c = new CreepSequence()
+            .wait(2 * s)
+            .send(1, TF_inf).immediately()
+            .wait(1.5 * s)
+            .send(1, OF_inf).immediately()
+            .wait(1.5 * s)
+            .send(1, SF_inf).immediately();
+        cs.append(c);
+                
+    }
+
+    // cs.do(() => console.log("p3"));
+
+    for (var i = 0; i < 3; i++) {
+        cs.do(() => console.log("l3"));
+        let c = new CreepSequence()
+            .wait(5 * s);
+        if(levelnumber >= 35){
+            c.send(levelnumber * 2, Green).over(Math.sqrt(levelnumber) * 2 * s);
+        }
+
+        if(levelnumber % 2)
+            c.send(Math.round(Math.pow(levelnumber-25, 1.5))+1, getImmuneCreep(Green, 0.6, false)).over(levelnumber/3 * s);
+        if(levelnumber % 3)
+            c.send(Math.round(Math.pow(levelnumber-29, 1.5))+1, Orange).over(levelnumber/2 * s);
+
+        c.send(Math.round(levelnumber/10), Orange).over(levelnumber/3 * s);
+
+        cs.append(c);
+    }
 
 
 	return cs.do(() => console.log("All creeps sent"));
@@ -273,6 +416,8 @@ function autolevel(levelnumber, updateInterval){
 function levelClearReward(number) {
     let cash = 0;
     switch (number) {
+
+    	case 3:
         case 4:
         case 6:
             cash = 150; //Lite extra cash för att kompensera för de nya blåa spökena early game
@@ -291,11 +436,13 @@ function levelClearReward(number) {
             break;
     }
     // controller.money += cash;
+    cash = 10 * Math.round(cash*controller.difficultyMultiplier/10);
     return cash;
 }
 
 // Skrivs ut innan respektive nivå
 function levelMessage(number) {
+    const typesSwe = { "Fire": "eld", "Flowers": "blom", "Alcohol": "alkohol", "Cheats": "fusk", "Hugs": "kram", "Light": "blixt" };
     switch (number) {
         case 1: return "Välkommen! Välj en fadder i menyn och placera ut det nära vägen. Ringen och prickarna visar hur långt faddern ser.<br /><br /><i>nØllan sitter glatt och tuggar pastasallad i Konsulatet när plötsligt ninjorna från Föhsarkrocketen visar sig igen, denna gång med ännu ondare avsikter. Nu är det upp till faddrarna att stoppa dem!</i>";
 
@@ -305,35 +452,45 @@ function levelMessage(number) {
             else
                 return "Aj då, nu slank det igenom " + (controller.initialHP - controller.hp === 1 ? "en" : "ett par") + ". Prova att placera ut fler faddrar, eller att sätta dem mer strategiskt! Du kan sälja eller uppgradera dina faddrar genom att klicka på dem.<br /><br /><i>Någon nØllan strök med, men lite svinn får man räkna med. Det är dock än fler ninjor på väg...</i>";
             
-        case 3: return "Det finns olika typer av ninjor, vilket man kan se på deras färg. De med röd huva har två stycken med svart huva i sig.<br /><br /><i>Föhseriet inser att faddrarna utgör ett starkare försvar än väntat - som väntat. Taktikföhs sätter in de specialtränade trojanska ninjorna.</i>";
+        case 3: return "Det finns olika typer av ninjor, vilket man kan se på deras färg. De med röd huva har en med svart huva i sig.<br /><br /><i>Föhseriet inser att faddrarna utgör ett starkare försvar än väntat - som väntat. Taktikföhs sätter in de specialtränade trojanska ninjorna.</i>";
         
         case 4: return "Du har nu låst upp två nya sorters faddrar! I menyn kan du se hur mycket varje fadder kostar samt en vag beskrivning av vad de gör.<br /><br /><i>Fjädrande Fadderiet har har fått nys om Föhseriets planer och sällar sig till fadderförsvaret.</i>";
 
-        case 5: return "Fadderisterna har lite olika förmågor - testa dig fram och se vilka du föredrar!<br /><br /><i>Att fadderisterna skulle ansluta sig var väntat - Föhseriet står redo att skicka ut de nästlade trojanska ninjorna.</i>";
+        case 5: return "Blåa ninjor har en röd ninja i sig och kräver flera kramar för att ge med sig. Varje ninja du kramar klart ger en peng, förutom extrapengarna du får efter varje nivå.<br /><br /><i>Att fadderisterna skulle ansluta sig var väntat - Föhseriet står redo att skicka ut de nästlade trojanska ninjorna.</i>";
 
-        case 6: return "Blåa ninjor har två röda ninjor i sig - mycket att hantera men det klirrar dödsskönt i kassakistan. Varje ninja du kramar ger en peng, förutom extrapengarna du får efter varje nivå.<br /><br /><i>Trots ninjornas upprepade anfall finns inte minsta antydan till tvekan hos faddrarna - ingen ninja kommer fram okramad.</i>";
+        case 6: return "Vissa ninjor är resistenta eller helt immuna mot en viss typ av skada. Det är därför bra att ha variation på faddrarna man placerar ut.<br /><br /><i>Föhseriet analyserar strategin och lägger upp en taktik: \"Vi tränar " + typesSwe[favoredDamageTypes({ "Hugs": 0.5, "Fire": 2 })[0][0]] + "-resistenta ninjor!\"</i>";
 
-        case 7: return "Förhoppningsvis har du redan hittat informationslisten ovanför spelplanen - där kan du pausa, snabbspola och återställa spelet samt se din fikabudget och hur många nØllan som finns kvar. Du kan också se vad nästa nivå har att bjuda på.<br /><br /><i>Föhseriet gör sig redo att ta i med hårdhanskarna.</i>";
+        case 7: return "Förhoppningsvis har du redan hittat informationslisten ovanför spelplanen - där kan du pausa, snabbspola och återställa spelet samt se din fikabudget och hur många nØllan som finns kvar. Du kan också se vad nästa nivå har att bjuda på.";
 
-        case 8: return "ÖF, $F och TF kräver många kramar innan de ger med sig. De har dessutom olika förmågor som gör dem ännu svårare att besegra!<br /><br /><i>\"Ska det bli bra får man göra det själv. JUBLA, nØLLAN!\"</i>";
+        case 8: return "Fadderisterna har lite olika förmågor - testa dig fram och se vilka du föredrar!<br /><br /><i>Trots ninjornas upprepade anfall finns inte minsta antydan till tvekan hos faddrarna - ingen ninja kommer fram okramad.</i>";
 
-        case 9: return "Glöm inte att uppgradera dina torn. Ett väl uppgraderat torn är ofta starkare än flera svaga.";
+        case 9: return "Glöm inte att uppgradera dina faddrar. En väl uppgraderad fadder är ofta starkare än flera svaga.";
 
-        case 10: return "Några torn har specialattacker som måste aktiveras manuellt. Dessa är ofta väldigt dyra, och varje gång du använder den behöver du betala igen. Men nöden har ingen lag, och ibland kan de vara räddningen från säker förlust.";
+        case 10: return "Några faddrar har specialattacker som måste aktiveras manuellt. Dessa är ofta väldigt dyra, och varje gång du använder den behöver du betala igen. Men nöden har ingen lag, och ibland kan de vara räddningen från säker förlust.<br /><br /><i>Föhseriet gör sig redo att ta i med hårdhanskarna.</i>";
 
-        case 11: return "$nålföhs största svaghet är kramar. Hon verkligen avskyr dem. Förutom det är det inte mycket som kan få henne att ändra sig när hon väl satt ett mål för sig själv.<br/><br/><i>$nålföhs kramas inte!</i>";
+        case 11: return "ÖF, $F och TF kräver många kramar innan de ger med sig. De har dessutom olika förmågor som gör dem ännu svårare att besegra!<br /><br /><i>\"Ska det bli bra får man göra det själv. JUBLA, nØLLAN!\"</i>";
 
-        // case 12: return "";
+        case 12: return "Nicoles olika blommor kan tillfälligt åsidosätta ninjornas immuniteter.<br /><br /><i>TF slår till taktisk reträtt.</i>";
 
-        case 14: return "Behöver du lite pengar? Här kommer en enkel omgång.";
+        case 13: return "Det kan vara klokt att lägga en hög gelehjärtan i slutet. Pengar kan du tjäna in, men när en nØllan väl har kidnappats går de inte att få tillbaka.";
 
-        case 15: return "Överföhs accepterar inte några motgångar, och om någon försöker hindra honom höjer han glasögonen och släpper lös sin ljungeldsblick. Den kan få vem som helst att frysa av rädsla.<br/><br/><i>ÖF måste själv se vad för oväsen faddrarna har ställt till med. \"Hälsa på Överföhs, nØllan!\"</i>";
+        case 14: return "$F kramas inte och är nästan helt immun mot faddrarnas \"motbjudande 'charm'\".<br /><br /><i>Efter att Föhseriets rekryteringsbudget skjutit i höjden måste $F med egna solglasögon se vart pengarna egentligen tar vägen.</i>";
 
-        case 16: return "Föhseriets olika förmågor kompletterar varandra och de är som starkast när de är tillsammans. Lycka till!<br /><br /><i>Efter att ÖF själv har sett med vilken beslutsamhet faddrarna försvarar nØllan beslutar föhseriet att göra gemensam sak. \"Nu får det vara nog med daltandet. JUBLA, nØLLAN!\"</i>";
+        case 15: return "Behöver du lite pengar? Här kommer en enkel omgång.";
+
+        // case 16: return "";
+
+        case 17: return "Överföhs accepterar inte några motgångar, och om någon försöker hindra honom höjer han glasögonen och släpper lös sin ljungeldsblick. Den kan få vem som helst att frysa av rädsla.<br/><br/><i>ÖF måste själv se vad för oväsen faddrarna har ställt till med. \"Hälsa på Överföhs, nØllan!\"</i>";
+
+        case 19: return "Lila-huvade ninjor återfår sakta sin ondska efter att de blivit kramade, så det gäller att krama de snabbt så de inte hinner återfå sin beslutsamhet."
+
+        case 21: return "Föhseriets olika förmågor kompletterar varandra och de är som starkast när de är tillsammans. Lycka till!<br /><br /><i>Efter att ÖF själv har sett med vilken beslutsamhet faddrarna försvarar nØllan beslutar Föhseriet att göra gemensam sak. \"Nu får det vara nog med daltandet. JUBLA, nØLLAN!\"</i>";
         
-        case 17: return "<br/><br/><i>Föhseriet drar sig tillbaka och observerar faddrarnas kamp från behörigt avstånd. Deras beslutsamhet är, liksom deras tålamod, oändligt.</i>";
+        case 22: return "<i>Föhseriet drar sig tillbaka och observerar faddrarnas kamp från behörigt avstånd. Deras beslutsamhet är, liksom deras tålamod, oändligt.</i>";
 
-        case 30: return "<i>Föhseriet har tröttnat på Fadderisternas dumheter, och bestämmer sig för att ta sig förbi deras försvar en gång för alla. Ett ohyggligt oväsen varnar om att Föhseriet dammat av stridsvagnen och kommer inskumpande i full fart.</i>";
+        case 23: return "Orange-huvade Ninjor är de mest vältränade i Föhseriets arsenal. De återfår sin beslutsamhet och har lila ninjor i sig. Hu!";
+
+        case 30: return "<i>Föhseriet har tröttnat på Fadderisternas dumheter, och bestämmer sig för att ta fram storsläggan. Ett ohyggligt oväsen varnar om att Föhseriet dammat av stridsvagnen och kommer inskumpande i full fart.</i>";
 
         case 31: return "Du har lyckats försvara nØllan från Föhseriet förvånansvärt länge, bra gjort. Härifrån kommer nivåerna snabbt bli svårare och tunga för datorn att köra. Ha så kul!<br/><br/><i>Föhseriet är nedslagna, men långtifrån besegrade. \"Brute Force\", säger TF. \"Vi blir tvungna att överväldiga dem.\"</i>";
 
@@ -341,11 +498,7 @@ function levelMessage(number) {
 
         case 50: return "Hur mår datorn? Svettigt?";
 
-        case 55: return "Det finns ett liv utanför campus också.";
-
-        case 420: return "";
-
-        case 1337: return "LEET";
+        case 55: return "Har inte du inlämningar eller nåt att göra?";
 
         default:
             const tips = [
@@ -354,19 +507,26 @@ function levelMessage(number) {
                 "Båda utvecklarna borde ha tagit examen vid det här laget och kanske inte lägga så mycket tid på webbläsarspel.",
                 "Om du behöver en godtycklig siffra så har empirisk testning visat att 4 nästan alltid är det bästa valet.",
                 "Lillie-Fnöll står för ungefär 80% av alla buggar.",
-                "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>controller.money = 9999</i>.",
                 "Föhseriets val av transportmedel påfallande ofta är burvagn.",
                 "Fadderisternas olika förmågor i spelet är baserade på deras försök att hemlighålla Fadderiets tema.",
-                "På <a href=\"https://f.kth.se/arcade\">f.kth.se/arcade</a> finns det andra spel att prokrastinera med.",
+                "Om f.dev hunnit bygga klart den så finns det på sidan <a href=\"https://f.kth.se/arcade\">f.kth.se/arcade</a> andra spel att prokrastinera med.",
                 "Nämnden Mottagningen ska skrivs med stort M medan händelsen mottagningen med litet.",
-                "Alla torn och uppgraderingar har en väldigt intetsägande beskrivning som utvecklarna lagt mycket tid på att hitta på.",
+                "Alla faddrar och uppgraderingar har väldigt intetsägande beskrivningar som utvecklarna lagt mycket tid på att hitta på. Framförallt för att ingen av dem kan stava ordentligt.",
                 "Lillie-Fnölls uppgraderingar är baserade på gamla nØllelåtar.",
                 "Du kan byta mellan olika kartor i rullgardinsmenyn i övre högra hörnet på sidan. Vissa banor är lite svårare och andra lite lättare, det finns nånting för alla!",
-                "Lillie-Fnölls uppgraderingar är baserade på gamla nØllelåtar",
                 "Fridas disciplinnämnden-attack träffar en tredjedel av alla ninjor, plus de som redan träffats av Frida. Till skillnad från Axels dompa-attack får du dock inga pengar för ninjor som träffas.",
-                "Detta är det officiella inofficiella spelet för mottagningen 2020. Det finns ett inofficiellt inofficiellt spel också - fråga webmaster eller vice ordförande om du vill spela!"
+                "Detta är det officiella inofficiella spelet för mottagningen 2020. Det finns ett inofficiellt inofficiellt spel också - fråga webmaster eller vice ordförande om du vill spela!",
+                "Nicole har två uppgraderingar som tagits bort av utrymmesskäl. Dessa går att aktivera genom ett fusk i JavaScript-konsolen. Om du trycker på F12 (i Firefox och Chrome) och skriver <i>fusk(harvest_time)</i> så aktiveras de för alla dina Nicole-torn.",
+                "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>fusk(invincible)</i>.",
+                "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>fusk(motherlode)</i>.",
+                "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>fusk(level_set, 20)</i>.",
+                "Om du trycker på F12 (i Firefox och Chrome) får du upp en konsol där du kan skriva in olika fusk. Prova till exempel <i>fusk(4)</i>.",
+                "Det finns en plojlevel gömd nånstans i spelet. Håll utkik i 'Visste du att' för ledtrådar om var den finns.",
+                "Hälften av alla buggar inte är utvecklarnas fel, utan JavaScripts.",
+                "Överföhs har varit föremål för en ohälsosam personkult, och har som ett resultat fått en gasque och ett kapitel i äldre fysikers sångböcker tillägnad sig.",
+                "Mikael Lyth fyller år idag! Glöm inte att sjunga för honom om han råkar vara i närheten.",
             ];
-            return "Visste du att: " + tips[Math.floor(Math.random(tips.length))];
+            return "Visste du att: " + tips[Math.floor(Math.random()*tips.length)];
     }
 }
 
@@ -539,6 +699,14 @@ class CreepSequence {
             throw new Error("Invalid number " + number);
         this.currentSequence = this.currentSequence.concat(new Array(number).fill(creepType));
 
+        return this;
+    }
+
+    append(sequence) {
+        this._checks();
+        sequence._checks();
+
+        this.totalSequence = this.totalSequence.concat(sequence.totalSequence);
         return this;
     }
 

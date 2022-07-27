@@ -123,7 +123,7 @@ class Fadder extends TargetingTower {
             Mek1, 
             "SG1130 Mekanik I", 
             "I grundkursen i Mekanik får en lära sig om statik och partikeldynamik, vilket ger bättre förståelse för de banrörelser som faddern behöver ta för att nå fram med sina kramar. Efter avslutad kurs har faddern lite längre räckvidd.", 
-            80, 
+            75, 
             [], 
             [Mek1],
             30);
@@ -131,7 +131,7 @@ class Fadder extends TargetingTower {
             Mek2, 
             "SG1140 Mekanik II", 
             "I fortsättningskursen i Mekanik får en lära sig om dynamik och rörelse i roterande koordinatsystem. Efter avklarad kurs har faddern väldigt mycket bättre förståelse för rörelser och därför ännu längre räckvidd.",
-            120, 
+            110, 
             [Mek1],
             [Mek2], 
             50);
@@ -139,7 +139,7 @@ class Fadder extends TargetingTower {
             Regler,
             "EL1000 Regler",
             "Genom att noga justera attackvinkeln utifrån ninjornas position och hastighet blir det ännu svårare för ninjorna att undvika faddrarnas kramar.",
-            250,
+            220,
             [Mek1, Mek2],
             [Regler],
             250
@@ -215,7 +215,7 @@ class Forfadder1 extends Fadder {
 let geleimg = new Image();
 geleimg.src = "img/gele.png";
 
-class JellyHeart extends BasicProjectile {
+class JellyHeart extends Projectile {
 
     static get damage() { return 1; }
     static get hitpoints() { return 20; }
@@ -234,9 +234,16 @@ class JellyHeart extends BasicProjectile {
         }
     }
 
-    hitCreep(creep) {
-        super.hitCreep(creep);
-        controller.hitsFromSoldTowers[PseudoJellyHeartTower.name]++;
+    hit(pathTile) {
+        let creep = pathTile.arbitraryCreep();
+        if (creep !== null && !(creep instanceof BaseFohs)) {
+            // Immuna creeps returnerar 1/2 om de saveat mot en projektil (1 om det var första gången),
+            // 0/undefined => vi ska träffa
+            if (creep.onHit(this) !== 2) {
+                super.hit(pathTile);
+                controller.hitsFromSoldTowers[PseudoJellyHeartTower.name]++;
+            }
+        }
     }
 }
 
@@ -373,15 +380,16 @@ class Stunned extends BaseEffect {
         super(time / controller.updateInterval);
     }
     init(object){
-        this.speed = object.speed;
-        object.speed = 0;
+        object.speedModifiers.push(0);
+        
         object.timesStunned = (object.timesStunned || 0) + 1;
         if (object.timesStunned >= 10 && Math.random() < (object.timesStunned - 8) / 10)
             object.onHit({ damage: 1 });
         super.init(object);
     }
     apply(object) {
-        object.speed = this.speed;
+        let i = object.speedModifiers.indexOf(this.multiplier);
+        object.speedModifiers.splice(i, 1);
         this.remove(object);
     }
 }
@@ -590,7 +598,7 @@ class MatBeredare extends SupportTower {
 	static get CDtime() {return  7500;}
 	static get image() { return foodmakerimg; }
 	static get scale() { return 0.1; }
-	static get cost() { return 150; }
+	static get cost() { return 110; }
 	static get name() { return "Matberedare"; }
 	static get desc() { return "Inte ens Fadderiet orkar kramas på fastande mage. Tack och lov för matberedarna, som lyckas försörja hela mottagningen med energi."; }
 
@@ -690,7 +698,7 @@ class MatBeredare extends SupportTower {
 			Snackbar,
 			"Godisskåpet",
 			"I konsulatets godisskåp finns alltid nånting sött att finna. Matberedaren köper gelehjärtan för Mottagningens internrep-pengar och bjuder alla ninjor hen ser.",
-			750,
+			650,
 			[],
 			[Snackbar, CoffeMaker, Pasta, Wraps, Leftovers],
 			0
@@ -699,25 +707,25 @@ class MatBeredare extends SupportTower {
             Delicato,
             "Delicatobollar",
             "Delicatobollarna är tveklöst det mest åtråvärda i godisskåpet. De går åt dubbelt så fort som vanliga gelehjärtan.",
-            800,
+            600,
             [Snackbar],
             [Delicato, Pasta, CoffeMaker],
-            250
+            100
             );
         this.addUpgrade(
             ExpressDelivery,
             "Expressleverans",
             "Istället för att åka och handla själv beställer CdA godis med expressleverans, så att godisskåpet kan sälja mångdubbelt mer godis.",
-            1000,
+            750,
             [Snackbar],
             [ExpressDelivery],
-            250
+            150
             );
 		this.addUpgrade(
 			CoffeMaker,
 			"Kaffekokare",
 			"Inget får fysiker att studsa upp så snabbt från sina stolar som Konsulatets kaffekokare, och när matberedaren kommer med kaffe jobbar alla faddrar i närheten mycket snabbare.",
-			750,
+			580,
 			[],
 			[Snackbar, CoffeMaker, Chili, Leftovers],
 			0
@@ -769,7 +777,7 @@ class MatBeredare extends SupportTower {
 		
 		this.randomize = false;
 
-		this.multiplier = 0.9;
+		this.multiplier = 0.85;
 		this.extrarange = 0.6;
 		this.pricecut = 0.4;
 		this.CDchange = 1.3;
@@ -854,6 +862,7 @@ class MatBeredare extends SupportTower {
 		return null;
 	}
 
+    // Kallas av controller när en level avslutas, så att vi kan byta matlåda
 	onLevelUpdate(startlevel){
 		if(startlevel)
 			return;

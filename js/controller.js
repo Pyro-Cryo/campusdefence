@@ -25,10 +25,12 @@ class Controller {
         this.playbutton = document.querySelector("button.controllerButton#playButton");
         this.ffbutton = document.querySelector("button.controllerButton#fastForwardButton");
         this.resetbutton = document.querySelector("button.controllerButton#resetButton");
+        this.difficultySelect = document.querySelector("select#difficultySelect");
 
         this.playbutton.onclick = this.playpause.bind(this);
         this.ffbutton.onclick = this.fastforward.bind(this);
         this.ffbutton.disabled = true;
+        this.difficultySelect.onchange = this.difficultyChange.bind(this);
 
         // Info field
         this.messagebox = document.getElementById("messagebox");
@@ -61,11 +63,17 @@ class Controller {
         }
     }
 
+    difficultyChange(){
+    }
+
 
     onPlay(){
 
         this.isPaused = false;
-        this.mainInterval = setInterval(() => this.update(), this.updateInterval);
+        if (this.isFF)
+            this.mainInterval = setInterval(() => this.update(), this.updateInterval/3);
+        else 
+            this.mainInterval = setInterval(() => this.update(), this.updateInterval);
 
         this.playbutton.children[0].classList.add("hideme");
         this.playbutton.children[1].classList.remove("hideme");
@@ -79,9 +87,9 @@ class Controller {
         clearInterval(this.mainInterval);
         this.playbutton.children[0].classList.remove("hideme");
         this.playbutton.children[1].classList.add("hideme");
-        this.ffbutton.classList.remove("keptPressed");
+        // this.ffbutton.classList.remove("keptPressed");
         this.ffbutton.disabled = true;
-        this.isFF = false;
+        // this.isFF = false;
 
     }
 
