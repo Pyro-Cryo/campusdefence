@@ -333,7 +333,7 @@ function levelMessage(number) {
         
         case 17: return "<br/><br/><i>Föhseriet drar sig tillbaka och observerar faddrarnas kamp från behörigt avstånd. Deras beslutsamhet är, liksom deras tålamod, oändligt.</i>";
 
-        case 30: return "<i>Föhseriet har tröttnat på Fadderisternas dumheter, och bestämmer sig för att ta sig förbi deras försvar en gång för alla. Ett ohyggligt oväsen varnar om att Föhseriet dammat av stridsvagnen och kommer inskumpandes i full fart.</i>";
+        case 30: return "<i>Föhseriet har tröttnat på Fadderisternas dumheter, och bestämmer sig för att ta sig förbi deras försvar en gång för alla. Ett ohyggligt oväsen varnar om att Föhseriet dammat av stridsvagnen och kommer inskumpande i full fart.</i>";
 
         case 31: return "Du har lyckats försvara nØllan från Föhseriet förvånansvärt länge, bra gjort. Härifrån kommer nivåerna snabbt bli svårare och tunga för datorn att köra. Ha så kul!<br/><br/><i>Föhseriet är nedslagna, men långtifrån besegrade. \"Brute Force\", säger TF. \"Vi blir tvungna att överväldiga dem.\"</i>";
 
